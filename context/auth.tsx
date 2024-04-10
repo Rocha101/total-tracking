@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { createContext, useState, useContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import api from "@/app/utils/api";
 
 interface Account {
   account: {
@@ -49,17 +50,32 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const value = { account, login, logout };
 
   useEffect(() => {
+    const verifyToken = async () => {
+      try {
+        const verify = await api.get("/auth/verify");
+        console.log(verify);
+      } catch (error: any) {
+        console.log(error);
+        if (error.request.response.includes("TokenExpiredError")) {
+          toast("Faça login para acessar a página");
+          Cookies.remove("user");
+          Cookies.remove("token");
+          setAccount(null);
+          return router.push("/sign-in");
+        }
+      }
+    };
+
+    if (token && path.includes("admin")) {
+      verifyToken();
+    }
+
     if (!account && user && token) {
-      return setAccount({
+      setAccount({
         account: user,
         token: token,
       });
     }
-    if (!account && path.includes("admin")) {
-      toast("Faça login para acessar a página");
-      router.push("/sign-in");
-    }
-    if (account && path.includes("sign-in")) router.push("/admin");
   }, [account, router, path, user, token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

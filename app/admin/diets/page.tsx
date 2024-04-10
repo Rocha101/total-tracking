@@ -1,13 +1,13 @@
 "use client";
 
 import { DataTable } from "@/components/data-table/data-table";
-import { Diet } from "@prisma/client";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/page-header";
+import Diet from "./diets";
 
 const DietPage = () => {
   const [rows, setRows] = useState<Diet[]>([]);

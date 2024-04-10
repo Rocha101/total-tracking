@@ -19,7 +19,7 @@ enum HormoneType {
 }
 
 type Hormone = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   quantity: number;

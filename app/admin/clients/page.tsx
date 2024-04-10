@@ -1,11 +1,11 @@
 "use client";
 
 import { DataTable } from "@/components/data-table/data-table";
-import { Account } from "@prisma/client";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
+import { Account } from "../exercises/exercise";
 
 const ClientPage = () => {
   const [rows, setRows] = useState<Account[]>([]);

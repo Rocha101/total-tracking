@@ -10,7 +10,7 @@ enum HormoneUnit {
 }
 
 type ExtraCompounds = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   quantity: number;

@@ -45,8 +45,18 @@ export const columns: ColumnDef<Train>[] = [
     },
   },
   { accessorKey: "description", header: "Descrição" },
-  { accessorKey: "createdAt", header: "Data de Criação" },
-  { accessorKey: "updatedAt", header: "Data de Atualização" },
+  {
+    header: "Data de Criação",
+    accessorKey: "createdAt",
+    cell: ({ row }) =>
+      new Date(row.original.createdAt).toLocaleDateString("pt-BR"),
+  },
+  {
+    header: "Data de Atualização",
+    accessorKey: "updatedAt",
+    cell: ({ row }) =>
+      new Date(row.original.updatedAt).toLocaleDateString("pt-BR"),
+  },
   {
     header: "Ações",
     cell: ({ row }) => (

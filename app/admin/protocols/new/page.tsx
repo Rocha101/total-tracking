@@ -26,6 +26,9 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Diet from "../../diets/diets";
+import { Train } from "../../trains/train";
+import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
 
 const protocolSchema = object({
   name: string(),
@@ -44,9 +47,11 @@ const NewProtocolPage = () => {
       description: "",
     },
   });
-  const [diets, setDiets] = useState([]);
-  const [trains, setTrains] = useState([]);
-  const [hormonalProtocols, setHormonalProtocols] = useState([]);
+  const [diets, setDiets] = useState<Diet[]>([]);
+  const [trains, setTrains] = useState<Train[]>([]);
+  const [hormonalProtocols, setHormonalProtocols] = useState<
+    HormonalProtocol[]
+  >([]);
 
   const onSubmit = (values: Zod.infer<typeof protocolSchema>) => {
     console.log(values);
@@ -77,8 +82,36 @@ const NewProtocolPage = () => {
       });
   };
 
+  const fetchTrains = () => {
+    api
+      .get("/train")
+      .then((response) => {
+        console.log(response);
+        setTrains(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.error(error);
+      });
+  };
+
+  const fetchHormonalProtocols = () => {
+    api
+      .get("/hormoneProtocol")
+      .then((response) => {
+        console.log(response);
+        setHormonalProtocols(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.error(error);
+      });
+  };
+
   useEffect(() => {
     fetchDiets();
+    fetchTrains();
+    fetchHormonalProtocols();
   }, []);
 
   return (
@@ -159,6 +192,11 @@ const NewProtocolPage = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
+                    <Link href="/admin/trains/new">
+                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                        Novo Treino
+                      </div>
+                    </Link>
                     {trains.map((train) => (
                       <SelectItem key={train.id} value={train.id}>
                         {train.name}
@@ -184,6 +222,11 @@ const NewProtocolPage = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
+                    <Link href="/admin/hormonal-protocols/new">
+                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                        Novo Protocolo Hormonal
+                      </div>
+                    </Link>
                     {hormonalProtocols.map((hormonalProtocol) => (
                       <SelectItem
                         key={hormonalProtocol.id}

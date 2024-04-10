@@ -1,4 +1,3 @@
-import { Diet, Protocol } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import {
 import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
+import Diet from "./diets";
 
 const deleteDiet = (id: string) => {
   api
@@ -70,7 +70,7 @@ export const columns: ColumnDef<Diet>[] = [
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
-              href={`/admin/meals/${row.original.id}`}
+              href={`/admin/diets/${row.original.id}`}
               className=" pointer-events-none"
             >
               Editar dieta
