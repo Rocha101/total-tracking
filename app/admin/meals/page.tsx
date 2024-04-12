@@ -28,12 +28,15 @@ const MealPage = () => {
   return (
     <div>
       <PageHeader title="Refeiçoes" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/meals/new" passHref>
-          <Button>Nova Refeição</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/meals/new" passHref>
+            <Button size="sm">Nova Refeição</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

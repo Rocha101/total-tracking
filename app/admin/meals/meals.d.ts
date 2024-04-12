@@ -22,6 +22,7 @@ export type Meal = {
   totalCalories: number;
   totalProteins: number;
   totalCarbs: number;
+  totalFats: number;
   createdAt: string;
   updatedAt: string;
 };

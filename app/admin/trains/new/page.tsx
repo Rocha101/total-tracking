@@ -81,7 +81,6 @@ const trainSchema = object({
   name: string(),
   description: string().optional(),
   exercises: string().array(),
-  weekDay: nativeEnum(WeekDay).optional(),
 });
 
 const NewTrainPage = () => {
@@ -92,7 +91,6 @@ const NewTrainPage = () => {
       name: "",
       description: "",
       exercises: [],
-      weekDay: WeekDay.MONDAY,
     },
   });
 
@@ -110,14 +108,17 @@ const NewTrainPage = () => {
     const train = {
       ...values,
       exercises: trainExercises.map((exercise) => exercise.id),
+      weekDays: selectedWeekDays,
     };
+
+    console.log(train);
 
     api
       .post("/train", train)
       .then((res) => {
         console.log(res);
         toast("Treino criado com sucesso!");
-        router.push("/admin/trains");
+        router.back();
       })
       .catch((err) => {
         console.log(err);
@@ -196,59 +197,18 @@ const NewTrainPage = () => {
     return muscleGroupLabels[muscleGroup as keyof typeof muscleGroupLabels];
   };
 
-  const renderExerciseCard = (
-    exercise: Exercise,
-    removeTrainExercise: (exerciseId: string) => void
-  ) => {
-    const reps = renderReps(exercise.sets);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([
+    WeekDay.MONDAY,
+  ]);
 
-    return (
-      <Card key={exercise.id} className="relative">
-        <CardHeader className="w-full flex flex-row justify-between items-start">
-          <CardTitle>{exercise.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardDescription className="flex flex-col gap-2">
-            <span>
-              Grupo Muscular:{" "}
-              {renderMuscleGroup(
-                exercise.muscleGroup as keyof typeof MuscleGroup
-              )}
-            </span>
-            <span>Equipamento: {exercise.equipment}</span>
-            {reps.map((rep, index) => (
-              <span key={index}>
-                {index + 1}ª Série: {rep.join(" ")}
-              </span>
-            ))}
-          </CardDescription>
-        </CardContent>
-
-        <Button
-          type="button"
-          onClick={() => removeTrainExercise(exercise.id)}
-          variant="outline"
-          size="icon"
-          className="absolute top-1/2 transform -translate-y-1/2 right-8"
-        >
-          <TbTrashFilled />
-        </Button>
-      </Card>
-    );
-  };
-
-  const renderExerciseCards = (
-    trainExercises: Exercise[],
-    removeTrainExercise: (exerciseId: string) => void
-  ) => {
-    return trainExercises.map((exercise) => {
-      return renderExerciseCard(exercise, removeTrainExercise);
-    });
+  const handleWeekDayChange = (weekDay: WeekDay[]) => {
+    console.log(weekDay);
+    setSelectedWeekDays(weekDay);
   };
 
   return (
     <div>
-      <PageHeader title="Novo Treino" backlink="/admin/trains" />
+      <PageHeader title="Novo Treino" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
@@ -280,41 +240,38 @@ const NewTrainPage = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="weekDay"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel>Dias da semana</FormLabel>
-                <ToggleGroup
-                  type="multiple"
-                  variant="outline"
-                  className="justify-start overflow-x-auto"
+
+          <FormItem className="">
+            <FormLabel>Dias da semana</FormLabel>
+            <ToggleGroup
+              type="multiple"
+              variant="outline"
+              className="justify-start overflow-x-auto"
+              value={selectedWeekDays}
+              onValueChange={(value: WeekDay[]) => handleWeekDayChange(value)}
+            >
+              {Object.keys(WeekDay).map((key) => (
+                <ToggleGroupItem
+                  key={key}
+                  className="data-[state=on]:border-primary"
+                  value={key}
                 >
-                  {Object.keys(WeekDay).map((key) => (
-                    <ToggleGroupItem
-                      key={key}
-                      value={key}
-                      className="data-[state=on]:border-primary"
-                    >
-                      {
-                        {
-                          MONDAY: "Segunda",
-                          TUESDAY: "Terça",
-                          WEDNESDAY: "Quarta",
-                          THURSDAY: "Quinta",
-                          FRIDAY: "Sexta",
-                          SATURDAY: "Sábado",
-                          SUNDAY: "Domingo",
-                        }[key]
-                      }
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  {
+                    {
+                      MONDAY: "Segunda",
+                      TUESDAY: "Terça",
+                      WEDNESDAY: "Quarta",
+                      THURSDAY: "Quinta",
+                      FRIDAY: "Sexta",
+                      SATURDAY: "Sábado",
+                      SUNDAY: "Domingo",
+                    }[key]
+                  }
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+            <FormMessage />
+          </FormItem>
 
           <div className="text-sm">
             Selecione os exercícios que compõem o treino

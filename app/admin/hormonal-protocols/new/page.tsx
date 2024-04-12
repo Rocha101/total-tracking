@@ -77,7 +77,7 @@ const NewHormonalProtocolPage = () => {
       .then((res) => {
         console.log(res);
         toast("Protocolo criado com sucesso!");
-        router.push("/admin/hormonal-protocols");
+        router.back();
       })
       .catch((err) => {
         console.log(err);
@@ -122,10 +122,7 @@ const NewHormonalProtocolPage = () => {
 
   return (
     <div>
-      <PageHeader
-        title="Novo Protocolo Hormonal"
-        backlink="/admin/hormonal-protocols"
-      />
+      <PageHeader title="Novo Protocolo Hormonal" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

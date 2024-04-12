@@ -9,7 +9,7 @@ const NewExercisePage = () => {
 
   return (
     <div>
-      <PageHeader title="Novo Exercício" backlink="/admin/exercises" />
+      <PageHeader title="Novo Exercício" backlink />
       <NewExerciseForm onSubmitOk={() => router.push("/admin/exercises")} />
     </div>
   );

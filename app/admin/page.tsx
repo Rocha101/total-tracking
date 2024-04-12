@@ -1,7 +1,11 @@
+"use client";
+
+import PageHeader from "@/components/page-header";
+
 const Dashboard = () => {
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="h-full">
+      <PageHeader title="Dashboard" />
     </div>
   );
 };

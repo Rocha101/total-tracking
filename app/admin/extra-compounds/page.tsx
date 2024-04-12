@@ -26,12 +26,15 @@ const ExtraCompoundsPage = () => {
   return (
     <div>
       <PageHeader title="Outros Compostos" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/extra-compounds/new" passHref>
-          <Button>Novo Composto</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/extra-compounds/new" passHref>
+            <Button size="sm">Novo Composto</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

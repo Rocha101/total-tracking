@@ -37,18 +37,25 @@ const SettingsPage = () => {
       });
   };
 
-  const link = `https://total-tracking.com.br/sign-up?ref=${account?.account?.id}`;
+  const link = `https://total-tracking.com.br/sign-up?coachId=${account?.account?.id}`;
 
   return (
     <div>
       <PageHeader title="Configurações" />
       <div className="flex flex-col gap-3">
         <Card>
-          <CardHeader>
-            <CardTitle>Informações do usuario</CardTitle>
-            <CardDescription>
-              Aqui você pode visualizar e alterar as informações do seu usuário.
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="flex flex-col space-y-1.5">
+              <CardTitle>Informações do usuario</CardTitle>
+              <CardDescription>
+                Aqui você pode visualizar e alterar as informações do seu
+                usuário.
+              </CardDescription>
+            </div>
+
+            <Button size="sm" className="flex gap-1 items-center">
+              <TbEdit className="h-3 w-3" /> Editar
+            </Button>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
@@ -60,11 +67,6 @@ const SettingsPage = () => {
               <Input disabled value={account?.account?.accountType} />
               <Label>Senha</Label>
               <Input disabled value="********" />
-              <div className="flex justify-end mt-5">
-                <Button className="w-32 flex gap-3 items-center">
-                  Editar <TbEdit className="h-5 w-5" />
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -80,14 +82,18 @@ const SettingsPage = () => {
             <div className="flex items-center justify-between">
               <Input
                 disabled
-                className="border border-primary disabled:opacity-100"
+                className="border border-primary disabled:opacity-100 rounded-tr-none rounded-br-none truncate"
                 value={link}
               />
-              <Button onClick={handleCopy(link)}>
+              <Button
+                size="icon"
+                onClick={handleCopy(link)}
+                className=" rounded-tl-none rounded-bl-none"
+              >
                 {loadingCopy ? (
-                  <TbLoader2 className="h-5 w-5 animate-spin" />
+                  <TbLoader2 className="h-3 w-3 animate-spin" />
                 ) : (
-                  <TbCopy className="h-5 w-5" />
+                  <TbCopy className="h-3 w-3" />
                 )}
               </Button>
             </div>

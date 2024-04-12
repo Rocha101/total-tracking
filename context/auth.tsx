@@ -12,6 +12,8 @@ interface Account {
     name: string;
     role: string;
     id: string;
+    coachId: string;
+    accountType: string;
   };
   token: string;
 }
@@ -37,7 +39,11 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     Cookies.set("user", JSON.stringify(accountData.account));
     Cookies.set("token", accountData.token);
     setAccount(accountData);
-    router.push("/admin");
+    if (accountData.account.accountType === "COACH") {
+      router.push("/admin");
+    } else {
+      router.push("/app");
+    }
   };
 
   const logout = () => {
@@ -56,7 +62,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
         console.log(verify);
       } catch (error: any) {
         console.log(error);
-        if (error.request.response.includes("TokenExpiredError")) {
+        if (error.request.response.includes("Token inválido")) {
           toast("Faça login para acessar a página");
           Cookies.remove("user");
           Cookies.remove("token");

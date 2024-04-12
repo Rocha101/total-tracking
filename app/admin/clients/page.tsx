@@ -6,13 +6,15 @@ import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { Account } from "../exercises/exercise";
+import { useRouter } from "next/navigation";
 
 const ClientPage = () => {
+  const router = useRouter();
   const [rows, setRows] = useState<Account[]>([]);
 
   useEffect(() => {
     api
-      .get("/account")
+      .get("/account/clients")
       .then((response) => {
         console.log(response);
         setRows(response.data);
@@ -25,7 +27,13 @@ const ClientPage = () => {
   return (
     <div>
       <PageHeader title="Clientes" />
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        onDoubleClick={(row) =>
+          router.push(`/admin/clients/protocol?clientId=${row.id}`)
+        }
+      />
     </div>
   );
 };

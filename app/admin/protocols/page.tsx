@@ -27,11 +27,6 @@ const ProtocolPage = () => {
   return (
     <div>
       <PageHeader title="Protocolos" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/protocols/new" passHref>
-          <Button>Novo Protocolo</Button>
-        </Link>
-      </div>
       <DataTable columns={columns} data={rows} />
     </div>
   );

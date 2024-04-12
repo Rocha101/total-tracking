@@ -28,12 +28,15 @@ const TrainPage = () => {
   return (
     <div>
       <PageHeader title="Treinos" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/trains/new" passHref>
-          <Button>Novo Treino</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/trains/new" passHref>
+            <Button size="sm">Novo Treino</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

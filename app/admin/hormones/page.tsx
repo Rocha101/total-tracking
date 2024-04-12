@@ -27,12 +27,15 @@ const HormonesPage = () => {
   return (
     <div>
       <PageHeader title="Hormônios" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/hormones/new" passHref>
-          <Button>Novo Hormônio</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/hormones/new" passHref>
+            <Button size="sm">Novo Hormônio</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

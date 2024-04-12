@@ -88,7 +88,7 @@ const NewExtraCompound = () => {
 
   return (
     <div>
-      <PageHeader title="Novo Composto" backlink="/admin/protocols" />
+      <PageHeader title="Novo Composto" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

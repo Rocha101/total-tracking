@@ -11,6 +11,8 @@ interface HormonalProtocol {
   protocolId?: string | null;
   account?: Account | null;
   accountId?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export { HormonalProtocol };

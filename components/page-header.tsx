@@ -1,22 +1,22 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { TbChevronCompactLeft, TbChevronLeft } from "react-icons/tb";
+import { useRouter } from "next/navigation";
 
 interface PageHeaderProps {
   title: string;
   description?: string;
-  backlink?: string;
+  backlink?: boolean;
 }
 
 const PageHeader = ({ title, description, backlink }: PageHeaderProps) => {
+  const router = useRouter();
   return (
     <div className="w-full  flex items-center gap-2 mb-2">
       {backlink && (
-        <Link href={backlink} passHref>
-          <Button variant="ghost" size="icon">
-            <TbChevronLeft className="w-6 h-6" />
-          </Button>
-        </Link>
+        <Button onClick={() => router.back()} variant="ghost" size="icon">
+          <TbChevronLeft className="w-6 h-6" />
+        </Button>
       )}
 
       <div className="flex flex-col gap-1">

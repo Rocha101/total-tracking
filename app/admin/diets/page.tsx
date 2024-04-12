@@ -27,12 +27,15 @@ const DietPage = () => {
   return (
     <div>
       <PageHeader title="Dietas" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/diets/new" passHref>
-          <Button>Nova Dieta</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/diets/new" passHref>
+            <Button size="sm">Nova Dieta</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

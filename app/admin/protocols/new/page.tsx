@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { object, string, number, enum as enumValidator, infer } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
@@ -36,10 +36,14 @@ const protocolSchema = object({
   diet: string().optional(),
   train: string().optional(),
   hormonalProtocol: string().optional(),
+  clientId: string().optional(),
+  extraCompound: string().optional(),
 });
 
 const NewProtocolPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId");
   const form = useForm<Zod.infer<typeof protocolSchema>>({
     resolver: zodResolver(protocolSchema),
     defaultValues: {
@@ -61,7 +65,7 @@ const NewProtocolPage = () => {
       .then((res) => {
         console.log(res);
         toast("Protocolo criado com sucesso!");
-        router.push("/admin/protocols");
+        router.back();
       })
       .catch((err) => {
         console.log(err);
@@ -114,9 +118,15 @@ const NewProtocolPage = () => {
     fetchHormonalProtocols();
   }, []);
 
+  useEffect(() => {
+    if (clientId) {
+      form.setValue("clientId", clientId);
+    }
+  }, [clientId, form]);
+
   return (
     <div>
-      <PageHeader title="Novo Protocolo" backlink="/admin/protocols" />
+      <PageHeader title="Novo Protocolo" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

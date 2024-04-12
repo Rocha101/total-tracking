@@ -27,12 +27,15 @@ const ExercisePage = () => {
   return (
     <div>
       <PageHeader title="Exercícios" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/exercises/new" passHref>
-          <Button>Novo Exercício</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/exercises/new" passHref>
+            <Button size="sm">Novo Exercício</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

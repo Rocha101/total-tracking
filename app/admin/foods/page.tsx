@@ -27,12 +27,15 @@ const FoodsPage = () => {
   return (
     <div>
       <PageHeader title="Alimentos" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/foods/new" passHref>
-          <Button>Novo Alimento</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/foods/new" passHref>
+            <Button size="sm">Novo Alimento</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

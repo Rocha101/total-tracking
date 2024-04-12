@@ -111,12 +111,14 @@ function SignInPage() {
               <Button type="submit" className="w-full">
                 Entrar
               </Button>
+              <Link href="/sign-up" passHref className="w-full">
+                <Button type="button" className="w-full" variant="outline">
+                  Criar conta
+                </Button>
+              </Link>
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="w-full flex items-center justify-center">
-          <Link href="/sign-up">Criar conta</Link>
-        </CardFooter>
       </Card>
     </main>
   );

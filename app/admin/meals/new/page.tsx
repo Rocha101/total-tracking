@@ -8,7 +8,7 @@ const NewMealPage = () => {
   const router = useRouter();
   return (
     <div>
-      <PageHeader title="Nova Refeição" backlink="/admin/meals" />
+      <PageHeader title="Nova Refeição" backlink />
       <MealForm onSubmitOk={() => router.push("/admin/meals")} />
     </div>
   );

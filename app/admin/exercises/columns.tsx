@@ -7,10 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
-import api from "@/app/utils/api";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import api from "@/app/utils/api";
 
 enum SetType {
   WARM_UP = "WARM_UP",
@@ -21,6 +21,7 @@ enum SetType {
 }
 
 const deleteExercise = (id: string) => {
+  console.log(id);
   api
     .delete(`/exercise/${id}`)
     .then((response) => {
@@ -105,7 +106,7 @@ export const columns: ColumnDef<Exercise>[] = [
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
-              href={`/admin/foods/${row.original.id}`}
+              href={`/admin/exercises/${row.original.id}`}
               className=" pointer-events-none"
             >
               Editar exercício

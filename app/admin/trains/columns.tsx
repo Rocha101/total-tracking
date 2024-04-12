@@ -14,6 +14,18 @@ import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { DataTableColumnHeader } from "@/components/column-header";
+
+enum WeekDay {
+  MONDAY = "MONDAY",
+  TUESDAY = "TUESDAY",
+  WEDNESDAY = "WEDNESDAY",
+  THURSDAY = "THURSDAY",
+  FRIDAY = "FRIDAY",
+  SATURDAY = "SATURDAY",
+  SUNDAY = "SUNDAY",
+}
 
 const deleteTrain = (id: string) => {
   api
@@ -32,19 +44,49 @@ const deleteTrain = (id: string) => {
 export const columns: ColumnDef<Train>[] = [
   {
     accessorKey: "name",
-    header: ({ column }) => {
+    header: "Nome",
+  },
+  { accessorKey: "description", header: "Descrição" },
+  {
+    accessorKey: "weekDay",
+    header: "Dias da Semana",
+    cell: ({ row }) => {
+      const weekDaysSelected = row.original.weekDays;
+      const weekDays = [
+        WeekDay.MONDAY,
+        WeekDay.TUESDAY,
+        WeekDay.WEDNESDAY,
+        WeekDay.THURSDAY,
+        WeekDay.FRIDAY,
+        WeekDay.SATURDAY,
+        WeekDay.SUNDAY,
+      ];
+
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nome
-          <TbCaretUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className="flex">
+          {weekDays.map((day) => (
+            <Badge
+              key={day}
+              variant={weekDaysSelected.includes(day) ? "default" : "secondary"}
+              className="rounded-none text-[0.6rem]"
+            >
+              {
+                {
+                  [WeekDay.MONDAY]: "S",
+                  [WeekDay.TUESDAY]: "T",
+                  [WeekDay.WEDNESDAY]: "Q",
+                  [WeekDay.THURSDAY]: "Q",
+                  [WeekDay.FRIDAY]: "S",
+                  [WeekDay.SATURDAY]: "S",
+                  [WeekDay.SUNDAY]: "D",
+                }[day as keyof typeof WeekDay]
+              }
+            </Badge>
+          ))}
+        </div>
       );
     },
   },
-  { accessorKey: "description", header: "Descrição" },
   {
     header: "Data de Criação",
     accessorKey: "createdAt",

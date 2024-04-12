@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   TbPackage,
   TbHome,
@@ -41,6 +41,7 @@ import { ModeToggle } from "../theme-toggle";
 const Sidebar = () => {
   const { logout } = useAuth();
   const router = useRouter();
+  const path = usePathname();
   const links = [
     {
       name: "Protocolos",
@@ -106,7 +107,9 @@ const Sidebar = () => {
               <TooltipTrigger asChild>
                 <Link
                   href={link.href}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground ${
+                    path.includes(link.href) ? "dark:text-white text-black" : ""
+                  } md:h-8 md:w-8`}
                 >
                   <link.icon className="h-[1.2rem] w-[1.2rem]" />
                   <span className="sr-only">{link.name}</span>

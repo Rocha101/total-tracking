@@ -56,7 +56,7 @@ const NewProtocolPage = () => {
       .then((res) => {
         console.log(res);
         toast("Dieta criado com sucesso!");
-        router.push("/admin/diets");
+        router.back();
       })
       .catch((err) => {
         console.log(err);
@@ -105,7 +105,7 @@ const NewProtocolPage = () => {
 
   return (
     <div>
-      <PageHeader title="Nova Dieta" backlink="/admin/diets" />
+      <PageHeader title="Nova Dieta" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

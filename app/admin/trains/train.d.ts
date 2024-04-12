@@ -12,7 +12,7 @@ export type Train = {
   id: string;
   name: string;
   description: string;
-  weekDay: WeekDay;
+  weekDays: WeekDay[];
   createdAt: string;
   updatedAt: string;
   accountId: string;

@@ -27,12 +27,15 @@ const HormonalProtocolPage = () => {
   return (
     <div>
       <PageHeader title="Protocolos Hormonais" />
-      <div className="w-full flex items-center justify-end">
-        <Link href="/admin/hormonal-protocols/new" passHref>
-          <Button>Novo Hormônio</Button>
-        </Link>
-      </div>
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        actions={
+          <Link href="/admin/hormonal-protocols/new" passHref>
+            <Button size="sm">Novo Protocolo</Button>
+          </Link>
+        }
+      />
     </div>
   );
 };

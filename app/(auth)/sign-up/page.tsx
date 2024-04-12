@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -31,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string({
@@ -149,6 +151,7 @@ function SignUpPage() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
+                        disabled={!!coachId}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Theme" />
@@ -166,6 +169,11 @@ function SignUpPage() {
               <Button type="submit" className="w-full">
                 Salvar
               </Button>
+              <Link href="/sign-in" passHref className="w-full">
+                <Button type="button" className="w-full" variant="outline">
+                  Já tem uma conta? Faça login
+                </Button>
+              </Link>
             </form>
           </Form>
         </CardContent>

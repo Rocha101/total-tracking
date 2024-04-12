@@ -22,13 +22,14 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import { DataTableViewOptions } from "../table-view-options";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   actions?: React.ReactNode;
   onTableChange?: (table: any) => void;
-  onRowClick?: (row: any) => void;
+  onDoubleClick?: (row: any) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -36,7 +37,7 @@ export function DataTable<TData, TValue>({
   data,
   actions,
   onTableChange,
-  onRowClick,
+  onDoubleClick,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -66,10 +67,13 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <div className="">
-      <div className="mb-1 flex w-full gap-1 rounded-md py-1">{actions}</div>
+    <div className="mt-2">
+      <div className="w-full flex items-center mb-2 justify-between">
+        <DataTableViewOptions table={table} />
+        <div className="w-full flex justify-end">{actions}</div>
+      </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="bg-card">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -97,9 +101,9 @@ export function DataTable<TData, TValue>({
                   onDoubleClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    onRowClick && onRowClick(row.original);
+                    onDoubleClick && onDoubleClick(row.original);
                   }}
-                  className={`${onRowClick ? "cursor-pointer" : ""} h-14`}
+                  className={`${onDoubleClick ? "cursor-pointer" : ""} h-14`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -127,7 +131,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 mt-2">
         <Button
           variant="outline"
           size="sm"
