@@ -34,7 +34,6 @@ import NewFoodDialog from "../dialogs/new-food";
 import FoodCard from "../food-card";
 import { Fragment, useEffect, useState } from "react";
 import FoodsPage from "@/app/admin/foods/page";
-import { Food } from "@/app/admin/foods/foods";
 import { TbSearch } from "react-icons/tb";
 import { Textarea } from "../ui/textarea";
 
