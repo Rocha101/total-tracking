@@ -1,4 +1,4 @@
-export enum MealUnit {
+enum MealUnit {
   GR = "Gramas",
   ML = "Mililitros",
   UNIT = "Unidade",

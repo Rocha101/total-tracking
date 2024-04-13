@@ -1,4 +1,6 @@
-export enum MealType {
+import { Food } from "../foods/foods";
+
+enum MealType {
   BREAKFAST = "Café da manhã",
   MORNING_SNACK = "Lanche da manhã",
   LUNCH = "Almoço",
@@ -6,7 +8,7 @@ export enum MealType {
   DINNER = "Jantar",
 }
 
-export enum MealUnit {
+enum MealUnit {
   GR = "Gramas",
   ML = "Mililitros",
   UNIT = "Unidade",
@@ -25,4 +27,5 @@ export type Meal = {
   totalFats: number;
   createdAt: string;
   updatedAt: string;
+  foods: Food[];
 };

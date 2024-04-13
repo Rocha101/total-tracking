@@ -72,13 +72,13 @@ enum MuscleGroup {
   NECK = "NECK",
 }
 
-export enum MealUnit {
+enum MealUnit {
   GR = "Gramas",
   ML = "Mililitros",
   UNIT = "Unidade",
 }
 
-export enum MealType {
+enum MealType {
   BREAKFAST = "Café da manhã",
   MORNING_SNACK = "Lanche da manhã",
   LUNCH = "Almoço",

@@ -13,13 +13,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/app/utils/api";
-import { Protocol } from "../../protocols/columns";
-import Diet from "../../diets/diets";
-import { Train } from "../../trains/train";
-import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
-import ExtraCompounds from "../../extra-compounds/extra-compounds";
-import { Meal } from "../../meals/meals";
-import { Exercise } from "../../exercises/exercise";
 import { useAuth } from "@/context/auth";
 import { Button } from "@/components/ui/button";
 import { TbLoader, TbLoader2 } from "react-icons/tb";
@@ -32,6 +25,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { Exercise, Rep } from "@/app/admin/exercises/exercise";
+import Hormone from "@/app/admin/hormones/hormones";
+import { Protocol } from "@/app/admin/protocols/columns";
+import Diet from "@/app/admin/diets/diets";
+import { Train } from "@/app/admin/trains/train";
+import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protocols";
+import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
+import { Meal } from "@/app/admin/meals/meals";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -72,13 +73,13 @@ enum MuscleGroup {
   NECK = "NECK",
 }
 
-export enum MealUnit {
+enum MealUnit {
   GR = "Gramas",
   ML = "Mililitros",
   UNIT = "Unidade",
 }
 
-export enum MealType {
+enum MealType {
   BREAKFAST = "Café da manhã",
   MORNING_SNACK = "Lanche da manhã",
   LUNCH = "Almoço",
@@ -236,7 +237,7 @@ const ClientProtocol = () => {
                     </Badge>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1  lg:grid-cols-2 gap-3">
-                    {meal.foods.map((food) => (
+                    {meal.foods.map((food: Food) => (
                       <Card key={food.id} className="flex">
                         <CardHeader>
                           <CardTitle>{food.name}</CardTitle>
@@ -292,9 +293,9 @@ const ClientProtocol = () => {
                 ?.find((train) => train?.weekDays?.includes(trainWeekDay))
                 ?.exercises?.map((exercise: Exercise) => {
                   console.log(exercise);
-                  const reps = exercise.sets.map((set) => {
+                  const reps = exercise.sets.map((set: any) => {
                     const reps = set.reps;
-                    return reps.map((rep) => {
+                    return reps.map((rep: any) => {
                       return `${
                         {
                           [SetType.WARM_UP]: "Aquecimento",
@@ -302,7 +303,7 @@ const ClientProtocol = () => {
                           [SetType.FEEDER]: "Feeder",
                           [SetType.TOP]: "Top",
                           [SetType.BACK_OFF]: "Back off",
-                        }[rep.setType] || ""
+                        }[rep.setType as keyof typeof SetType] || ""
                       }${rep.setType ? " - " : ""}${rep.quantity} x ${
                         rep.weight
                       }Kg`;
@@ -337,11 +338,11 @@ const ClientProtocol = () => {
                               [MuscleGroup.LOWER_BACK]: "Lombar",
                               [MuscleGroup.OBLIQUES]: "Oblíquos",
                               [MuscleGroup.NECK]: "Pescoço",
-                            }[exercise.muscleGroup]
+                            }[exercise.muscleGroup as keyof typeof MuscleGroup]
                           }
                         </span>
                         <span>Equipamento: {exercise.equipment}</span>
-                        {reps.map((rep, index) => (
+                        {reps.map((rep: any, index: number) => (
                           <span key={index}>
                             {index + 1}ª Série: {rep.join(" ")}
                           </span>
@@ -361,7 +362,7 @@ const ClientProtocol = () => {
               <CardDescription>{hormonalProtocol?.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              {hormonalProtocol?.hormones.map((hormone) => (
+              {hormonalProtocol?.hormones.map((hormone: Hormone) => (
                 <Card key={hormone.id} className="flex">
                   <CardHeader className="w-full">
                     <CardTitle>{hormone.name}</CardTitle>
