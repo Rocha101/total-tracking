@@ -1,12 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Food } from "./foods";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
@@ -14,7 +10,6 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
 
 const deleteFood = (id: string) => {

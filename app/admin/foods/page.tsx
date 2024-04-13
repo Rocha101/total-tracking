@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PageHeader from "@/components/page-header";
-import { useSearchParams } from "next/navigation";
-import { Food } from "./foods";
 
 const FoodsPage = () => {
   const [rows, setRows] = useState<Food[]>([]);
