@@ -11,12 +11,11 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import api from "@/app/utils/api";
 import { useAuth } from "@/context/auth";
 import { Button } from "@/components/ui/button";
-import { TbLoader, TbLoader2 } from "react-icons/tb";
-import formatDate from "@/app/utils/formatData";
+import { TbLoader2 } from "react-icons/tb";
 import {
   Select,
   SelectContent,
@@ -24,8 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
-import { Exercise, Rep } from "@/app/admin/exercises/exercise";
+import { Exercise } from "@/app/admin/exercises/exercise";
 import Hormone from "@/app/admin/hormones/hormones";
 import { Protocol } from "@/app/admin/protocols/columns";
 import Diet from "@/app/admin/diets/diets";

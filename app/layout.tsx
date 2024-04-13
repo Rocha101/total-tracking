@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/auth";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Suspense } from "react";
 
 const roboto = Roboto({
   weight: ["400", "700"],
@@ -32,7 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Suspense>{children}</Suspense>
+          </AuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>
