@@ -9,40 +9,32 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  TbPackage,
   TbHome,
-  TbShoppingCart,
   TbSettings,
-  TbCategory,
   TbUsers,
-  TbGrillFork,
-  TbWeight,
   TbRun,
-  TbMedicalCross,
-  TbColorFilter,
-  TbDropletSearch,
-  TbLogout2,
   TbLogout,
   TbBarbell,
   TbBasket,
   TbBowl,
   TbChartBar,
-  TbMars,
   TbPill,
-  TbToolsKitchen,
   TbToolsKitchen3,
   TbVaccine,
   TbVaccineBottle,
 } from "react-icons/tb";
-import Cookies from "js-cookie";
 import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
 
-const Sidebar = () => {
+interface SidebarProps {
+  isAdmin?: boolean;
+}
+
+const Sidebar = ({ isAdmin }: SidebarProps) => {
   const { logout } = useAuth();
   const router = useRouter();
   const path = usePathname();
-  const links = [
+  const adminLinks = [
     {
       name: "Protocolos",
       icon: TbChartBar,
@@ -91,6 +83,16 @@ const Sidebar = () => {
     },
   ];
 
+  const clientLinks = [
+    {
+      name: "Meu Protocolo",
+      icon: TbChartBar,
+      href: "/app/protocol",
+    },
+  ];
+
+  const links = isAdmin ? adminLinks : clientLinks;
+
   return (
     <TooltipProvider>
       <aside className="fixed inset-y-0 left-0 z-10 flex w-14 flex-col border-r bg-background overflow-y-auto">
@@ -125,7 +127,7 @@ const Sidebar = () => {
           <Tooltip delayDuration={10}>
             <TooltipTrigger asChild>
               <Link
-                href="/admin/settings"
+                href={`/${isAdmin ? "admin" : "app"}/settings`}
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <TbSettings className="h-[1.2rem] w-[1.2rem]" />

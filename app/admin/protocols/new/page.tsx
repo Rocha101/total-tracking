@@ -29,12 +29,25 @@ import Link from "next/link";
 import Diet from "../../diets/diets";
 import { Train } from "../../trains/train";
 import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import WeeklyCalendar from "@/components/weekly-calendar";
+
+enum WeekDay {
+  MONDAY = "MONDAY",
+  TUESDAY = "TUESDAY",
+  WEDNESDAY = "WEDNESDAY",
+  THURSDAY = "THURSDAY",
+  FRIDAY = "FRIDAY",
+  SATURDAY = "SATURDAY",
+  SUNDAY = "SUNDAY",
+}
 
 const protocolSchema = object({
   name: string(),
   description: string().optional(),
   diet: string().optional(),
-  train: string().optional(),
+  train: string().array().optional(),
   hormonalProtocol: string().optional(),
   clientId: string().optional(),
   extraCompound: string().optional(),
@@ -124,6 +137,22 @@ const NewProtocolPage = () => {
     }
   }, [clientId, form]);
 
+  const [trainsSelected, setTrainsSelected] = useState<Train[]>([]);
+
+  const addTrainSelected = (trainId: string) => {
+    const train = trains.find((item: Train) => item.id === trainId);
+    if (!train) return;
+    setTrainsSelected((prev) => [...prev, train]);
+  };
+
+  const removeTrainSelected = (trainId: string) => {
+    setTrainsSelected(trainsSelected.filter((item) => item.id !== trainId));
+  };
+
+  useEffect(() => {
+    console.log(trainsSelected);
+  }, [trainsSelected]);
+
   return (
     <div>
       <PageHeader title="Novo Protocolo" backlink />
@@ -189,35 +218,6 @@ const NewProtocolPage = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="train"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Treino</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <Link href="/admin/trains/new">
-                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                        Novo Treino
-                      </div>
-                    </Link>
-                    {trains.map((train) => (
-                      <SelectItem key={train.id} value={train.id}>
-                        {train.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           <FormField
             control={form.control}
@@ -250,6 +250,76 @@ const NewProtocolPage = () => {
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <div className="space-y-2">
+            <Label>Adicionar Treinos</Label>
+            <Select
+              onValueChange={(value) => addTrainSelected(value)}
+              value={"Adicionar treino"}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <Link href="/admin/trains/new">
+                  <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                    Novo Treino
+                  </div>
+                </Link>
+                {trains.map((train) => {
+                  const weekDaysSelected = train.weekDays;
+                  const weekDays = [
+                    WeekDay.MONDAY,
+                    WeekDay.TUESDAY,
+                    WeekDay.WEDNESDAY,
+                    WeekDay.THURSDAY,
+                    WeekDay.FRIDAY,
+                    WeekDay.SATURDAY,
+                    WeekDay.SUNDAY,
+                  ];
+                  return (
+                    <SelectItem
+                      key={train.id}
+                      value={train.id}
+                      className="w-full h-full flex flex-row justify-between items-start"
+                    >
+                      <span>{train.name}</span>
+
+                      <div className="flex mt-2">
+                        {weekDays.map((day) => (
+                          <Badge
+                            key={day}
+                            variant={
+                              weekDaysSelected.includes(day)
+                                ? "default"
+                                : "secondary"
+                            }
+                            className="rounded-none text-[0.6rem]"
+                          >
+                            {
+                              {
+                                [WeekDay.MONDAY]: "S",
+                                [WeekDay.TUESDAY]: "T",
+                                [WeekDay.WEDNESDAY]: "Q",
+                                [WeekDay.THURSDAY]: "Q",
+                                [WeekDay.FRIDAY]: "S",
+                                [WeekDay.SATURDAY]: "S",
+                                [WeekDay.SUNDAY]: "D",
+                              }[day as keyof typeof WeekDay]
+                            }
+                          </Badge>
+                        ))}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <WeeklyCalendar
+            trainsSelected={trainsSelected}
+            removeTrainSelected={removeTrainSelected}
           />
 
           <Button type="submit" className="w-full">

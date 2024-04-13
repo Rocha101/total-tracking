@@ -23,6 +23,7 @@ import { object, string, number, enum as enumValidator } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
+import { Textarea } from "../ui/textarea";
 
 const foodSchema = object({
   name: string(),
@@ -104,13 +105,13 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Input placeholder="Batata cozida" {...field} />
+                <Textarea placeholder="Cozida" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className="w-full flex">
+        <div className="w-full flex gap-1">
           <FormField
             control={form.control}
             name="quantity"
@@ -157,7 +158,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
           />
         </div>
 
-        <div className="w-full flex items-end">
+        <div className="w-full flex items-end gap-1">
           <FormField
             control={form.control}
             name="proteins"

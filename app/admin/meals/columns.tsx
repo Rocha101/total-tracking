@@ -68,7 +68,7 @@ export const columns: ColumnDef<Meal>[] = [
     accessorKey: "macros",
     cell: ({ row }) => {
       return (
-        <div className="w-full h-full flex">
+        <div className="w-full h-full flex gap-1">
           <Badge variant="outline">
             {row.original.totalProteins || "0"} g P
           </Badge>

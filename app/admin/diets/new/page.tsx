@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/card";
 import NewMealDialog from "@/components/dialogs/new-meal";
 import MealCard from "@/components/meal-card";
+import { Textarea } from "@/components/ui/textarea";
+import { TbSearch } from "react-icons/tb";
 
 const dietSchema = object({
   name: string(),
@@ -47,6 +49,7 @@ const NewProtocolPage = () => {
 
   const [meals, setMeals] = useState([]);
   const [openNewMeal, setOpenNewMeal] = useState(false);
+  const [foodSearchQuery, setFoodSearchQuery] = useState("");
 
   const onSubmit = (values: Zod.infer<typeof dietSchema>) => {
     console.log(values);
@@ -131,7 +134,7 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Seca tudo" {...field} />
+                  <Textarea placeholder="Seca tudo" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -140,6 +143,17 @@ const NewProtocolPage = () => {
 
           <div className="text-sm">
             Selecione as refeições que compõem a dieta
+          </div>
+          <div className="relative flex">
+            <Button disabled variant="secondary" size="icon">
+              <TbSearch className="text-gray-400" />
+            </Button>
+            <Input
+              type="search"
+              placeholder="Busque uma refeição"
+              value={foodSearchQuery}
+              onChange={(e) => setFoodSearchQuery(e.target.value)}
+            />
           </div>
           <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <Card className="h-48 w-full" onClick={() => setOpenNewMeal(true)}>
@@ -151,14 +165,18 @@ const NewProtocolPage = () => {
               </CardHeader>
             </Card>
 
-            {meals.map((meal: any) => (
-              <MealCard
-                key={meal.id}
-                meal={meal}
-                mealsCheckbox={mealsCheckbox}
-                handleSelectMeal={handleSelectMeal}
-              />
-            ))}
+            {meals
+              .filter((item: any) =>
+                item.name.toLowerCase().includes(foodSearchQuery.toLowerCase())
+              )
+              .map((meal: any) => (
+                <MealCard
+                  key={meal.id}
+                  meal={meal}
+                  mealsCheckbox={mealsCheckbox}
+                  handleSelectMeal={handleSelectMeal}
+                />
+              ))}
           </div>
 
           <Button type="submit" className="w-full">

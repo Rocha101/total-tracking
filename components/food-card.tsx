@@ -46,18 +46,12 @@ const FoodCard = ({
         </CardHeader>
         <CardContent className="h-24 px-0 relative">
           <div className="px-6 flex flex-col gap-0.5 relative text-xs text-muted-foreground">
-            <div>{item.description}</div>
+            <div className="capitalize">{item.description}</div>
             <div>{item.totalCalories} Cal</div>
             <div>
               {item.quantity}
               {item.unit}
             </div>
-            <div></div>
-          </div>
-          <div className="w-full flex absolute bottom-0 left-0">
-            <Badge className="w-full">P: {item.proteins}</Badge>
-            <Badge className="w-full">C: {item.carbs}</Badge>
-            <Badge className="w-full">G: {item.fats}</Badge>
           </div>
         </CardContent>
       </Card>

@@ -88,8 +88,6 @@ export enum MealType {
 
 const ClientProtocol = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId");
   const { account } = useAuth();
   const [protocol, setProtocol] = useState<Protocol>();
   const [diet, setDiet] = useState<Diet>();
@@ -100,6 +98,8 @@ const ClientProtocol = () => {
   const [trainWeekDay, setTrainWeekDay] = useState<WeekDay>(
     () => WeekDay.MONDAY
   );
+
+  const clientId = account?.account.id;
 
   useEffect(() => {
     if (!clientId) return;
@@ -209,7 +209,7 @@ const ClientProtocol = () => {
 
   return (
     <div className="h-full">
-      <PageHeader title={`Protocolo ${account?.account.name || ""}`} backlink />
+      <PageHeader title={`Meu Protocolo`} />
 
       {protocol ? (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mt-3">

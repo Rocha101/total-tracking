@@ -46,12 +46,6 @@ const MealCard = ({ meal, mealsCheckbox, handleSelectMeal }: MealCardProps) => {
               {meal.quantity}
               {meal.unit}
             </div>
-            <div></div>
-          </div>
-          <div className="w-full flex absolute bottom-0 left-0">
-            <Badge className="w-full">P: {meal.proteins}</Badge>
-            <Badge className="w-full">C: {meal.carbs}</Badge>
-            <Badge className="w-full">G: {meal.fats}</Badge>
           </div>
         </CardContent>
       </Card>

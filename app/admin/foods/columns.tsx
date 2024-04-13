@@ -53,7 +53,7 @@ export const columns: ColumnDef<Food>[] = [
     accessorKey: "macros",
     cell: ({ row }) => {
       return (
-        <div className="w-full h-full flex">
+        <div className="w-full h-full flex gap-1">
           <Badge variant="outline">{row.original.proteins || "0"} g P</Badge>
           <Badge variant="outline">{row.original.carbs || "0"} g C</Badge>
           <Badge variant="outline">{row.original.fats || "0"} g G</Badge>

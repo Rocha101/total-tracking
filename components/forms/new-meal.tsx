@@ -36,6 +36,7 @@ import { Fragment, useEffect, useState } from "react";
 import FoodsPage from "@/app/admin/foods/page";
 import { Food } from "@/app/admin/foods/foods";
 import { TbSearch } from "react-icons/tb";
+import { Textarea } from "../ui/textarea";
 
 const mealSchema = object({
   name: string(),
@@ -179,7 +180,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Café" {...field} />
+                  <Textarea placeholder="Café" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
