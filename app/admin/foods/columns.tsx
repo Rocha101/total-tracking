@@ -11,19 +11,53 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useMutation, useQueryClient } from "react-query";
 
-const deleteFood = (id: string) => {
-  api
-    .delete(`/food/${id}`)
-    .then((response) => {
-      console.log(response.data);
+const FoodActionRows = ({ foodId }: { foodId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteFood = (id: string) => {
+    return api.delete(`/food/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteFood, {
+    onSuccess: () => {
       toast("Alimento excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("foods");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir alimento");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(foodId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir alimento
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${foodId}`}
+            className=" pointer-events-none"
+          >
+            Editar alimento
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Food>[] = [
@@ -70,32 +104,6 @@ export const columns: ColumnDef<Food>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteFood(row.original.id);
-            }}
-          >
-            Excluir alimento
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/foods/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar alimento
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <FoodActionRows foodId={row.original.id} />,
   },
 ];

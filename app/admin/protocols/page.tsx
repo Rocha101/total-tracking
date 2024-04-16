@@ -4,30 +4,28 @@ import { DataTable } from "@/components/data-table/data-table";
 import { Protocol } from "./columns";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/page-header";
+import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const ProtocolPage = () => {
-  const [rows, setRows] = useState<Protocol[]>([]);
-
-  useEffect(() => {
-    api
-      .get("/protocol")
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const router = useRouter();
+  const { isLoading, data } = useQuery("protocols", async () => {
+    const res = await api.get<Protocol[]>("/protocol");
+    return res.data;
+  });
+  const rows = data || [];
   return (
     <div>
       <PageHeader title="Protocolos" />
-      <DataTable columns={columns} data={rows} />
+      <DataTable
+        columns={columns}
+        data={rows}
+        isLoading={isLoading}
+        onDoubleClick={(row) =>
+          router.push(`/admin/protocols/view?protocolId=${row.id}`)
+        }
+      />
     </div>
   );
 };

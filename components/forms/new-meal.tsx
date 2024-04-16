@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/form";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -27,15 +26,14 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { object, string, number, enum as enumValidator } from "zod";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import NewFoodDialog from "../dialogs/new-food";
 import FoodCard from "../food-card";
-import { Fragment, useEffect, useState } from "react";
-import FoodsPage from "@/app/admin/foods/page";
+import { Fragment, useState } from "react";
 import { TbSearch } from "react-icons/tb";
 import { Textarea } from "../ui/textarea";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 
 const mealSchema = object({
   name: string(),
@@ -60,18 +58,19 @@ interface MealFormProps {
 }
 
 const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { isLoading: isFoodsLoading, data } = useQuery("foods", async () => {
+    const res = await api.get<Food[]>("/food");
+    return res.data;
+  });
   const form = useForm<Zod.infer<typeof mealSchema>>({
     resolver: zodResolver(mealSchema),
     defaultValues: {
-      name: "",
-      description: "",
       mealType: "BREAKFAST",
       foods: [],
     },
   });
   const [openNewFood, setOpenNewFood] = useState(false);
-  const [foods, setFoods] = useState([]);
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
   const MealType = [
     { value: "BREAKFAST", label: "Café da manhã" },
@@ -81,22 +80,30 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     { value: "DINNER", label: "Jantar" },
   ];
 
-  const onSubmit = (values: Zod.infer<typeof mealSchema>) => {
-    console.log(values);
+  const fetchFoods = async () => {
+    return api.get("/food");
+  };
 
-    api
-      .post("/meal", values)
-      .then((res) => {
-        console.log(res);
-        toast("Alimento criado com sucesso!");
+  const foods = data || [];
+
+  const createMealMutation = useMutation(
+    (values) => api.post("/meal", values),
+    {
+      onSuccess: () => {
+        toast("Refeição criada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Erro ao criar alimento!");
-      });
+        queryClient.invalidateQueries("meals");
+      },
+      onError: () => {
+        toast("Erro ao criar refeição!");
+      },
+    }
+  );
+
+  const onSubmit = (values: any) => {
+    createMealMutation.mutate(values);
   };
 
   const handleOpenChangeNewFood = () => {
@@ -117,40 +124,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     }
   };
 
-  const fetchFoods = async () => {
-    api
-      .get("/food")
-      .then((response) => {
-        console.log(response);
-        setFoods(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  };
-
   const foodsCheckbox = form.watch("foods") || [];
-
-  const totalCalories = foods
-    .filter((food: any) => foodsCheckbox.includes(food.id))
-    .reduce((acc: number, food: any) => acc + food.totalCalories, 0);
-
-  const totalProteins = foods
-    .filter((food: any) => foodsCheckbox.includes(food.id))
-    .reduce((acc: number, food: any) => acc + food.totalProteins, 0);
-
-  const totalCarbs = foods
-    .filter((food: any) => foodsCheckbox.includes(food.id))
-    .reduce((acc: number, food: any) => acc + food.totalCarbs, 0);
-
-  const totalFats = foods
-    .filter((food: any) => foodsCheckbox.includes(food.id))
-    .reduce((acc: number, food: any) => acc + food.totalFats, 0);
-
-  useEffect(() => {
-    fetchFoods();
-  }, []);
 
   return (
     <Fragment>
@@ -243,19 +217,23 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               </CardHeader>
             </Card>
 
-            {foods
-              .filter((item: any) =>
-                item.name.toLowerCase().includes(foodSearchQuery.toLowerCase())
-              )
-              .map((item: any) => (
-                <FoodCard
-                  key={item.id}
-                  item={item}
-                  itemsCheckbox={foodsCheckbox}
-                  handleSelect={handleSelect}
-                  isDialog={isDialog}
-                />
-              ))}
+            {!isFoodsLoading
+              ? foods
+                  ?.filter((item: any) =>
+                    item.name
+                      .toLowerCase()
+                      .includes(foodSearchQuery.toLowerCase())
+                  )
+                  .map((item: any) => (
+                    <FoodCard
+                      key={item.id}
+                      item={item}
+                      itemsCheckbox={foodsCheckbox}
+                      handleSelect={handleSelect}
+                      isDialog={isDialog}
+                    />
+                  ))
+              : null}
           </div>
           <Button type="submit" className="w-full">
             Criar

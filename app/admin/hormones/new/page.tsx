@@ -24,14 +24,18 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useMutation } from "react-query";
 
 const hormoneScheme = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
-  quantity: number(),
-  concentration: number(),
+  quantity: number({
+    required_error: "Quantidade é obrigatória",
+  }),
+  concentration: number().optional(),
   unit: enumValidator(["MG", "ML", "UI", "UNIT"]),
   concentrationUnit: enumValidator(["MG_ML", "MG"]).optional(),
   hormoneType: enumValidator([
@@ -51,41 +55,37 @@ const NewExtraCompound = () => {
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
     defaultValues: {
-      name: "",
-      description: "",
-      quantity: 0,
-      concentration: 0,
       unit: "MG",
       hormoneType: "TESTOSTERONE",
     },
   });
 
-  const onSubmit = (values: Zod.infer<typeof hormoneScheme>) => {
-    console.log(values);
+  const createHormoneMutation = useMutation(
+    (values: Zod.infer<typeof hormoneScheme>) => api.post("/hormone", values),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        toast("Hormônio criado com sucesso!");
+        router.back();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast("Erro ao criar Hormônio!");
+      },
+    }
+  );
 
+  const onSubmit = (values: Zod.infer<typeof hormoneScheme>) => {
     const hormone = {
       ...values,
       concentrationUnit: getConcentrationUnit(),
     };
 
-    console.log(hormone);
-    api
-      .post("/hormone", hormone)
-      .then((res) => {
-        console.log(res);
-        toast("Hormônio criado com sucesso!");
-        router.push("/admin/hormones");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Erro ao criar Hormônio!");
-      });
+    createHormoneMutation.mutate(hormone);
   };
 
-  const unitWatch = form.watch("unit");
-
-  const getConcentrationUnit = () => {
-    switch (unitWatch) {
+  const getConcentrationUnit = (): "MG" | "MG_ML" | undefined => {
+    switch (form.watch("unit")) {
       case "ML":
         return "MG_ML";
       case "UNIT":

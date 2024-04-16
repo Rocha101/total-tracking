@@ -15,18 +15,53 @@ import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
-const deleteHormone = (id: string) => {
-  api
-    .delete(`/hormone/${id}`)
-    .then((response) => {
-      console.log(response.data);
-      toast("Hormonio excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+import { useMutation, useQueryClient } from "react-query";
+
+const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteHormone = (id: string) => {
+    return api.delete(`/hormone/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteHormone, {
+    onSuccess: () => {
+      toast("Hormônio excluído com sucesso!");
+      queryClient.invalidateQueries("hormones");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir hormônio");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(hormoneId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir hormônio
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${hormoneId}`}
+            className=" pointer-events-none"
+          >
+            Editar hormônio
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Hormone>[] = [
@@ -82,32 +117,6 @@ export const columns: ColumnDef<Hormone>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteHormone(row.original.id);
-            }}
-          >
-            Excluir hormonio
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/hormones/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar hormonio
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <HormoneActionRows hormoneId={row.original.id} />,
   },
 ];

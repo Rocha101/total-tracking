@@ -23,6 +23,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "../table-view-options";
+import { TbLoader2 } from "react-icons/tb";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   actions?: React.ReactNode;
   onTableChange?: (table: any) => void;
   onDoubleClick?: (row: any) => void;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +40,7 @@ export function DataTable<TData, TValue>({
   actions,
   onTableChange,
   onDoubleClick,
+  isLoading,
 }: DataTableProps<TData, TValue>): JSX.Element {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -93,7 +96,13 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className=" h-24 relative">
+                  <TbLoader2 className="h-8 w-8 animate-spin absolute left-0 right-0 mx-auto my-auto top-0 bottom-0" />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

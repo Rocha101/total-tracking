@@ -3,27 +3,18 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
-import { useEffect, useState } from "react";
 import PageHeader from "@/components/page-header";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Train } from "./train";
+import { useQuery } from "react-query";
 
 const TrainPage = () => {
-  const [rows, setRows] = useState<Train[]>([]);
-
-  useEffect(() => {
-    api
-      .get("/train")
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const { isLoading, data } = useQuery("trains", async () => {
+    const res = await api.get<Train[]>("/train");
+    return res.data;
+  });
+  const rows = data || [];
 
   return (
     <div>
@@ -36,6 +27,7 @@ const TrainPage = () => {
             <Button size="sm">Novo Treino</Button>
           </Link>
         }
+        isLoading={isLoading}
       />
     </div>
   );

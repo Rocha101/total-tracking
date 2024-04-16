@@ -16,6 +16,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,13 +45,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TbTrashFilled } from "react-icons/tb";
+import { TbCaretUpDownFilled, TbCheck, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Hormone from "../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
+import { useMutation, useQuery } from "react-query";
+import { cn } from "@/lib/utils";
 
 const hormonalProtocolSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   protocolId: string().optional(),
   accountId: string().optional(),
@@ -50,68 +67,67 @@ const NewHormonalProtocolPage = () => {
   const form = useForm<Zod.infer<typeof hormonalProtocolSchema>>({
     resolver: zodResolver(hormonalProtocolSchema),
     defaultValues: {
-      name: "",
-      description: "",
       hormones: [],
     },
   });
-
-  const [hormones, setHormones] = useState<Hormone[]>([]);
   const [openNewHormone, setOpenNewHormone] = useState(false);
+  const [openSelectHormone, setOpenSelectHormone] = useState(false);
 
   const handleOpenChangeNewHormone = () => {
     setOpenNewHormone(false);
-    fetchHormones();
   };
 
-  const onSubmit = (values: Zod.infer<typeof hormonalProtocolSchema>) => {
-    console.log(values);
+  const createCompoundMutation = useMutation(
+    (values: Zod.infer<typeof hormonalProtocolSchema>) =>
+      api.post("/extraCompound", values),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        toast("Protocolo criado com sucesso!");
+        router.back();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast("Erro ao criar Protocolo!");
+      },
+    }
+  );
 
+  const onSubmit = (values: Zod.infer<typeof hormonalProtocolSchema>) => {
     const hormoneProtocol = {
       ...values,
       hormones: protocolHormones.map((hormone) => hormone.id),
     };
 
-    api
-      .post("/hormoneProtocol", hormoneProtocol)
-      .then((res) => {
-        console.log(res);
-        toast("Protocolo criado com sucesso!");
-        router.back();
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Erro ao criar Protocolo!");
-      });
+    createCompoundMutation.mutate(hormoneProtocol);
   };
 
-  const fetchHormones = async () => {
-    api
-      .get("/hormone")
-      .then((response) => {
-        console.log(response);
-        setHormones(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchHormones();
-  }, []);
+  const { isLoading: isLoadingHormones, data: hormonesData } = useQuery(
+    "hormones",
+    async () => {
+      const res = await api.get<Hormone[]>("/hormone");
+      return res.data;
+    }
+  );
+  const hormones = hormonesData || [];
 
   const [protocolHormones, setProtocolHormones] = useState<Hormone[]>([]);
 
   const addTrainExercise = (hormoneId: string) => {
     const hormone = hormones.find((item: Hormone) => item.id === hormoneId);
-    const alreadyExists = protocolHormones.filter(
+    const alreadyExistsIndex = protocolHormones.findIndex(
       (item) => item.id === hormoneId
     );
-    if (alreadyExists && alreadyExists.length > 0) return;
+
     if (!hormone) return;
-    setProtocolHormones((prev) => [...prev, hormone]);
+    if (alreadyExistsIndex !== -1) {
+      setProtocolHormones((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
+    } else {
+      setProtocolHormones((prev) => [...prev, hormone]);
+    }
   };
 
   const removeProtocolHormone = (hormoneId: string) => {
@@ -119,6 +135,8 @@ const NewHormonalProtocolPage = () => {
       protocolHormones.filter((item) => item.id !== hormoneId)
     );
   };
+
+  console.log(hormones);
 
   return (
     <div>
@@ -160,29 +178,62 @@ const NewHormonalProtocolPage = () => {
             Selecione os hormônios que compõem o protocolo
           </div>
           <div className="h-full flex flex-col gap-3">
-            <Select
-              value="Adicionar Hormônio"
-              onValueChange={(value: string) => addTrainExercise(value)}
+            <Popover
+              open={openSelectHormone}
+              onOpenChange={setOpenSelectHormone}
             >
-              <SelectTrigger>
-                <SelectValue>Adicionar Hormônio</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <div
-                  onClick={() => setOpenNewHormone(true)}
-                  className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="button"
+                  className="w-[200px] justify-between"
                 >
-                  Novo Hormônio
-                </div>
-                {hormones.map((hormone: Hormone) => (
-                  <SelectItem key={hormone.id} value={hormone.id}>
-                    {hormone.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <ScrollArea className="w-full h-64">
-              <div className="w-full flex flex-col gap-4 py-1">
+                  Selecione o Hormônio
+                  <TbCaretUpDownFilled className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0">
+                <Command>
+                  <CommandInput
+                    placeholder="Buscar hormônio..."
+                    className="h-9"
+                  />
+                  <CommandList>
+                    <CommandEmpty>Nenhum Hormônio Encontrado</CommandEmpty>
+                    <CommandGroup>
+                      <CommandItem onSelect={() => setOpenNewHormone(true)}>
+                        Criar Hormônio
+                      </CommandItem>
+                      {hormones.length > 0 &&
+                        hormones.map((hormone) => (
+                          <CommandItem
+                            key={hormone.id}
+                            value={hormone.id}
+                            onSelect={(currentValue) =>
+                              addTrainExercise(currentValue)
+                            }
+                          >
+                            <TbCheck
+                              className={cn(
+                                "h-4 w-4 mr-2",
+                                protocolHormones.find(
+                                  (item) => item.id === hormone.id
+                                )
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {hormone.name}
+                          </CommandItem>
+                        ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+
+            <ScrollArea className="w-full h-full">
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">
                 {protocolHormones.map((hormone: Hormone) => {
                   return (
                     <Card key={hormone.id} className="relative">
@@ -221,10 +272,11 @@ const NewHormonalProtocolPage = () => {
               </div>
             </ScrollArea>
           </div>
-
-          <Button type="submit" className="w-full">
-            Criar
-          </Button>
+          <div className="w-full flex justify-end">
+            <Button type="submit" className="w-full">
+              Criar
+            </Button>
+          </div>
         </form>
       </Form>
       <NewHormoneDialog

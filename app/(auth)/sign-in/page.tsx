@@ -27,6 +27,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useAuth } from "@/context/auth";
+import { useMutation, useQueryClient } from "react-query";
 
 const formSchema = z.object({
   email: z
@@ -43,28 +44,29 @@ const formSchema = z.object({
 
 function SignInPage() {
   const { login } = useAuth();
-  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: {},
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    api
-      .post("/auth/sign-in", values)
-      .then((res) => {
+  const createSignInMutation = useMutation(
+    (values: z.infer<typeof formSchema>) => api.post("/auth/sign-in", values),
+    {
+      onSuccess: (res) => {
         console.log(res.data);
         login(res.data);
         toast("Login realizado com sucesso");
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         console.log(err);
         toast("Credenciais inválidas");
-      });
+      },
+    }
+  );
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    createSignInMutation.mutate(values);
   };
 
   return (
@@ -109,7 +111,7 @@ function SignInPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Entrar
+                {createSignInMutation.isLoading ? "Entrando..." : "Entrar"}
               </Button>
               <Link href="/sign-up" passHref className="w-full">
                 <Button type="button" className="w-full" variant="outline">

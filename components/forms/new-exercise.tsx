@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useMutation, useQueryClient } from "react-query";
 
 enum MuscleGroup {
   CHEST = "CHEST",
@@ -66,23 +67,24 @@ enum SetType {
 }
 
 const exerciseSchema = z.object({
-  name: z.string(),
+  name: z.string({
+    required_error: "Nome é obrigatório",
+  }),
   description: z.string().optional(),
-  totalTime: z.number().int(),
-  type: z.nativeEnum(ExerciseType).optional(),
-  muscleGroup: z.nativeEnum(MuscleGroup).optional(),
-  equipment: z.string().optional(),
-  difficulty: z.number().int().min(1).max(10).default(1),
-  imageUrl: z.string().optional(),
+  type: z.nativeEnum(ExerciseType, {
+    required_error: "Tipo é obrigatório",
+  }),
+  muscleGroup: z.nativeEnum(MuscleGroup, {
+    required_error: "Músculo alvo é obrigatório",
+  }),
+  equipment: z.string({
+    required_error: "Equipamento é obrigatório",
+  }),
   sets: z.array(
     z.object({
-      reps: z.array(
-        z.object({
-          quantity: z.number().int(),
-          weight: z.number().optional(),
-          setType: z.nativeEnum(SetType).optional(),
-        })
-      ),
+      quantity: z.number().int(),
+      weight: z.number().optional(),
+      setType: z.nativeEnum(SetType).optional(),
     })
   ),
 });
@@ -93,57 +95,50 @@ type Set = {
   setType?: SetType;
 };
 
-interface NewExerciseFormProps {
-  onSubmitOk: () => void;
-}
-
-const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
-  const router = useRouter();
+const NewExerciseForm = () => {
+  const clientQuery = useQueryClient();
   const form = useForm<Zod.infer<typeof exerciseSchema>>({
     resolver: zodResolver(exerciseSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      totalTime: 0,
-      muscleGroup: MuscleGroup.CHEST,
-      equipment: "",
-      type: ExerciseType.STRENGHT,
       sets: [],
+      type: ExerciseType.STRENGHT,
     },
   });
 
+  const createExerciseMutation = useMutation(
+    (values: Zod.infer<typeof exerciseSchema>) => api.post("/exercise", values),
+    {
+      onSuccess: () => {
+        toast("Exercicio criado com sucesso!");
+        clientQuery.invalidateQueries("exercises");
+      },
+      onError: (err) => {
+        console.log(err);
+        toast("Erro ao criar Exercicio!");
+      },
+    }
+  );
+
   const onSubmit = (values: Zod.infer<typeof exerciseSchema>) => {
-    console.log(values);
+    if (sets.length === 0) {
+      toast("Adicione pelo menos uma série");
+      setSetError("Adicione pelo menos uma série");
+      return;
+    }
 
     const exercise = {
       ...values,
       sets: sets,
     };
 
-    console.log(exercise);
-    api
-      .post("/exercise", exercise)
-      .then((res) => {
-        console.log(res);
-        toast("Exercicio criado com sucesso!");
-        if (onSubmitOk) onSubmitOk();
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Erro ao criar Exercicio!");
-      });
+    createExerciseMutation.mutate(exercise);
   };
 
   const [sets, setSets] = useState<Set[]>([]);
+  const [setError, setSetError] = useState<string | null>(null);
 
-  const addSet = ({
-    quantity,
-    weight,
-  }: {
-    quantity: number;
-    weight: number;
-  }) => {
-    const newSet = { quantity, weight };
+  const addSet = ({ quantity, weight, setType }: Set) => {
+    const newSet = { quantity, weight, setType };
     setSets((prev) => [...prev, newSet]);
   };
 
@@ -203,24 +198,6 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
             </FormItem>
           )}
         />
-
-        {/* <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Imagem</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    placeholder="https://example.com/image.jpg"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
 
         <div className="flex gap-1">
           <FormField
@@ -316,6 +293,11 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
 
         <div className="text-sm">
           Adicione as séries e repetições do exercício
+          {setError && (
+            <p className="text-[0.8rem] font-medium text-destructive">
+              Adicione pelo menos uma série
+            </p>
+          )}
         </div>
 
         <ScrollArea className="w-full h-64">

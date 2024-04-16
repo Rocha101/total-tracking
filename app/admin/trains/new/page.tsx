@@ -20,12 +20,12 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { nativeEnum, object, string } from "zod";
+import { object, string } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -33,10 +33,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Exercise, Set } from "../../exercises/exercise";
+import { Exercise } from "../../exercises/exercise";
 import { TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NewExerciseDialog from "@/components/dialogs/new-exercise";
+import { useMutation, useQuery } from "react-query";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -88,60 +89,48 @@ const NewTrainPage = () => {
   const form = useForm<Zod.infer<typeof trainSchema>>({
     resolver: zodResolver(trainSchema),
     defaultValues: {
-      name: "",
-      description: "",
       exercises: [],
     },
   });
-
-  const [exercises, setExercises] = useState<Exercise[]>([]);
   const [openNewExercise, setOpenNewExercise] = useState(false);
 
   const handleOpenChangeNewExercise = () => {
     setOpenNewExercise(false);
-    fetchExercises();
   };
 
-  const onSubmit = (values: Zod.infer<typeof trainSchema>) => {
-    console.log(values);
+  const createTrainMutation = useMutation(
+    (values: Zod.infer<typeof trainSchema>) => api.post("/train", values),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        toast("Treino criado com sucesso!");
+        router.back();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast("Erro ao criar Dieta!");
+      },
+    }
+  );
 
+  const onSubmit = (values: Zod.infer<typeof trainSchema>) => {
     const train = {
       ...values,
       exercises: trainExercises.map((exercise) => exercise.id),
       weekDays: selectedWeekDays,
     };
 
-    console.log(train);
-
-    api
-      .post("/train", train)
-      .then((res) => {
-        console.log(res);
-        toast("Treino criado com sucesso!");
-        router.back();
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Erro ao criar Dieta!");
-      });
+    createTrainMutation.mutate(train);
   };
 
-  const fetchExercises = async () => {
-    api
-      .get("/exercise")
-      .then((response) => {
-        console.log(response);
-        setExercises(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchExercises();
-  }, []);
+  const { isLoading: isLoadingExercises, data: exercisesData } = useQuery(
+    "exercises",
+    async () => {
+      const res = await api.get<Exercise[]>("/exercise");
+      return res.data;
+    }
+  );
+  const exercises = exercisesData || [];
 
   const [trainExercises, setTrainExercises] = useState<Exercise[]>([]);
 
@@ -153,48 +142,6 @@ const NewTrainPage = () => {
 
   const removeTrainExercise = (exerciseId: string) => {
     setTrainExercises(trainExercises.filter((item) => item.id !== exerciseId));
-  };
-
-  const renderReps = (sets: Set[]) => {
-    return sets.map((set) => {
-      return set.reps.map((rep) => {
-        const setTypeLabels = {
-          [SetType.WARM_UP]: "Aquecimento",
-          [SetType.WORKING]: "Trabalho",
-          [SetType.FEEDER]: "Feeder",
-          [SetType.TOP]: "Top",
-          [SetType.BACK_OFF]: "Back off",
-        };
-        const setTypeLabel = setTypeLabels[rep.setType] || "";
-        return `${setTypeLabel}${rep.setType ? " - " : ""}${rep.quantity} x ${
-          rep.weight
-        }Kg`;
-      });
-    });
-  };
-
-  const renderMuscleGroup = (muscleGroup: keyof typeof MuscleGroup) => {
-    const muscleGroupLabels = {
-      [MuscleGroup.CHEST]: "Peito",
-      [MuscleGroup.BACK]: "Costas",
-      [MuscleGroup.SHOULDERS]: "Ombros",
-      [MuscleGroup.BICEPS]: "Biceps",
-      [MuscleGroup.TRICEPS]: "Triceps",
-      [MuscleGroup.FOREARMS]: "Antebraço",
-      [MuscleGroup.CALVES]: "Panturrilha",
-      [MuscleGroup.ABS]: "Abdomen",
-      [MuscleGroup.QUADS]: "Quadriceps",
-      [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-      [MuscleGroup.GLUTES]: "Gluteos",
-      [MuscleGroup.ADDUCTORS]: "Adutores",
-      [MuscleGroup.ABDUCTORS]: "Abdutores",
-      [MuscleGroup.TRAPS]: "Trapezio",
-      [MuscleGroup.LATS]: "Latissimo do dorso",
-      [MuscleGroup.LOWER_BACK]: "Lombar",
-      [MuscleGroup.OBLIQUES]: "Oblíquos",
-      [MuscleGroup.NECK]: "Pescoço",
-    };
-    return muscleGroupLabels[muscleGroup as keyof typeof muscleGroupLabels];
   };
 
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([

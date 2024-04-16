@@ -3,25 +3,17 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PageHeader from "@/components/page-header";
+import { useQuery } from "react-query";
 
 const FoodsPage = () => {
-  const [rows, setRows] = useState<Food[]>([]);
-  useEffect(() => {
-    api
-      .get(`/food`)
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const { isLoading, data } = useQuery("foods", async () => {
+    const res = await api.get<Food[]>("/food");
+    return res.data;
+  });
+  const rows = data || [];
   return (
     <div>
       <PageHeader title="Alimentos" />
@@ -33,6 +25,7 @@ const FoodsPage = () => {
             <Button size="sm">Novo Alimento</Button>
           </Link>
         }
+        isLoading={isLoading}
       />
     </div>
   );

@@ -31,15 +31,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Diet from "../../diets/diets";
-import { Train } from "../../trains/train";
-import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "react-query";
-import { TbTrashFilled } from "react-icons/tb";
+import { TbLoader2, TbTrashFilled } from "react-icons/tb";
+import { useAuth } from "@/context/auth";
+import { Protocol } from "../../columns";
+import Diet from "@/app/admin/diets/diets";
+import { Train } from "@/app/admin/trains/train";
+import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protocols";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -61,26 +63,29 @@ const protocolSchema = object({
   extraCompound: string().optional(),
 });
 
-const NewProtocolPage = () => {
+const NewProtocolPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const clientId = searchParams.get("clientId");
+  const { account } = useAuth();
+  const clientId = account?.account.id;
+  const protocolId = params.id;
   const form = useForm<Zod.infer<typeof protocolSchema>>({
     resolver: zodResolver(protocolSchema),
     defaultValues: {},
   });
+  const [loading, setLoading] = useState(true);
 
   const createProtocolMutation = useMutation(
-    (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
+    (values: Zod.infer<typeof protocolSchema>) =>
+      api.put(`/protocol/${protocolId}`, values),
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Protocolo criado com sucesso!");
+        toast("Protocolo atualizado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Protocolo!");
+        toast("Erro ao atualizar Protocolo!");
       },
     }
   );
@@ -93,6 +98,17 @@ const NewProtocolPage = () => {
 
     createProtocolMutation.mutate(protocol);
   };
+
+  const { data: protocolData } = useQuery({
+    queryKey: ["protocol", { protocolId }],
+    queryFn: async () => {
+      const response = await api.get<Protocol>(`/protocol/${protocolId}`);
+      return response.data;
+    },
+    enabled: !!protocolId,
+  });
+
+  const protocol = protocolData;
 
   const { data: dietsData } = useQuery({
     queryKey: ["diets"],
@@ -112,7 +128,7 @@ const NewProtocolPage = () => {
     },
   });
 
-  const trains = trainsData || [];
+  const trains = useMemo(() => trainsData || [], [trainsData]);
 
   const { data: hormonalProtocolsData } = useQuery({
     queryKey: ["hormonalProtocols"],
@@ -123,12 +139,6 @@ const NewProtocolPage = () => {
   });
 
   const hormonalProtocols = hormonalProtocolsData || [];
-
-  useEffect(() => {
-    if (clientId) {
-      form.setValue("clientId", clientId);
-    }
-  }, [clientId, form]);
 
   const [trainsSelected, setTrainsSelected] = useState<Train[]>([]);
 
@@ -152,9 +162,50 @@ const NewProtocolPage = () => {
     setTrainsSelected(trainsSelected.filter((item) => item.id !== trainId));
   };
 
+  const updateFormValues = async ({
+    protocol,
+    form,
+    trains,
+    setTrainsSelected,
+  }: {
+    protocol: Protocol | undefined;
+    form: any;
+    trains: Train[];
+    setTrainsSelected: any;
+  }) => {
+    if (protocol) {
+      console.log(protocol);
+      form.setValue("name", protocol.name);
+      form.setValue("description", protocol.description);
+      form.setValue("diet", protocol.diets[0]?.id);
+      form.setValue("hormonalProtocol", protocol.hormonalProtocols[0]?.id);
+      form.setValue("clientId", protocol.clientId);
+
+      const trainIds = protocol.trains.map((train) => train.id);
+      const trainsSelected = trains.filter((train) =>
+        trainIds.includes(train.id)
+      );
+      setTrainsSelected(trainsSelected);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    console.log(trainsSelected);
-  }, [trainsSelected]);
+    const fetchData = async () => {
+      setLoading(true);
+      await updateFormValues({ protocol, form, trains, setTrainsSelected });
+    };
+
+    setTimeout(() => {
+      fetchData();
+    }, 1000);
+  }, [protocol, form, trains, setTrainsSelected]);
+
+  useEffect(() => {
+    if (clientId) {
+      form.setValue("clientId", clientId);
+    }
+  }, [clientId, form]);
 
   const weekDays = [
     WeekDay.MONDAY,
@@ -166,9 +217,17 @@ const NewProtocolPage = () => {
     WeekDay.SUNDAY,
   ];
 
+  if (loading) {
+    return (
+      <div className="w-full h-96 bg-card flex items-center justify-center">
+        <TbLoader2 className="animate-spin h-10 w-10" />
+      </div>
+    );
+  }
+
   return (
     <div>
-      <PageHeader title="Novo Protocolo" backlink />
+      <PageHeader title={`Editar Protocolo`} backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
@@ -380,7 +439,7 @@ const NewProtocolPage = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            Criar
+            {createProtocolMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         </form>
       </Form>

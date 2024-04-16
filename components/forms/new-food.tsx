@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import { Textarea } from "../ui/textarea";
+import { useMutation, useQueryClient } from "react-query";
 
 const foodSchema = object({
   name: string(),
@@ -42,17 +43,11 @@ interface FoodFormProps {
 
 const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const form = useForm<Zod.infer<typeof foodSchema>>({
     resolver: zodResolver(foodSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      quantity: 0,
       unit: "GR",
-      calories: 0,
-      proteins: 0,
-      carbs: 0,
-      fats: 0,
     },
   });
   const MealUnit = [
@@ -61,22 +56,24 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
     { value: "UNIT", label: "Unidade" },
   ];
 
-  const onSubmit = (values: Zod.infer<typeof foodSchema>) => {
-    console.log(values);
-
-    api
-      .post("/food", values)
-      .then((res) => {
-        console.log(res);
-        toast("Alimento criado com sucesso!");
+  const createFoodMutation = useMutation(
+    (values: Zod.infer<typeof foodSchema>) => api.post("/food", values),
+    {
+      onSuccess: () => {
+        toast("Alimento criada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
-      })
-      .catch((err) => {
-        console.log(err);
+        queryClient.invalidateQueries("foods");
+      },
+      onError: () => {
         toast("Erro ao criar alimento!");
-      });
+      },
+    }
+  );
+
+  const onSubmit = (values: Zod.infer<typeof foodSchema>) => {
+    createFoodMutation.mutate(values);
   };
 
   return (

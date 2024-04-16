@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import Link from "next/link";
+import { useMutation } from "react-query";
 
 const formSchema = z.object({
   name: z.string({
@@ -55,30 +56,32 @@ const formSchema = z.object({
 function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const coachId = searchParams.get("coachId");
+  const coachId = searchParams.get("referral");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      name: "",
       accountType: "CUSTOMER",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    api
-      .post("/auth/sign-up", values)
-      .then((res) => {
-        console.log(res);
+  const createSignUpMutation = useMutation(
+    (values: z.infer<typeof formSchema>) => api.post("/auth/sign-up", values),
+    {
+      onSuccess: (res) => {
+        console.log(res.data);
         toast("Registro realizado com sucesso");
         router.push("/sign-in");
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         console.log(err);
         toast("Credenciais inválidas");
-      });
+      },
+    }
+  );
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    createSignUpMutation.mutate(values);
   };
 
   useEffect(() => {
@@ -167,7 +170,7 @@ function SignUpPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Salvar
+                {createSignUpMutation.isLoading ? "Salvando..." : "Salvar"}
               </Button>
               <Link href="/sign-in" passHref className="w-full">
                 <Button type="button" className="w-full" variant="outline">

@@ -28,6 +28,8 @@ import NewMealDialog from "@/components/dialogs/new-meal";
 import MealCard from "@/components/meal-card";
 import { Textarea } from "@/components/ui/textarea";
 import { TbSearch } from "react-icons/tb";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Meal } from "../../meals/meals";
 
 const dietSchema = object({
   name: string(),
@@ -37,52 +39,44 @@ const dietSchema = object({
 });
 
 const NewProtocolPage = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const form = useForm<Zod.infer<typeof dietSchema>>({
     resolver: zodResolver(dietSchema),
     defaultValues: {
-      name: "",
-      description: "",
       meals: [],
     },
   });
-
-  const [meals, setMeals] = useState([]);
   const [openNewMeal, setOpenNewMeal] = useState(false);
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
 
-  const onSubmit = (values: Zod.infer<typeof dietSchema>) => {
-    console.log(values);
-
-    api
-      .post("/diet", values)
-      .then((res) => {
-        console.log(res);
+  const createDietMutation = useMutation(
+    (values: Zod.infer<typeof dietSchema>) => api.post("/diet", values),
+    {
+      onSuccess: () => {
+        toast("Alimento criada com sucesso!");
         toast("Dieta criado com sucesso!");
         router.back();
-      })
-      .catch((err) => {
+      },
+      onError: (err) => {
         console.log(err);
         toast("Erro ao criar Dieta!");
-      });
+      },
+    }
+  );
+
+  const onSubmit = (values: Zod.infer<typeof dietSchema>) => {
+    createDietMutation.mutate(values);
   };
 
-  const fetchMeals = async () => {
-    api
-      .get("/meal")
-      .then((response) => {
-        console.log(response);
-        setMeals(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchMeals();
-  }, []);
+  const { isLoading: isLoadingMeals, data: mealsData } = useQuery(
+    "meals",
+    async () => {
+      const res = await api.get<Meal[]>("/meal");
+      return res.data;
+    }
+  );
+  const meals = mealsData || [];
 
   const handleSelectMeal = (mealId: string) => {
     const meals = form.getValues("meals");
@@ -101,7 +95,7 @@ const NewProtocolPage = () => {
 
   const handleOpenChangeNewMeal = () => {
     if (openNewMeal) {
-      fetchMeals();
+      queryClient.invalidateQueries("meals");
     }
     setOpenNewMeal(!openNewMeal);
   };

@@ -14,19 +14,59 @@ import { HormonalProtocol } from "../hormonal-protocols/hormonal-protocols";
 import Diet from "../diets/diets";
 import { Train } from "../trains/train";
 import ExtraCompounds from "../extra-compounds/extra-compounds";
+import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
-const deleteProtocol = (id: string) => {
-  api
-    .delete(`/protocol/${id}`)
-    .then((response) => {
-      console.log(response.data);
-      toast("Protocolo excluída com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const deleteProtocol = (id: string) => {
+    return api.delete(`/protocol/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteProtocol, {
+    onSuccess: () => {
+      toast("Protocolo excluído com sucesso!");
+      queryClient.invalidateQueries("meals"); // Refresh meals data after deletion
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir protocolo");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(protocolId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir protocolo
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/diets/${protocolId}`)}
+        >
+          Editar protocolo
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/admin/protocols/view?protocolId=${protocolId}`)
+          }
+        >
+          Ver protocolo
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export type Protocol = {
@@ -43,6 +83,7 @@ export type Protocol = {
   diets: Diet[];
   trains: Train[];
   extraCompounds: ExtraCompounds[];
+  clientId: string;
 };
 
 export const columns: ColumnDef<Protocol>[] = [
@@ -68,32 +109,6 @@ export const columns: ColumnDef<Protocol>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteProtocol(row.original.id);
-            }}
-          >
-            Excluir protocolo
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/diets/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar protocolo
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <ProtocolRowActions protocolId={row.original.id} />,
   },
 ];

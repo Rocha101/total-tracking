@@ -11,19 +11,53 @@ import {
 import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "react-query";
 
-const deleteProtocol = (id: string) => {
-  api
-    .delete(`/hormoneProtocol/${id}`)
-    .then((response) => {
-      console.log(response.data);
+const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteHormone = (id: string) => {
+    return api.delete(`/hormoneProtocol/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteHormone, {
+    onSuccess: () => {
       toast("Protocolo excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("hormonalProtocols");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir protocolo");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(hormoneId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir protocolo
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${hormoneId}`}
+            className=" pointer-events-none"
+          >
+            Editar protocolo
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<HormonalProtocol>[] = [
@@ -49,32 +83,6 @@ export const columns: ColumnDef<HormonalProtocol>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteProtocol(row.original.id);
-            }}
-          >
-            Excluir protocolo
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/diets/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar protocolo
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <HormoneActionRows hormoneId={row.original.id} />,
   },
 ];

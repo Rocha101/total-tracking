@@ -2,28 +2,19 @@
 
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import Hormone from "./hormones";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "react-query";
 
 const HormonesPage = () => {
-  const [rows, setRows] = useState<Hormone[]>([]);
-
-  useEffect(() => {
-    api
-      .get("/hormone")
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const { isLoading, data } = useQuery("hormones", async () => {
+    const res = await api.get<Hormone[]>("/hormone");
+    return res.data;
+  });
+  const rows = data || [];
   return (
     <div>
       <PageHeader title="Hormônios" />
@@ -35,6 +26,7 @@ const HormonesPage = () => {
             <Button size="sm">Novo Hormônio</Button>
           </Link>
         }
+        isLoading={isLoading}
       />
     </div>
   );

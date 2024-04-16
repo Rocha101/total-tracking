@@ -26,6 +26,7 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useQueryClient } from "react-query";
 
 const hormoneScheme = object({
   name: string(),
@@ -47,18 +48,15 @@ const hormoneScheme = object({
 });
 
 interface NewHormoneFormProps {
-  onSubmitOk?: () => void;
+  onSubmitOk: () => void;
 }
 
 const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
+  const clientQuery = useQueryClient();
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
     defaultValues: {
-      name: "",
-      description: "",
-      quantity: 0,
-      concentration: 0,
       unit: "MG",
       hormoneType: "TESTOSTERONE",
     },
@@ -78,9 +76,8 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
       .then((res) => {
         console.log(res);
         toast("Hormônio criado com sucesso!");
-        if (onSubmitOk) {
-          onSubmitOk();
-        }
+        clientQuery.invalidateQueries("hormones");
+        if (onSubmitOk) onSubmitOk();
       })
       .catch((err) => {
         console.log(err);

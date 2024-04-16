@@ -2,28 +2,23 @@
 
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { Account } from "../exercises/exercise";
 import { useRouter } from "next/navigation";
+import { useQuery } from "react-query";
+import ReferralLink from "@/components/referral-link";
+import { Label } from "@/components/ui/label";
 
 const ClientPage = () => {
   const router = useRouter();
-  const [rows, setRows] = useState<Account[]>([]);
 
-  useEffect(() => {
-    api
-      .get("/account/clients")
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const { isLoading, data } = useQuery("clients", async () => {
+    const res = await api.get<Account[]>("/account/clients");
+    return res.data;
+  });
+  const rows = data || [];
+
   return (
     <div>
       <PageHeader title="Clientes" />
@@ -32,6 +27,13 @@ const ClientPage = () => {
         data={rows}
         onDoubleClick={(row) =>
           router.push(`/admin/clients/protocol?clientId=${row.id}`)
+        }
+        isLoading={isLoading}
+        actions={
+          <div className="flex items-center gap-2">
+            <Label>Link de indicação:</Label>
+            <ReferralLink />
+          </div>
         }
       />
     </div>

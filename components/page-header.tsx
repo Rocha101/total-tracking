@@ -1,6 +1,7 @@
-import Link from "next/link";
+"use client";
+
 import { Button } from "./ui/button";
-import { TbChevronCompactLeft, TbChevronLeft } from "react-icons/tb";
+import { TbChevronLeft } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 
 interface PageHeaderProps {

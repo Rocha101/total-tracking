@@ -1,28 +1,19 @@
 "use client";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
-import { useEffect, useState } from "react";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ExtraCompounds from "./extra-compounds";
+import { useQuery } from "react-query";
 
 const ExtraCompoundsPage = () => {
-  const [rows, setRows] = useState<ExtraCompounds[]>([]);
-
-  useEffect(() => {
-    api
-      .get("/extraCompound")
-      .then((response) => {
-        console.log(response);
-        setRows(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        console.error(error);
-      });
-  }, []);
+  const { isLoading, data } = useQuery("extraCompounds", async () => {
+    const res = await api.get<ExtraCompounds[]>("/extraCompound");
+    return res.data;
+  });
+  const rows = data || [];
   return (
     <div>
       <PageHeader title="Outros Compostos" />
@@ -34,6 +25,7 @@ const ExtraCompoundsPage = () => {
             <Button size="sm">Novo Composto</Button>
           </Link>
         }
+        isLoading={isLoading}
       />
     </div>
   );

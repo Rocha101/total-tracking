@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import PageHeader from "@/components/page-header";
+import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/app/utils/api";
-import ProtocolCards from "@/components/protocol-cards";
+import { Protocol } from "../../protocols/columns";
+import Diet from "../../diets/diets";
+import { Train } from "../../trains/train";
+import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
+import ExtraCompounds from "../../extra-compounds/extra-compounds";
 import { useAuth } from "@/context/auth";
 import { useQuery } from "react-query";
-import { Protocol } from "@/app/admin/protocols/columns";
-import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
-import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protocols";
-import Diet from "@/app/admin/diets/diets";
-import { Train } from "@/app/admin/trains/train";
-import { TbLoader2 } from "react-icons/tb";
+import ProtocolCards from "@/components/protocol-cards";
+import { TbEdit, TbLoader2 } from "react-icons/tb";
+import { Button } from "@/components/ui/button";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -23,24 +25,25 @@ enum WeekDay {
   SUNDAY = "SUNDAY",
 }
 
-const ClientProtocol = () => {
+const ViewMoreProtocol = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const protocolId = searchParams.get("protocolId");
   const { account } = useAuth();
-  const clientId = account?.account.id;
   const [trainWeekDay, setTrainWeekDay] = useState<WeekDay>(
     () => WeekDay.MONDAY
   );
 
   const { isLoading: protocolLoading, data: protocolData } = useQuery({
-    queryKey: ["protocol", { clientId }],
+    queryKey: ["protocol", { protocolId }],
     queryFn: async () => {
-      const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
+      const response = await api.get<Protocol>(`/protocol/${protocolId}`);
       return response.data;
     },
-    enabled: !!clientId,
+    enabled: !!protocolId,
   });
 
   const protocol = protocolData;
-  const protocolId = protocolData ? protocolData.id : null;
 
   const { isLoading: extraCompoundLoading, data: extraCompoundData } = useQuery(
     {
@@ -49,6 +52,7 @@ const ClientProtocol = () => {
         const response = await api.get<ExtraCompounds[]>(
           `/extraCompound/protocol/${protocolId}`
         );
+        console.log(response.data);
         return response.data;
       },
       enabled: !!protocolId,
@@ -59,11 +63,12 @@ const ClientProtocol = () => {
 
   const { isLoading: hormoneProtocolLoading, data: hormonalProtocolData } =
     useQuery({
-      queryKey: ["hormonalProtocol", { protocolId: protocolId }],
+      queryKey: ["hormoneProtocol", { protocolId: protocolId }],
       queryFn: async () => {
         const response = await api.get<HormonalProtocol[]>(
-          `/hormonalProtocol/protocol/${protocolId}`
+          `/hormoneProtocol/protocol/${protocolId}`
         );
+        console.log(response.data[0]);
         return response.data[0];
       },
       enabled: !!protocolId,
@@ -102,7 +107,11 @@ const ClientProtocol = () => {
 
   return (
     <div className="h-full">
-      <PageHeader title={`Protocolo ${account?.account.name || ""}`} />
+      <PageHeader
+        title={!loading ? `Protocolo - ${account?.account.name}` : "Protocolo"}
+        backlink
+      />
+
       {loading ? (
         <div className="w-full h-96 bg-card flex items-center justify-center">
           <TbLoader2 className="animate-spin h-10 w-10" />
@@ -116,10 +125,21 @@ const ClientProtocol = () => {
           extraCompounds={extraCompounds}
           trainWeekDay={trainWeekDay}
           setTrainWeekDay={setTrainWeekDay}
+          extraActions={
+            <Button
+              size="sm"
+              onClick={() =>
+                router.push(`/admin/protocols/edit/${protocol?.id}`)
+              }
+            >
+              <TbEdit className="mr-2" />
+              Editar
+            </Button>
+          }
         />
       )}
     </div>
   );
 };
 
-export default ClientProtocol;
+export default ViewMoreProtocol;

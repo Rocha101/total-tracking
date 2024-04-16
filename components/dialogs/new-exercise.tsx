@@ -24,7 +24,7 @@ const NewExerciseDialog = ({ open, onOpenChange }: NewExerciseDialogProps) => {
             Preencha os campos abaixo para adicionar um novo exercício.
           </DialogDescription>
         </DialogHeader>
-        <NewExerciseForm onSubmitOk={onOpenChange} />
+        <NewExerciseForm />
       </DialogContent>
     </Dialog>
   );

@@ -3,30 +3,61 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import Diet from "./diets";
+import { useMutation, useQueryClient } from "react-query";
 
-const deleteDiet = (id: string) => {
-  api
-    .delete(`/diet/${id}`)
-    .then((response) => {
-      console.log(response.data);
+const DietRowActions = ({ dietId }: { dietId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteDiet = (id: string) => {
+    return api.delete(`/diet/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteDiet, {
+    onSuccess: () => {
       toast("Dieta excluída com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("diets");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir dieta");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(dietId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir dieta
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/diets/${dietId}`}
+            className=" pointer-events-none"
+          >
+            Editar dieta
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Diet>[] = [
@@ -52,32 +83,6 @@ export const columns: ColumnDef<Diet>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteDiet(row.original.id);
-            }}
-          >
-            Excluir dieta
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/diets/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar dieta
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <DietRowActions dietId={row.original.id} />,
   },
 ];

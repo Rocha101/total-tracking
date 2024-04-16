@@ -20,19 +20,53 @@ enum SetType {
   BACK_OFF = "BACK_OFF",
 }
 
-const deleteExercise = (id: string) => {
-  console.log(id);
-  api
-    .delete(`/exercise/${id}`)
-    .then((response) => {
-      console.log(response.data);
+import { useMutation, useQueryClient } from "react-query";
+
+const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteExercise = (id: string) => {
+    return api.delete(`/exercise/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteExercise, {
+    onSuccess: () => {
       toast("Exercício excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("exercises");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir exercício");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(exerciseId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir exercício
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${exerciseId}`}
+            className=" pointer-events-none"
+          >
+            Editar exercício
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Exercise>[] = [
@@ -88,32 +122,6 @@ export const columns: ColumnDef<Exercise>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteExercise(row.original.id);
-            }}
-          >
-            Excluir exercício
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/exercises/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar exercício
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <ExerciseRowActions exerciseId={row.original.id} />,
   },
 ];

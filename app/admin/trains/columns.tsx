@@ -27,18 +27,53 @@ enum WeekDay {
   SUNDAY = "SUNDAY",
 }
 
-const deleteTrain = (id: string) => {
-  api
-    .delete(`/train/${id}`)
-    .then((response) => {
-      console.log(response.data);
+import { useMutation, useQueryClient } from "react-query";
+
+const TrainActionRows = ({ trainId }: { trainId: string }) => {
+  const queryClient = useQueryClient();
+
+  const deleteTrain = (id: string) => {
+    return api.delete(`/train/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteTrain, {
+    onSuccess: () => {
       toast("Treino excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("trains");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir treino");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(trainId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir treino
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${trainId}`}
+            className=" pointer-events-none"
+          >
+            Editar treino
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Train>[] = [
@@ -101,32 +136,6 @@ export const columns: ColumnDef<Train>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteTrain(row.original.id);
-            }}
-          >
-            Excluir treino
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/foods/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar treino
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <TrainActionRows trainId={row.original.id} />,
   },
 ];

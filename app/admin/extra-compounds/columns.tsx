@@ -15,18 +15,57 @@ import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
-const deleteExtraCompound = (id: string) => {
-  api
-    .delete(`/extraCompound/${id}`)
-    .then((response) => {
-      console.log(response.data);
+import { useMutation, useQueryClient } from "react-query";
+
+const ExtraCompoundRowActions = ({
+  extraCompoundId,
+}: {
+  extraCompoundId: string;
+}) => {
+  const queryClient = useQueryClient();
+
+  const deleteExtraCompound = (id: string) => {
+    return api.delete(`/extraCompound/${id}`);
+  };
+
+  const deleteMutation = useMutation(deleteExtraCompound, {
+    onSuccess: () => {
       toast("Composto excluído com sucesso!");
-      window.location.reload();
-    })
-    .catch((error) => {
-      console.log(error);
+      queryClient.invalidateQueries("extraCompounds");
+    },
+    onError: (error) => {
       console.error(error);
-    });
+      toast("Erro ao excluir composto");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate(extraCompoundId);
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <TbDots className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleDelete}>
+          Excluir composto
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
+            href={`/admin/clients/edit/${extraCompoundId}`}
+            className=" pointer-events-none"
+          >
+            Editar composto
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<ExtraCompounds>[] = [
@@ -64,31 +103,7 @@ export const columns: ColumnDef<ExtraCompounds>[] = [
   {
     header: "Ações",
     cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <TbDots className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={() => {
-              deleteExtraCompound(row.original.id);
-            }}
-          >
-            Excluir composto
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link
-              href={`/admin/hormones/${row.original.id}`}
-              className=" pointer-events-none"
-            >
-              Editar composto
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ExtraCompoundRowActions extraCompoundId={row.original.id} />
     ),
   },
 ];
