@@ -2,8 +2,7 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
-
-import { Button } from "@/components/ui/button";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbMoon, TbSun } from "react-icons/tb";
+import { DropdownMenuIcon } from "@radix-ui/react-icons";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
@@ -18,15 +18,9 @@ export function ModeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="link"
-          size="icon"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <TbSun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <TbMoon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
+        <DropdownMenuItem className="">
+          <span>Tema</span>
+        </DropdownMenuItem>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>

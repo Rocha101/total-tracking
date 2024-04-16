@@ -29,12 +29,7 @@ const ClientPage = () => {
           router.push(`/admin/clients/protocol?clientId=${row.id}`)
         }
         isLoading={isLoading}
-        actions={
-          <div className="flex items-center gap-2">
-            <Label>Link de indicação:</Label>
-            <ReferralLink />
-          </div>
-        }
+        actions={<ReferralLink />}
       />
     </div>
   );

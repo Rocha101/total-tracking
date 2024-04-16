@@ -3,10 +3,12 @@
 import * as React from "react";
 import {
   ColumnDef,
+  ColumnFiltersState,
   PaginationState,
   SortingState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -24,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "../table-view-options";
 import { TbLoader2 } from "react-icons/tb";
+import { Input } from "../ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,6 +51,9 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const table = useReactTable({
     data,
     columns,
@@ -56,10 +62,13 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
       rowSelection,
       pagination,
+      columnFilters,
     },
   });
 
@@ -71,9 +80,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="mt-2">
-      <div className="w-full flex items-center mb-2 justify-between">
+      <div className="w-full flex items-end mb-2 justify-between gap-2">
         <DataTableViewOptions table={table} />
-        <div className="w-full flex justify-end">{actions}</div>
+        <Input
+          placeholder="Buscar por nome..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <div className="w-full flex items-end justify-end">{actions}</div>
       </div>
       <div className="rounded-md border">
         <Table className="bg-card">

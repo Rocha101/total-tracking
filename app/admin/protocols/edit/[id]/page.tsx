@@ -175,11 +175,14 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
   }) => {
     if (protocol) {
       console.log(protocol);
-      form.setValue("name", protocol.name);
-      form.setValue("description", protocol.description);
-      form.setValue("diet", protocol.diets[0]?.id);
-      form.setValue("hormonalProtocol", protocol.hormonalProtocols[0]?.id);
-      form.setValue("clientId", protocol.clientId);
+
+      form.reset({
+        name: protocol.name,
+        description: protocol.description,
+        diet: protocol.diets[0]?.id,
+        hormonalProtocol: protocol.hormonalProtocols[0]?.id,
+        clientId: protocol.clientId,
+      });
 
       const trainIds = protocol.trains.map((train) => train.id);
       const trainsSelected = trains.filter((train) =>

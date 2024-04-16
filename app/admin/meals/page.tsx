@@ -18,13 +18,13 @@ const MealPage = () => {
 
   return (
     <div>
-      <PageHeader title="Refeiçoes" />
+      <PageHeader title="Refeições" />
       <DataTable
         columns={columns}
         data={rows}
         actions={
           <Link href="/admin/meals/new" passHref>
-            <Button size="sm">Nova Refeição</Button>
+            <Button>Nova Refeição</Button>
           </Link>
         }
         isLoading={isLoading}

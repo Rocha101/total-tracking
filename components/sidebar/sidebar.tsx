@@ -22,15 +22,42 @@ import {
   TbToolsKitchen3,
   TbVaccine,
   TbVaccineBottle,
+  TbLayoutSidebar,
+  TbLayoutSidebarRightCollapse,
+  TbLayoutSidebarLeftExpand,
+  TbLayoutSidebarLeftCollapse,
+  TbMenu,
+  TbUser,
 } from "react-icons/tb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
+import { Fragment, useState } from "react";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   isAdmin?: boolean;
+  children: React.ReactNode;
 }
 
-const Sidebar = ({ isAdmin }: SidebarProps) => {
+const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const { logout } = useAuth();
   const router = useRouter();
   const path = usePathname();
@@ -93,65 +120,102 @@ const Sidebar = ({ isAdmin }: SidebarProps) => {
 
   const links = isAdmin ? adminLinks : clientLinks;
 
+  const [open, setOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setOpen(!open);
+  };
+
   return (
-    <TooltipProvider>
-      <aside className="fixed inset-y-0 left-0 z-10 flex w-14 flex-col border-r bg-background overflow-y-auto">
-        <nav className="flex flex-col items-center gap-4 px-2 py-4">
-          <Link
-            href="/admin"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-          >
-            <TbHome className="h-[1.2rem] w-[1.2rem] transition-all group-hover:scale-110" />
-            <span className="sr-only">Dashboard</span>
-          </Link>
-          {links.map((link) => (
-            <Tooltip delayDuration={10} key={link.name}>
-              <TooltipTrigger asChild>
+    <div className="flex min-h-screen w-full">
+      <div className="hidden border-r bg-card lg:block w-72">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <div className="flex select-none items-center gap-2 font-semibold">
+              <TbBarbell className="h-6 w-6" />
+              <span className="">Iron Atlas</span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-2">
+              {links.map((link) => (
                 <Link
+                  key={link.name}
                   href={link.href}
-                  className={`flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground ${
-                    path.includes(link.href) ? "dark:text-white text-black" : ""
-                  } md:h-8 md:w-8`}
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 transition-all hover:bg-muted",
+                    {
+                      "bg-muted": path.includes(link.href),
+                    }
+                  )}
                 >
-                  <link.icon className="h-[1.2rem] w-[1.2rem]" />
-                  <span className="sr-only">{link.name}</span>
+                  <link.icon className="h-5 w-5" />
+                  {link.name}
                 </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">{link.name}</TooltipContent>
-            </Tooltip>
-          ))}
-        </nav>
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
-          <ModeToggle />
-
-          <Tooltip delayDuration={10}>
-            <TooltipTrigger asChild>
-              <Link
-                href={`/${isAdmin ? "admin" : "app"}/settings`}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col">
+        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0 lg:hidden"
               >
-                <TbSettings className="h-[1.2rem] w-[1.2rem]" />
-                <span className="sr-only">Configurações</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Configurações</TooltipContent>
-          </Tooltip>
-
-          <Tooltip delayDuration={10}>
-            <TooltipTrigger asChild>
-              <button
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-                onClick={logout}
+                <TbMenu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="left"
+              className="flex flex-col h-full overflow-y-auto"
+            >
+              <nav className="grid gap-2 text-lg font-medium">
+                {links.map((link) => (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
+                  >
+                    <link.icon className="h-6 w-6" />
+                    <span>{link.name}</span>
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="rounded-full ml-auto"
               >
-                <TbLogout className="h-[1.2rem] w-[1.2rem]" />
-                <span className="sr-only">Sair</span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Sair</TooltipContent>
-          </Tooltip>
-        </nav>
-      </aside>
-    </TooltipProvider>
+                <TbUser className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push("/admin/settings")}>
+                Configurações
+              </DropdownMenuItem>
+              <ModeToggle />
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+        <main className="flex flex-col overflow-auto gap-4 p-4">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 };
 

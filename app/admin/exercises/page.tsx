@@ -23,7 +23,7 @@ const ExercisePage = () => {
         data={rows}
         actions={
           <Link href="/admin/exercises/new" passHref>
-            <Button size="sm">Novo Exercício</Button>
+            <Button>Novo Exercício</Button>
           </Link>
         }
         isLoading={isLoading}

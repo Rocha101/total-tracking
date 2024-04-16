@@ -28,9 +28,12 @@ enum WeekDay {
 }
 
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
+import TrainWeekDays from "@/components/train-week-days";
 
 const TrainActionRows = ({ trainId }: { trainId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteTrain = (id: string) => {
     return api.delete(`/train/${id}`);
@@ -63,13 +66,15 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir treino
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${trainId}`}
-            className=" pointer-events-none"
-          >
-            Editar treino
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
+        >
+          Editar treino
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/trains/view/${trainId}`)}
+        >
+          Visualizar treino
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -87,37 +92,9 @@ export const columns: ColumnDef<Train>[] = [
     header: "Dias da Semana",
     cell: ({ row }) => {
       const weekDaysSelected = row.original.weekDays;
-      const weekDays = [
-        WeekDay.MONDAY,
-        WeekDay.TUESDAY,
-        WeekDay.WEDNESDAY,
-        WeekDay.THURSDAY,
-        WeekDay.FRIDAY,
-        WeekDay.SATURDAY,
-        WeekDay.SUNDAY,
-      ];
-
       return (
         <div className="flex">
-          {weekDays.map((day) => (
-            <Badge
-              key={day}
-              variant={weekDaysSelected.includes(day) ? "default" : "secondary"}
-              className="rounded-none text-[0.6rem]"
-            >
-              {
-                {
-                  [WeekDay.MONDAY]: "S",
-                  [WeekDay.TUESDAY]: "T",
-                  [WeekDay.WEDNESDAY]: "Q",
-                  [WeekDay.THURSDAY]: "Q",
-                  [WeekDay.FRIDAY]: "S",
-                  [WeekDay.SATURDAY]: "S",
-                  [WeekDay.SUNDAY]: "D",
-                }[day as keyof typeof WeekDay]
-              }
-            </Badge>
-          ))}
+          <TrainWeekDays weekDaysSelected={weekDaysSelected} />
         </div>
       );
     },

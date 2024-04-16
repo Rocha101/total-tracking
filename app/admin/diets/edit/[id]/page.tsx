@@ -27,9 +27,10 @@ import {
 import NewMealDialog from "@/components/dialogs/new-meal";
 import MealCard from "@/components/meal-card";
 import { Textarea } from "@/components/ui/textarea";
-import { TbSearch } from "react-icons/tb";
+import { TbLoader2, TbSearch } from "react-icons/tb";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Meal } from "../../meals/meals";
+import Diet from "../../diets";
+import { Meal } from "@/app/admin/meals/meals";
 
 const dietSchema = object({
   name: string(),
@@ -38,8 +39,15 @@ const dietSchema = object({
   meals: string().array().optional(),
 });
 
-const NewProtocolPage = () => {
+const EditDietPage = ({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) => {
   const queryClient = useQueryClient();
+  const dietId = params.id;
   const router = useRouter();
   const form = useForm<Zod.infer<typeof dietSchema>>({
     resolver: zodResolver(dietSchema),
@@ -50,8 +58,9 @@ const NewProtocolPage = () => {
   const [openNewMeal, setOpenNewMeal] = useState(false);
   const [foodSearchQuery, setFoodSearchQuery] = useState("");
 
-  const createDietMutation = useMutation(
-    (values: Zod.infer<typeof dietSchema>) => api.post("/diet", values),
+  const updateDietMutation = useMutation(
+    (values: Zod.infer<typeof dietSchema>) =>
+      api.put(`/diet/${dietId}`, values),
     {
       onSuccess: () => {
         toast("Alimento criada com sucesso!");
@@ -66,8 +75,21 @@ const NewProtocolPage = () => {
   );
 
   const onSubmit = (values: Zod.infer<typeof dietSchema>) => {
-    createDietMutation.mutate(values);
+    updateDietMutation.mutate(values);
   };
+
+  const { isLoading: isLoadingDiet, data: dietData } = useQuery(
+    ["diet", dietId],
+    async () => {
+      const res = await api.get<Diet>(`/diet/${dietId}`);
+      return res.data;
+    },
+    {
+      enabled: !!dietId,
+    }
+  );
+  const diet = dietData;
+  console.log(diet);
 
   const { isLoading: isLoadingMeals, data: mealsData } = useQuery(
     "meals",
@@ -100,9 +122,28 @@ const NewProtocolPage = () => {
     setOpenNewMeal(!openNewMeal);
   };
 
+  useEffect(() => {
+    if (diet) {
+      form.reset({
+        name: diet.name,
+        description: diet.description,
+        meals: diet.meals.map((meal) => meal.id),
+      });
+    }
+  }, [diet, form]);
+
+  const isLoading = isLoadingDiet || isLoadingMeals;
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <TbLoader2 className="animate-spin h-8 w-8 text-primary" />
+      </div>
+    );
+
   return (
     <div>
-      <PageHeader title="Nova Dieta" backlink />
+      <PageHeader title="Editar Dieta" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
@@ -174,7 +215,7 @@ const NewProtocolPage = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            {createDietMutation.isLoading ? "Criando..." : "Criar"}
+            {updateDietMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         </form>
       </Form>
@@ -186,4 +227,4 @@ const NewProtocolPage = () => {
   );
 };
 
-export default NewProtocolPage;
+export default EditDietPage;

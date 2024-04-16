@@ -23,7 +23,7 @@ const HormonalProtocolPage = () => {
         data={rows}
         actions={
           <Link href="/admin/hormonal-protocols/new" passHref>
-            <Button size="sm">Novo Protocolo</Button>
+            <Button>Novo Protocolo</Button>
           </Link>
         }
         isLoading={isLoading}

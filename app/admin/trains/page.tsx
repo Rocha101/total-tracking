@@ -8,8 +8,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Train } from "./train";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const TrainPage = () => {
+  const router = useRouter();
   const { isLoading, data } = useQuery("trains", async () => {
     const res = await api.get<Train[]>("/train");
     return res.data;
@@ -28,6 +30,7 @@ const TrainPage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) => router.push(`/admin/trains/view/${row.id}`)}
       />
     </div>
   );

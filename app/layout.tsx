@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Inter, Roboto } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import { AppWrapper } from "@/components/app-wrapper";
 
-const roboto = Roboto({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-});
+const inter = Inter({ display: "swap", subsets: ["latin-ext"] });
 
 export const metadata: Metadata = {
   title: "Total Tracking",
@@ -24,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>
+      <body className={inter.className}>
         <AppWrapper>
           <Suspense>{children}</Suspense>
         </AppWrapper>

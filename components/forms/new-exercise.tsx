@@ -386,7 +386,7 @@ const NewExerciseForm = () => {
         </ScrollArea>
 
         <Button type="submit" className="w-full">
-          Criar
+          {createExerciseMutation.isLoading ? "Criando..." : "Criar"}
         </Button>
       </form>
     </Form>

@@ -22,7 +22,7 @@ const ExtraCompoundsPage = () => {
         data={rows}
         actions={
           <Link href="/admin/extra-compounds/new" passHref>
-            <Button size="sm">Novo Composto</Button>
+            <Button>Novo Composto</Button>
           </Link>
         }
         isLoading={isLoading}

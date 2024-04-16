@@ -22,7 +22,7 @@ const FoodsPage = () => {
         data={rows}
         actions={
           <Link href="/admin/foods/new" passHref>
-            <Button size="sm">Novo Alimento</Button>
+            <Button>Novo Alimento</Button>
           </Link>
         }
         isLoading={isLoading}

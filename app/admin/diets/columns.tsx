@@ -12,9 +12,11 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 import Diet from "./diets";
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
 const DietRowActions = ({ dietId }: { dietId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteDiet = (id: string) => {
     return api.delete(`/diet/${id}`);
@@ -47,13 +49,15 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir dieta
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/diets/${dietId}`}
-            className=" pointer-events-none"
-          >
-            Editar dieta
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/diets/edit/${dietId}`)}
+        >
+          Editar dieta
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/diets/view/${dietId}`)}
+        >
+          Ver dieta
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
