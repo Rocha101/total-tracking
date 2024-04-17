@@ -13,7 +13,8 @@ import {
 
 const LandingHomePage = () => {
   return (
-    <div>
+    <div className="relative z-10">
+      <div className="-z-[5] absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black to-transparent" />
       <LandingNavBar />
       <section id="features" className="h-screen relative">
         <div className="h-full px-4 md:px-12 py-24">
@@ -22,7 +23,7 @@ const LandingHomePage = () => {
             layout="fill"
             objectFit="cover"
             alt="Main background image"
-            className="-z-10  backdrop-blur-md"
+            className="-z-20  backdrop-blur-md"
             quality={100}
           />
 
@@ -100,44 +101,44 @@ const LandingHomePage = () => {
       </section>
 
       <footer className="bg-card justify-center">
-        <div className="mx-auto max-w-screen-xl px-4 py-24">
-          <div className="w-full grid grid-cols-1 gap-8 lg:grid-cols-2 content-center place-content-center justify-items-center">
+        <div className="mx-auto max-w-screen-xl px-4 py-24 ">
+          <div className=" w-full grid grid-cols-1 gap-8 lg:grid-cols-2 content-center place-content-center justify-items-center">
             <div>
               <div className="flex justify-center text-primary sm:justify-start">
-                <p className="text-2xl font-bold">Iron Atlas</p>
+                <p className="text-2xl font-bold ">Iron Atlas</p>
               </div>
 
-              <p className="mt-6 max-w-md text-center leading-relaxed sm:max-w-xs md:text-left">
+              <p className=" mt-6 max-w-md text-center leading-relaxed sm:max-w-xs md:text-left">
                 A plataforma de gestão para fisiculturismo mais completa do
                 mercado
               </p>
 
-              <div className="mt-6 flex justify-center sm:justify-start gap-4">
-                <Link href="">
+              <div className=" mt-6 flex justify-center sm:justify-start gap-4">
+                <Link href="#">
                   <TbBrandInstagram className="h-6 w-6 text-primary" />
                 </Link>
 
-                <Link href="">
-                  <TbBrandGithub className="h-6 w-6 text-primary" />
+                <Link href="#">
+                  <TbBrandGithub className="h-6 w-6 text-primary " />
                 </Link>
               </div>
             </div>
             <div>
-              <div className="flex justify-center sm:justify-start">
-                <p className="text-lg font-medium">Contate-nos</p>
+              <div className="flex justify-start">
+                <p className="text-2xl font-bold">Contate-nos</p>
               </div>
 
-              <div className="mt-6 flex flex-col gap-4  justify-center sm:justify-start">
+              <div className=" mt-6 flex flex-col gap-4 justify-start">
                 <Link
                   href="mailto:iron.atlas.app@gmail.com"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 "
                 >
                   <TbMail className="h-6 w-6 text-primary" />
                   <span>iron.atlas.app@gmail.com</span>
                 </Link>
                 <Link
                   href="tel:+5548998280420"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 "
                 >
                   <TbPhone className="h-6 w-6 text-primary" />
                   <span>+55 48 99828-0420</span>
