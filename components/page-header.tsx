@@ -16,7 +16,7 @@ const PageHeader = ({ title, description, backlink }: PageHeaderProps) => {
     <div className="w-full  flex items-center gap-2 mb-2">
       {backlink && (
         <Button onClick={() => router.back()} variant="ghost" size="icon">
-          <TbChevronLeft className="w-6 h-6" />
+          <TbChevronLeft className="w-4 h-4" />
         </Button>
       )}
 

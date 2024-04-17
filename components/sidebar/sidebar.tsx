@@ -1,15 +1,8 @@
 "use client";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  TbHome,
   TbSettings,
   TbUsers,
   TbRun,
@@ -22,20 +15,11 @@ import {
   TbToolsKitchen3,
   TbVaccine,
   TbVaccineBottle,
-  TbLayoutSidebar,
-  TbLayoutSidebarRightCollapse,
-  TbLayoutSidebarLeftExpand,
-  TbLayoutSidebarLeftCollapse,
   TbMenu,
   TbUser,
+  TbDashboard,
+  TbFileAnalytics,
 } from "react-icons/tb";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,11 +28,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
@@ -63,8 +46,14 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const path = usePathname();
   const adminLinks = [
     {
-      name: "Protocolos",
+      name: "Dashboard",
       icon: TbChartBar,
+      href: "/admin",
+      key: "/admin/dashboard",
+    },
+    {
+      name: "Protocolos",
+      icon: TbFileAnalytics,
       href: "/admin/protocols",
     },
     {
@@ -118,7 +107,12 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     },
   ];
 
-  const links = isAdmin ? adminLinks : clientLinks;
+  const links: {
+    name: string;
+    icon: React.ElementType;
+    href: string;
+    key?: string;
+  }[] = isAdmin ? adminLinks : clientLinks;
 
   const [open, setOpen] = useState(true);
 
@@ -128,9 +122,9 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
 
   return (
     <div className="flex min-h-screen w-full">
-      <div className="hidden border-r bg-card lg:block w-72">
+      <div className="hidden  bg-card lg:block w-72">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+          <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <div className="flex select-none items-center gap-2 font-semibold">
               <TbBarbell className="h-6 w-6" />
               <span className="">Iron Atlas</span>
@@ -145,7 +139,9 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2 transition-all hover:bg-muted",
                     {
-                      "bg-muted": path.includes(link.href),
+                      "bg-muted":
+                        (!link.key && path.includes(link.href)) ||
+                        link.href === path,
                     }
                   )}
                 >
@@ -158,7 +154,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
         </div>
       </div>
       <div className="w-full flex flex-col">
-        <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 bg-card px-4 lg:h-[60px] lg:px-6">
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -202,16 +198,23 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/admin/settings")}>
+              <DropdownMenuItem
+                onClick={() => router.push("/admin/settings")}
+                className="flex gap-2"
+              >
+                <TbSettings className="h-4 w-4" />
                 Configurações
               </DropdownMenuItem>
               <ModeToggle />
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout} className="flex gap-2">
+                <TbLogout className="h-4 w-4" />
+                Sair
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="flex flex-col overflow-auto gap-4 p-4">
+        <main className="h-full flex flex-col overflow-auto gap-4 p-4 lg:border-l border-t">
           {children}
         </main>
       </div>

@@ -7,9 +7,9 @@ import { AppWrapper } from "@/components/app-wrapper";
 const inter = Inter({ display: "swap", subsets: ["latin-ext"] });
 
 export const metadata: Metadata = {
-  title: "Total Tracking",
+  title: "Iron atlas",
   description:
-    "Total tracking é uma plataforma que permite controlar seus protocolos de bodybuilding de forma fácil e rápida.",
+    "A plataforma de gestão para fisiculturismo mais completa do mercado",
 };
 
 export default function RootLayout({

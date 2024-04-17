@@ -13,12 +13,17 @@ import { TbMoon, TbSun } from "react-icons/tb";
 import { DropdownMenuIcon } from "@radix-ui/react-icons";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <DropdownMenuItem className="">
+        <DropdownMenuItem className="flex gap-2">
+          {theme === "light" ? (
+            <TbSun className="h-4 w-4" />
+          ) : (
+            <TbMoon className="h-4 w-4" />
+          )}
           <span>Tema</span>
         </DropdownMenuItem>
       </DropdownMenuTrigger>

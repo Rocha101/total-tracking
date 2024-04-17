@@ -20,7 +20,7 @@ const SettingsPage = () => {
 
   return (
     <div>
-      <PageHeader title="Configurações" />
+      <PageHeader title="Configurações" backlink />
       <div className="flex flex-col gap-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">

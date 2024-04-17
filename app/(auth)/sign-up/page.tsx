@@ -34,6 +34,7 @@ import {
 import { useEffect } from "react";
 import Link from "next/link";
 import { useMutation } from "react-query";
+import Image from "next/image";
 
 const formSchema = z.object({
   name: z.string({
@@ -91,7 +92,15 @@ function SignUpPage() {
   }, [coachId, form]);
 
   return (
-    <main className="h-full w-full flex items-center justify-center">
+    <main className="h-full w-full flex items-center justify-center relative">
+      <Image
+        src="/landing-page/pricing-hero.png"
+        layout="fill"
+        objectFit="cover"
+        alt="Main background image"
+        className="-z-10  backdrop-blur-md"
+        quality={100}
+      />
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Registro 💉</CardTitle>
