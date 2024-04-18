@@ -79,7 +79,7 @@ const NewHormonalProtocolPage = () => {
 
   const createCompoundMutation = useMutation(
     (values: Zod.infer<typeof hormonalProtocolSchema>) =>
-      api.post("/extraCompound", values),
+      api.post("/hormoneProtocol", values),
     {
       onSuccess: (res) => {
         console.log(res);

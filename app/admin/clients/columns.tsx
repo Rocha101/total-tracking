@@ -13,9 +13,11 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
-const ClientRowActions = ({ dietId }: { dietId: string }) => {
+const ClientRowActions = ({ clientId }: { clientId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteClient = (id: string) => {
     return api.delete(`/account/${id}`);
@@ -23,17 +25,17 @@ const ClientRowActions = ({ dietId }: { dietId: string }) => {
 
   const deleteMutation = useMutation(deleteClient, {
     onSuccess: () => {
-      toast("Dieta excluída com sucesso!");
+      toast("Cliente excluído com sucesso!");
       queryClient.invalidateQueries("diets");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir dieta");
+      toast("Erro ao excluir cliente");
     },
   });
 
   const handleDelete = () => {
-    deleteMutation.mutate(dietId);
+    deleteMutation.mutate(clientId);
   };
 
   return (
@@ -48,13 +50,17 @@ const ClientRowActions = ({ dietId }: { dietId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir cliente
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${dietId}`}
-            className=" pointer-events-none"
-          >
-            Editar cliente
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
+        >
+          Editar cliente
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/admin/protocols/new?clientId=${clientId}`)
+          }
+        >
+          Conectar novo protocolo
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -84,6 +90,6 @@ export const columns: ColumnDef<Account>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => <ClientRowActions dietId={row.original.id} />,
+    cell: ({ row }) => <ClientRowActions clientId={row.original.id} />,
   },
 ];

@@ -40,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "react-query";
 import { TbTrashFilled } from "react-icons/tb";
+import ExtraCompounds from "../../extra-compounds/extra-compounds";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -58,7 +59,7 @@ const protocolSchema = object({
   train: string().array().optional(),
   hormonalProtocol: string().optional(),
   clientId: string().optional(),
-  extraCompound: string().optional(),
+  extraCompound: string().array().optional(),
 });
 
 const NewProtocolPage = () => {
@@ -123,6 +124,16 @@ const NewProtocolPage = () => {
   });
 
   const hormonalProtocols = hormonalProtocolsData || [];
+
+  const { data: extraCompoundsData } = useQuery({
+    queryKey: ["extraCompounds"],
+    queryFn: async () => {
+      const response = await api.get<ExtraCompounds[]>(`/extraCompound`);
+      return response.data;
+    },
+  });
+
+  const extraCompounds = extraCompoundsData || [];
 
   useEffect(() => {
     if (clientId) {
@@ -286,34 +297,27 @@ const NewProtocolPage = () => {
                     <SelectItem
                       key={train.id}
                       value={train.id}
-                      className="w-full h-full flex flex-row justify-between items-start"
+                      className="w-full h-full "
                     >
-                      <span>{train.name}</span>
-
-                      <div className="flex mt-2">
-                        {weekDays.map((day) => (
-                          <Badge
-                            key={day}
-                            variant={
-                              weekDaysSelected.includes(day)
-                                ? "default"
-                                : "secondary"
-                            }
-                            className="rounded-none text-[0.6rem]"
-                          >
-                            {
-                              {
-                                [WeekDay.MONDAY]: "S",
-                                [WeekDay.TUESDAY]: "T",
-                                [WeekDay.WEDNESDAY]: "Q",
-                                [WeekDay.THURSDAY]: "Q",
-                                [WeekDay.FRIDAY]: "S",
-                                [WeekDay.SATURDAY]: "S",
-                                [WeekDay.SUNDAY]: "D",
-                              }[day as keyof typeof WeekDay]
-                            }
-                          </Badge>
-                        ))}
+                      <div className="flex flex-row items-center gap-3">
+                        <p>{train.name}</p>
+                        {" - "}
+                        <span>
+                          {weekDaysSelected
+                            .map(
+                              (day, index) =>
+                                ({
+                                  [WeekDay.MONDAY]: "Segunda",
+                                  [WeekDay.TUESDAY]: "Terça",
+                                  [WeekDay.WEDNESDAY]: "Quarta",
+                                  [WeekDay.THURSDAY]: "Quinta",
+                                  [WeekDay.FRIDAY]: "Sexta",
+                                  [WeekDay.SATURDAY]: "Sábado",
+                                  [WeekDay.SUNDAY]: "Domingo",
+                                }[day as keyof typeof WeekDay])
+                            )
+                            .join(" e ")}
+                        </span>
                       </div>
                     </SelectItem>
                   );

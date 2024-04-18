@@ -5,13 +5,15 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
+import { useQuery } from "react-query";
+import { TbLoader2 } from "react-icons/tb";
 
 interface Account {
   account: {
+    id: string;
     email: string;
     name: string;
     role: string;
-    id: string;
     coachId: string;
     accountType: string;
   };
@@ -32,12 +34,13 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
   const path = usePathname();
   const [account, setAccount] = useState<Account | null>(null);
-  const user = JSON.parse(Cookies.get("user") || "[]");
-  const token = Cookies.get("token");
+  const accountCookie = Cookies.get("account")
+    ? JSON.parse(Cookies.get("account") || "{}")
+    : null;
 
   const login = (accountData: Account) => {
-    Cookies.set("user", JSON.stringify(accountData.account));
-    Cookies.set("token", accountData.token);
+    Cookies.set("account", JSON.stringify(accountData));
+
     setAccount(accountData);
     if (accountData.account.accountType === "COACH") {
       router.push("/admin");
@@ -47,42 +50,50 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   const logout = () => {
-    Cookies.remove("user");
-    Cookies.remove("token");
+    Cookies.remove("account");
     setAccount(null);
     router.push("/sign-in");
   };
 
   const value = { account, login, logout };
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        const verify = await api.get("/auth/verify");
-        console.log(verify);
-      } catch (error: any) {
+  const handleTokenError = (error: any) => {
+    if (error.request.response.includes("Token inválido")) {
+      toast("Faça login para acessar a página");
+      logout();
+    }
+  };
+
+  const verifyRes = useQuery(
+    ["verifyToken", account?.token],
+    async () => {
+      const res = await api.get("/auth/verify");
+      return res.data;
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
         console.log(error);
-        if (error.request.response.includes("Token inválido")) {
-          toast("Faça login para acessar a página");
-          Cookies.remove("user");
-          Cookies.remove("token");
-          setAccount(null);
-          return router.push("/sign-in");
-        }
-      }
-    };
-
-    if (token && path.includes("admin")) {
-      verifyToken();
+        handleTokenError(error);
+      },
     }
+  );
 
-    if (!account && user && token) {
-      setAccount({
-        account: user,
-        token: token,
-      });
+  useEffect(() => {
+    if (account === null && accountCookie) {
+      setAccount(accountCookie);
     }
-  }, [account, router, path, user, token]);
+  }, [account, accountCookie]);
+
+  if (verifyRes.isLoading) {
+    return (
+      <div className="w-screen h-screen bg-background flex items-center justify-center">
+        <TbLoader2 className="text-primary w-24 h-24 animate-spin" />
+      </div>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

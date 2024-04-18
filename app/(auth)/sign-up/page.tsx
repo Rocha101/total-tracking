@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { IssueData, z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "../../utils/api";
 import { toast } from "sonner";
@@ -36,33 +36,58 @@ import Link from "next/link";
 import { useMutation } from "react-query";
 import Image from "next/image";
 
-const formSchema = z.object({
-  name: z.string({
-    required_error: "Nome obrigatório",
-  }),
-  accountType: z.enum(["CUSTOMER", "COACH"]),
-  email: z
-    .string({
-      required_error: "Email obrigatório",
-    })
-    .email({ message: "Email inválido" }),
-  password: z
-    .string({
-      required_error: "Senha obrigatória",
-    })
-    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
-  coachId: z.string().optional(),
-});
+const formSchema = z
+  .object({
+    name: z.string({
+      required_error: "Nome obrigatório",
+    }),
+    accountType: z.enum(["CUSTOMER", "COACH"]),
+    email: z
+      .string({
+        required_error: "Email obrigatório",
+      })
+      .email({ message: "Email inválido" }),
+    password: z
+      .string({
+        required_error: "Senha obrigatória",
+      })
+      .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+    coachId: z
+      .string({
+        required_error: "Código do coach obrigatório",
+      })
+      .optional(),
+    activationKey: z
+      .string({
+        required_error: "Chave de ativação obrigatória",
+      })
+      .optional(),
+  })
+  .superRefine((data, refinementContext) => {
+    if (data.accountType === "COACH" && !data.activationKey) {
+      return refinementContext.addIssue({
+        path: ["activationKey"],
+        message: "Chave de ativação obrigatória",
+        code: "invalid_literal",
+      } as IssueData);
+    }
+    if (data.accountType === "CUSTOMER" && !data.coachId) {
+      return refinementContext.addIssue({
+        path: ["coachId"],
+        message: "Código do coach obrigatório",
+        code: "invalid_literal",
+      } as IssueData);
+    }
+    return true;
+  });
 
 function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const coachId = searchParams.get("referral");
+  console.log(coachId);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      accountType: "CUSTOMER",
-    },
   });
 
   const createSignUpMutation = useMutation(
@@ -87,7 +112,14 @@ function SignUpPage() {
 
   useEffect(() => {
     if (coachId) {
-      form.setValue("coachId", coachId);
+      setTimeout(() => {
+        form.setValue("coachId", coachId);
+        form.setValue("accountType", "CUSTOMER");
+      }, 100);
+    } else {
+      setTimeout(() => {
+        form.setValue("accountType", "COACH");
+      }, 100);
     }
   }, [coachId, form]);
 
@@ -104,9 +136,9 @@ function SignUpPage() {
       />
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Registro 💉</CardTitle>
+          <CardTitle className="text-2xl">Criar conta 💉</CardTitle>
           <CardDescription>
-            Insira suas credenciais para acessar o sistema.
+            Preencha os campos abaixo para criar sua conta
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -164,10 +196,10 @@ function SignUpPage() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        disabled={!!coachId}
+                        disabled={true}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Theme" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="CUSTOMER">Cliente</SelectItem>
@@ -179,6 +211,29 @@ function SignUpPage() {
                   </FormItem>
                 )}
               />
+              {form.watch("accountType") === "COACH" && (
+                <FormField
+                  control={form.control}
+                  name="activationKey"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Chave de ativação</FormLabel>
+
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      <Link
+                        target="_blank"
+                        href="https://wa.me/5548998280420?text=Ol%C3%A1%21+Estou+interessado+em+adquirir+uma+assinatura+do+Iron+Atlas.+Poderia+me+informar+sobre+os+planos+dispon%C3%ADveis+e+como+proceder+para+ativ%C3%A1-los%3F"
+                        className="text-xs font-medium leading-none hover:underline"
+                      >
+                        Quero adquirir uma chave de ativação
+                      </Link>
+                    </FormItem>
+                  )}
+                />
+              )}
               <Button type="submit" className="w-full">
                 {createSignUpMutation.isLoading ? "Salvando..." : "Salvar"}
               </Button>

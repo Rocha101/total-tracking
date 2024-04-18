@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,12 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TbCheck } from "react-icons/tb";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface PricingPlanCardProps {
   title: string;
   description: string;
   price: string;
   duration: string;
+  features: string[];
+  href?: string;
 }
 
 const PricingPlanCard = ({
@@ -22,9 +28,12 @@ const PricingPlanCard = ({
   description,
   price,
   duration,
+  features,
+  href,
 }: PricingPlanCardProps) => {
+  const router = useRouter();
   return (
-    <Card className="h-full">
+    <Card className="h-full md:w-96 hover:mb-3 hover:border-primary transition-all duration-300">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -34,19 +43,18 @@ const PricingPlanCard = ({
           {price}
           <span className="text-lg">/{duration}</span>
         </p>
-        <Button className="w-full mt-3">Assinar</Button>
+        {href && (
+          <Link href={href} target="_blank">
+            <Button className="w-full mt-3">Entrar em contato</Button>
+          </Link>
+        )}
+
         <Separator className="mb-3" />
         <p className="font-semibold leading-none tracking-tight">
           O que está incluso:
         </p>
         <div className="mt-3 flex flex-col gap-3">
-          {[
-            "Planos de treino personalizados",
-            "Planos alimentares personalizados",
-            "Protocolos de suplementação",
-            "Protocolos hormonais",
-            "Suporte 24/7",
-          ].map((feature) => (
+          {features.map((feature) => (
             <div key={feature} className="flex items-center gap-2">
               <TbCheck className="h-4 w-4 text-primary" />
               <span>{feature}</span>

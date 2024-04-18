@@ -95,7 +95,11 @@ type Set = {
   setType?: SetType;
 };
 
-const NewExerciseForm = () => {
+interface NewExerciseFormProps {
+  onSubmitOk?: () => void;
+}
+
+const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
   const clientQuery = useQueryClient();
   const form = useForm<Zod.infer<typeof exerciseSchema>>({
     resolver: zodResolver(exerciseSchema),
@@ -110,6 +114,7 @@ const NewExerciseForm = () => {
     {
       onSuccess: () => {
         toast("Exercicio criado com sucesso!");
+        if (onSubmitOk) onSubmitOk();
         clientQuery.invalidateQueries("exercises");
       },
       onError: (err) => {

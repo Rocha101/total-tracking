@@ -323,7 +323,7 @@ const NewTrainPage = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            Criar
+            {createTrainMutation.isLoading ? "Criando..." : "Criar"}
           </Button>
         </form>
       </Form>

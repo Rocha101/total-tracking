@@ -46,7 +46,7 @@ const ClientProtocol = () => {
   const protocol = protocolData;
   const protocolId = protocolData ? protocolData.id : null;
 
-  const { data: extraCompoundData } = useQuery({
+  const { data: extraCompounds } = useQuery({
     queryKey: ["extraCompound", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<ExtraCompounds[]>(
@@ -57,20 +57,17 @@ const ClientProtocol = () => {
     enabled: !!protocolId,
   });
 
-  const extraCompounds = extraCompoundData || [];
-
-  const { data: hormonalProtocolData } = useQuery({
+  const { data: hormonalProtocol } = useQuery({
     queryKey: ["hormonalProtocol", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<HormonalProtocol[]>(
         `/hormonalProtocol/protocol/${protocolId}`
       );
+      console.log(response);
       return response.data[0];
     },
     enabled: !!protocolId,
   });
-
-  const hormonalProtocol = hormonalProtocolData;
 
   const { data: dietData } = useQuery({
     queryKey: ["diet", { protocolId: protocolId }],
@@ -83,7 +80,7 @@ const ClientProtocol = () => {
 
   const diet = dietData;
 
-  const { data: trainData } = useQuery({
+  const { data: train } = useQuery({
     queryKey: ["train", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<Train[]>(`/train/protocol/${protocolId}`);
@@ -92,17 +89,15 @@ const ClientProtocol = () => {
     enabled: !!protocolId,
   });
 
-  const train = trainData || [];
-
   return (
     <div className="h-full">
       <PageHeader title={`Protocolo ${account?.account.name || ""}`} backlink />
       <ProtocolCards
         protocol={protocol}
         diet={diet}
-        train={train}
+        train={train || []}
         hormonalProtocol={hormonalProtocol}
-        extraCompounds={extraCompounds}
+        extraCompounds={extraCompounds || []}
         trainWeekDay={trainWeekDay}
         setTrainWeekDay={setTrainWeekDay}
         extraActions={
