@@ -16,7 +16,7 @@ const Dashboard = () => {
   const { isLoading: ClientsLoading, data: ClientsCount } = useQuery(
     "clientsCount",
     async () => {
-      const res = await api.get("/account/clients/count");
+      const res = await api.get("/account/clientsCountNumber");
       console.log(res);
       return res.data;
     }
@@ -25,7 +25,7 @@ const Dashboard = () => {
   const { isLoading: ProtocolsLoading, data: ProtocolsCount } = useQuery(
     "protocolsCount",
     async () => {
-      const res = await api.get("/protocol/count/number");
+      const res = await api.get("/protocol/countNumber");
       console.log(res);
       return res.data;
     }
