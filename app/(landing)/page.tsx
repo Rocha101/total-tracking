@@ -32,7 +32,7 @@ const LandingHomePage = () => {
               <h1 className="z-30 text-5xl md:text-6xl lg:text-7xl font-bold text-center text-white">
                 Iron Atlas
               </h1>
-              <p className="z-30 text-md md:text-xl text-center text-white">
+              <p className="z-30 text-md md:text-xl text-center text-white px-3">
                 A plataforma de gestão para fisiculturismo mais completa do
                 mercado
               </p>
