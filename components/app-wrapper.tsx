@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { AuthProvider } from "@/context/auth";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "./ui/toaster";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ export const AppWrapper = ({ children }: { children: ReactNode }) => {
       >
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
+        <SpeedInsights />
       </ThemeProvider>
     </QueryClientProvider>
   );
