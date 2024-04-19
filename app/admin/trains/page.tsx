@@ -25,8 +25,8 @@ const TrainPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/trains/new" passHref>
-            <Button size="sm">Novo Treino</Button>
+          <Link className="w-full md:w-32" href="/admin/trains/new" passHref>
+            <Button className="w-full md:w-32">Novo Treino</Button>
           </Link>
         }
         isLoading={isLoading}

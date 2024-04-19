@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="mt-2">
-      <div className="w-full flex items-end mb-2 justify-between gap-2">
+      <div className="w-full flex flex-col md:flex-row items-start md:items-end mb-2 md:justify-between gap-2">
         <DataTableViewOptions table={table} />
         <Input
           placeholder="Buscar por nome..."
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full md:max-w-sm"
         />
         <div className="w-full flex items-end justify-end">{actions}</div>
       </div>

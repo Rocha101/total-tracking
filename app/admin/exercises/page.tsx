@@ -22,8 +22,8 @@ const ExercisePage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/exercises/new" passHref>
-            <Button>Novo Exercício</Button>
+          <Link className="w-full md:w-32" href="/admin/exercises/new" passHref>
+            <Button className="w-full">Novo Exercício</Button>
           </Link>
         }
         isLoading={isLoading}

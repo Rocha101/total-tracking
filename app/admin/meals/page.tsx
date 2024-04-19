@@ -23,8 +23,8 @@ const MealPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/meals/new" passHref>
-            <Button>Nova Refeição</Button>
+          <Link className="w-full md:w-32" href="/admin/meals/new" passHref>
+            <Button className="w-full md:w-32">Nova Refeição</Button>
           </Link>
         }
         isLoading={isLoading}

@@ -21,8 +21,8 @@ const FoodsPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/foods/new" passHref>
-            <Button>Novo Alimento</Button>
+          <Link className="w-full md:w-32" href="/admin/foods/new" passHref>
+            <Button className="w-full">Novo Alimento</Button>
           </Link>
         }
         isLoading={isLoading}

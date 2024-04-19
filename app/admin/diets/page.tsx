@@ -22,8 +22,8 @@ const DietPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/diets/new" passHref>
-            <Button>Nova Dieta</Button>
+          <Link className="w-full md:w-32" href="/admin/diets/new" passHref>
+            <Button className="w-full">Nova Dieta</Button>
           </Link>
         }
         isLoading={isLoading}

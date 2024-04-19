@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   if (verifyRes.isLoading) {
     return (
       <div className="w-screen h-screen bg-background flex items-center justify-center">
-        <TbLoader2 className="text-primary w-24 h-24 animate-spin" />
+        <TbLoader2 className="text-primary w-32 h-32 animate-spin" />
       </div>
     );
   }

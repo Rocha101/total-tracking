@@ -30,7 +30,7 @@ const ReferralLink = () => {
 
   const referralLink = `iron-atlas.app/sign-up?referral=${account?.account?.id}`;
   return (
-    <div className="flex items-center justify-between">
+    <div className="w-full md:max-w-[455px] flex items-center justify-between">
       <Input
         disabled
         className="border border-primary disabled:opacity-100 rounded-tr-none rounded-br-none truncate"

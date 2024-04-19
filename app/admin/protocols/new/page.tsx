@@ -41,6 +41,7 @@ import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "react-query";
 import { TbTrashFilled } from "react-icons/tb";
 import ExtraCompounds from "../../extra-compounds/extra-compounds";
+import MultipleSelect from "@/components/multiple-select";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -70,6 +71,8 @@ const NewProtocolPage = () => {
     resolver: zodResolver(protocolSchema),
     defaultValues: {},
   });
+  const [openTrainSelect, setOpenTrainSelect] = useState(false);
+  const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
@@ -90,6 +93,9 @@ const NewProtocolPage = () => {
     const protocol = {
       ...values,
       train: trainsSelected.map((train) => train.id),
+      extraCompound: extraCompoundsSelected.map(
+        (extraCompound) => extraCompound.id
+      ),
     };
 
     createProtocolMutation.mutate(protocol);
@@ -142,6 +148,9 @@ const NewProtocolPage = () => {
   }, [clientId, form]);
 
   const [trainsSelected, setTrainsSelected] = useState<Train[]>([]);
+  const [extraCompoundsSelected, setExtraCompoundsSelected] = useState<
+    ExtraCompounds[]
+  >([]);
 
   const addTrainSelected = (trainId: string) => {
     const train = trains.find((item: Train) => item.id === trainId);
@@ -159,8 +168,22 @@ const NewProtocolPage = () => {
     } else setTrainsSelected((prev) => [...prev, train]);
   };
 
-  const removeTrainSelected = (trainId: string) => {
-    setTrainsSelected(trainsSelected.filter((item) => item.id !== trainId));
+  const addExtraCompoundSelected = (extraCompoundId: string) => {
+    const extraCompound = extraCompounds.find(
+      (item: ExtraCompounds) => item.id === extraCompoundId
+    );
+    const alreadyExistsIndex = extraCompoundsSelected.findIndex(
+      (item) => item.id === extraCompoundId
+    );
+
+    if (!extraCompound) return;
+
+    if (alreadyExistsIndex !== -1) {
+      setExtraCompoundsSelected((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
+    } else setExtraCompoundsSelected((prev) => [...prev, extraCompound]);
   };
 
   useEffect(() => {
@@ -275,116 +298,53 @@ const NewProtocolPage = () => {
               </FormItem>
             )}
           />
-          <div className="space-y-2">
-            <Label>Adicionar Treinos</Label>
-            <Select
-              onValueChange={(value) => addTrainSelected(value)}
-              value={"Adicionar treino"}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <Link href="/admin/trains/new">
-                  <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                    Novo Treino
-                  </div>
-                </Link>
-                {trains.map((train) => {
-                  const weekDaysSelected = train.weekDays;
+          <FormItem className="flex flex-col  gap-1">
+            <FormLabel>Treinos</FormLabel>
+            <div className="flex">
+              <MultipleSelect
+                options={trains}
+                selectedOptions={trainsSelected}
+                handleSelect={addTrainSelected}
+                open={openTrainSelect}
+                onOpenChange={setOpenTrainSelect}
+                add
+              />
 
-                  return (
-                    <SelectItem
-                      key={train.id}
-                      value={train.id}
-                      className="w-full h-full "
-                    >
-                      <div className="flex flex-row items-center gap-3">
-                        <p>{train.name}</p>
-                        {" - "}
-                        <span>
-                          {weekDaysSelected
-                            .map(
-                              (day, index) =>
-                                ({
-                                  [WeekDay.MONDAY]: "Segunda",
-                                  [WeekDay.TUESDAY]: "Terça",
-                                  [WeekDay.WEDNESDAY]: "Quarta",
-                                  [WeekDay.THURSDAY]: "Quinta",
-                                  [WeekDay.FRIDAY]: "Sexta",
-                                  [WeekDay.SATURDAY]: "Sábado",
-                                  [WeekDay.SUNDAY]: "Domingo",
-                                }[day as keyof typeof WeekDay])
-                            )
-                            .join(" e ")}
-                        </span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Selecionados</Label>
-            <div className="flex flex-wrap gap-2">
-              {trainsSelected.map((train) => {
-                const weekDaysSelected = train.weekDays;
-                return (
-                  <Card key={train.id} className="w-full relative">
-                    <CardHeader className="w-full flex flex-row justify-between items-start">
-                      <CardTitle>{train.name}</CardTitle>
-                      <CardDescription>{train.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="flex flex-col gap-2">
-                        <span>{train.description}</span>
-                        <div className="flex mt-2">
-                          {weekDays.map((day) => (
-                            <Badge
-                              key={day}
-                              variant={
-                                weekDaysSelected.includes(day)
-                                  ? "default"
-                                  : "secondary"
-                              }
-                              className="rounded-none text-[0.6rem]"
-                            >
-                              {
-                                {
-                                  [WeekDay.MONDAY]: "S",
-                                  [WeekDay.TUESDAY]: "T",
-                                  [WeekDay.WEDNESDAY]: "Q",
-                                  [WeekDay.THURSDAY]: "Q",
-                                  [WeekDay.FRIDAY]: "S",
-                                  [WeekDay.SATURDAY]: "S",
-                                  [WeekDay.SUNDAY]: "D",
-                                }[day as keyof typeof WeekDay]
-                              }
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardDescription>
-                    </CardContent>
-
-                    <Button
-                      type="button"
-                      onClick={() => removeTrainSelected(train.id)}
-                      variant="outline"
-                      size="icon"
-                      className="absolute top-1/2 transform -translate-y-1/2 right-8"
-                    >
-                      <TbTrashFilled />
-                    </Button>
-                  </Card>
-                );
-              })}
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-tl-none rounded-bl-none border-l-0"
+                onClick={() => router.push("/admin/trains/new")}
+              >
+                Adicionar Treino
+              </Button>
             </div>
-          </div>
+          </FormItem>
+          <FormItem className="flex flex-col gap-1">
+            <FormLabel>Outros Compostos</FormLabel>
+            <div className="flex">
+              <MultipleSelect
+                options={extraCompounds}
+                selectedOptions={extraCompoundsSelected}
+                handleSelect={addExtraCompoundSelected}
+                open={openExtraCompoundSelect}
+                onOpenChange={setOpenExtraCompoundSelect}
+                add
+              />
+
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-tl-none rounded-bl-none border-l-0"
+                onClick={() => router.push("/admin/trains/new")}
+              >
+                Adicionar Composto
+              </Button>
+            </div>
+          </FormItem>
 
           <Button type="submit" className="w-full">
-            Criar
+            {createProtocolMutation.isLoading ? "Criando..." : "Criar"}
           </Button>
         </form>
       </Form>

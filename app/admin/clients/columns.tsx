@@ -12,12 +12,18 @@ import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ProtocolPage from "../protocols/page";
+import { Fragment, useState } from "react";
+import { DataTable } from "@/components/data-table/data-table";
+import { Protocol, columns as protocolColumns } from "../protocols/columns";
 
 const ClientRowActions = ({ clientId }: { clientId: string }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const deleteClient = (id: string) => {
     return api.delete(`/account/${id}`);
@@ -38,32 +44,49 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
     deleteMutation.mutate(clientId);
   };
 
+  const { isLoading, data } = useQuery("protocols", async () => {
+    const res = await api.get<Protocol[]>("/protocol");
+    return res.data;
+  });
+  const rows = data || [];
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir cliente
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
-        >
-          Editar cliente
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() =>
-            router.push(`/admin/protocols/new?clientId=${clientId}`)
-          }
-        >
-          Conectar novo protocolo
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Fragment>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={handleDelete}>
+            Excluir cliente
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
+          >
+            Editar cliente
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Conectar protocolo
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="w-[900px] max-w-[900px]">
+          <DataTable
+            columns={protocolColumns}
+            data={rows}
+            isLoading={isLoading}
+            onDoubleClick={(row) =>
+              router.push(`/admin/protocols/view?protocolId=${row.id}`)
+            }
+          />
+        </DialogContent>
+      </Dialog>
+    </Fragment>
   );
 };
 

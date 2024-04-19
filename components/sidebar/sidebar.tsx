@@ -17,7 +17,6 @@ import {
   TbVaccineBottle,
   TbMenu,
   TbUser,
-  TbDashboard,
   TbFileAnalytics,
 } from "react-icons/tb";
 import {
@@ -114,12 +113,6 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     key?: string;
   }[] = isAdmin ? adminLinks : clientLinks;
 
-  const [open, setOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setOpen(!open);
-  };
-
   return (
     <div className="flex min-h-screen w-full">
       <div className="hidden  bg-card lg:block w-72">
@@ -131,13 +124,13 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </div>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-2">
+            <nav className="relative grid items-start px-2 text-sm font-medium lg:px-4 gap-2">
               {links.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 transition-all hover:bg-muted",
+                    "flex items-center gap-3 rounded-md px-3 py-2 hover:bg-muted transition-all duration-300 ease-in-out",
                     {
                       "bg-muted":
                         (!link.key && path.includes(link.href)) ||

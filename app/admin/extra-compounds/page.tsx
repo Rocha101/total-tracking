@@ -21,8 +21,12 @@ const ExtraCompoundsPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/extra-compounds/new" passHref>
-            <Button>Novo Composto</Button>
+          <Link
+            className="w-full md:w-32"
+            href="/admin/extra-compounds/new"
+            passHref
+          >
+            <Button className="w-full">Novo Composto</Button>
           </Link>
         }
         isLoading={isLoading}

@@ -305,89 +305,97 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
           )}
         </div>
 
-        <ScrollArea className="w-full h-64">
-          <div className="w-full flex flex-col gap-4 py-1">
-            {sets.map((set, index) => (
-              <div key={index} className="w-full flex gap-2 items-end">
-                <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
-                  <Label>Tipo</Label>
-                  <Select
-                    value={set.setType}
-                    onValueChange={(value: SetType) =>
-                      updateType(index, value as SetType)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(SetType).map((type) => (
-                        <SelectItem
-                          key={type}
-                          value={type}
-                          className="w-full truncate text-ellipsis"
-                        >
-                          {
+        <ScrollArea className="w-full h-full ">
+          <Button
+            type="button"
+            onClick={() => {
+              addSet({ quantity: 0, weight: 0 });
+            }}
+            size="sm"
+            className="w-32 flex gap-2 mb-3"
+            variant="secondary"
+          >
+            <TbPlus />
+            Adicionar Série
+          </Button>
+          {sets.length === 0 ? (
+            <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
+              <span className="text-lg text-muted-foreground">
+                Nenhuma série adicionada
+              </span>
+            </div>
+          ) : (
+            <div className="w-full flex flex-col gap-4 py-1">
+              {sets.map((set, index) => (
+                <div key={index} className="w-full flex gap-2 items-end">
+                  <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
+                    <Label>Tipo</Label>
+                    <Select
+                      value={set.setType}
+                      onValueChange={(value: SetType) =>
+                        updateType(index, value as SetType)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(SetType).map((type) => (
+                          <SelectItem
+                            key={type}
+                            value={type}
+                            className="w-full truncate text-ellipsis"
+                          >
                             {
-                              [SetType.WARM_UP]: "Aquecimento",
-                              [SetType.WORKING]: "Trabalho",
-                              [SetType.FEEDER]: "Feeder",
-                              [SetType.TOP]: "Top",
-                              [SetType.BACK_OFF]: "Back off",
-                            }[type]
-                          }
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                              {
+                                [SetType.WARM_UP]: "Aquecimento",
+                                [SetType.WORKING]: "Trabalho",
+                                [SetType.FEEDER]: "Feeder",
+                                [SetType.TOP]: "Top",
+                                [SetType.BACK_OFF]: "Back off",
+                              }[type]
+                            }
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="w-full flex flex-col gap-2">
+                    <Label>Reps</Label>
+                    <Input
+                      type="number"
+                      placeholder="10"
+                      className="w-full "
+                      value={set.quantity}
+                      onChange={(e) =>
+                        updateReps(index, parseFloat(e.target.value))
+                      }
+                    />
+                  </div>
+                  <div className="w-full flex flex-col gap-2">
+                    <Label>Peso</Label>
+                    <Input
+                      type="number"
+                      placeholder="3"
+                      className="w-full "
+                      value={set.weight}
+                      onChange={(e) =>
+                        updateWeight(index, parseFloat(e.target.value))
+                      }
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size="icon"
+                    className="w-10 min-w-10"
+                    onClick={() => removeSet(index)}
+                  >
+                    <TbTrashFilled />
+                  </Button>
                 </div>
-                <div className="w-full flex flex-col gap-2">
-                  <Label>Reps</Label>
-                  <Input
-                    type="number"
-                    placeholder="10"
-                    className="w-full "
-                    value={set.quantity}
-                    onChange={(e) =>
-                      updateReps(index, parseFloat(e.target.value))
-                    }
-                  />
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <Label>Peso</Label>
-                  <Input
-                    type="number"
-                    placeholder="3"
-                    className="w-full "
-                    value={set.weight}
-                    onChange={(e) =>
-                      updateWeight(index, parseFloat(e.target.value))
-                    }
-                  />
-                </div>
-                <Button
-                  type="button"
-                  size="icon"
-                  className="w-10 min-w-10"
-                  onClick={() => removeSet(index)}
-                >
-                  <TbTrashFilled />
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              onClick={() => {
-                addSet({ quantity: 0, weight: 0 });
-              }}
-              size="sm"
-              className="w-32 flex gap-2"
-              variant="secondary"
-            >
-              <TbPlus />
-              Adicionar Série
-            </Button>
-          </div>
+              ))}
+            </div>
+          )}
         </ScrollArea>
 
         <Button type="submit" className="w-full">

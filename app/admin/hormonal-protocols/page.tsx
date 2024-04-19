@@ -22,8 +22,12 @@ const HormonalProtocolPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link href="/admin/hormonal-protocols/new" passHref>
-            <Button>Novo Protocolo</Button>
+          <Link
+            className="w-full md:w-32"
+            href="/admin/hormonal-protocols/new"
+            passHref
+          >
+            <Button className="w-full md:w-32">Novo Protocolo</Button>
           </Link>
         }
         isLoading={isLoading}

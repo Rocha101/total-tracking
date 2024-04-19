@@ -38,6 +38,7 @@ import { TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NewExerciseDialog from "@/components/dialogs/new-exercise";
 import { useMutation, useQuery } from "react-query";
+import MultipleSelect from "@/components/multiple-select";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -93,6 +94,7 @@ const NewTrainPage = () => {
     },
   });
   const [openNewExercise, setOpenNewExercise] = useState(false);
+  const [openNewExerciseSelect, setOpenNewExerciseSelect] = useState(false);
 
   const handleOpenChangeNewExercise = () => {
     setOpenNewExercise(false);
@@ -116,7 +118,7 @@ const NewTrainPage = () => {
   const onSubmit = (values: Zod.infer<typeof trainSchema>) => {
     const train = {
       ...values,
-      exercises: trainExercises.map((exercise) => exercise.id),
+      exercises: trainsSelected.map((exercise) => exercise.id),
       weekDays: selectedWeekDays,
     };
 
@@ -132,16 +134,35 @@ const NewTrainPage = () => {
   );
   const exercises = exercisesData || [];
 
-  const [trainExercises, setTrainExercises] = useState<Exercise[]>([]);
+  const [trainsSelected, setTrainsSelected] = useState<Exercise[]>([]);
 
-  const addTrainExercise = (exerciseId: string) => {
-    const exercise = exercises.find((item: Exercise) => item.id === exerciseId);
-    if (!exercise) return;
-    setTrainExercises((prev) => [...prev, exercise]);
+  const addTrainSelected = (trainId: string) => {
+    const train = exercises.find((item: Exercise) => item.id === trainId);
+    const alreadyExistsIndex = trainsSelected.findIndex(
+      (item) => item.id === trainId
+    );
+
+    if (!train) return;
+
+    if (alreadyExistsIndex !== -1) {
+      setTrainsSelected((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
+    } else setTrainsSelected((prev) => [...prev, train]);
   };
 
-  const removeTrainExercise = (exerciseId: string) => {
-    setTrainExercises(trainExercises.filter((item) => item.id !== exerciseId));
+  const removeTrainSelected = (trainId: string) => {
+    const alreadyExistsIndex = trainsSelected.findIndex(
+      (item) => item.id === trainId
+    );
+
+    if (alreadyExistsIndex !== -1) {
+      setTrainsSelected((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
+    }
   };
 
   const [selectedWeekDays, setSelectedWeekDays] = useState<string[]>([
@@ -224,101 +245,94 @@ const NewTrainPage = () => {
             Selecione os exercícios que compõem o treino
           </div>
           <div className="h-full flex flex-col gap-3">
-            <Select
-              value="Adicionar Exercício"
-              onValueChange={(value: string) => addTrainExercise(value)}
-            >
-              <SelectTrigger>
-                <SelectValue>Adicionar exercício</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <div
-                  onClick={() => setOpenNewExercise(true)}
-                  className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                >
-                  Novo Exercício
-                </div>
-                {exercises.map((exercise: Exercise) => (
-                  <SelectItem key={exercise.id} value={exercise.id}>
-                    {exercise.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <ScrollArea className="w-full h-64">
-              <div className="w-full flex flex-col gap-4 px-3 py-1">
-                {trainExercises.map((exercise: Exercise) => {
-                  const reps = exercise.sets.map((set) => {
-                    const reps = set.reps;
-                    return reps.map((rep) => {
-                      return `${
-                        {
-                          [SetType.WARM_UP]: "Aquecimento",
-                          [SetType.WORKING]: "Trabalho",
-                          [SetType.FEEDER]: "Feeder",
-                          [SetType.TOP]: "Top",
-                          [SetType.BACK_OFF]: "Back off",
-                        }[rep.setType] || ""
-                      }${rep.setType ? " - " : ""}${rep.quantity} x ${
-                        rep.weight
-                      }Kg`;
+            <MultipleSelect
+              options={exercises}
+              selectedOptions={trainsSelected}
+              handleSelect={addTrainSelected}
+              open={openNewExerciseSelect}
+              onOpenChange={setOpenNewExerciseSelect}
+            />
+
+            <ScrollArea className="w-full h-full">
+              {trainsSelected.length > 0 ? (
+                <div className="w-full flex flex-col gap-4 ">
+                  {trainsSelected.map((exercise: Exercise) => {
+                    const reps = exercise.sets.map((set) => {
+                      const reps = set.reps;
+                      return reps.map((rep) => {
+                        return `${
+                          {
+                            [SetType.WARM_UP]: "Aquecimento",
+                            [SetType.WORKING]: "Trabalho",
+                            [SetType.FEEDER]: "Feeder",
+                            [SetType.TOP]: "Top",
+                            [SetType.BACK_OFF]: "Back off",
+                          }[rep.setType] || ""
+                        }${rep.setType ? " - " : ""}${rep.quantity} x ${
+                          rep.weight
+                        }Kg`;
+                      });
                     });
-                  });
 
-                  return (
-                    <Card key={exercise.id} className="relative">
-                      <CardHeader className="w-full flex flex-row justify-between items-start">
-                        <CardTitle>{exercise.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <CardDescription className="flex flex-col gap-2">
-                          <span>
-                            Grupo Muscular:{" "}
-                            {
+                    return (
+                      <Card key={exercise.id} className="relative">
+                        <CardHeader className="w-full flex flex-row justify-between items-start">
+                          <CardTitle>{exercise.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <CardDescription className="flex flex-col gap-2">
+                            <span>
+                              Grupo Muscular:{" "}
                               {
-                                [MuscleGroup.CHEST]: "Peito",
-                                [MuscleGroup.BACK]: "Costas",
-                                [MuscleGroup.SHOULDERS]: "Ombros",
-                                [MuscleGroup.BICEPS]: "Biceps",
-                                [MuscleGroup.TRICEPS]: "Triceps",
-                                [MuscleGroup.FOREARMS]: "Antebraço",
-                                [MuscleGroup.CALVES]: "Panturrilha",
-                                [MuscleGroup.ABS]: "Abdomen",
-                                [MuscleGroup.QUADS]: "Quadriceps",
-                                [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-                                [MuscleGroup.GLUTES]: "Gluteos",
-                                [MuscleGroup.ADDUCTORS]: "Adutores",
-                                [MuscleGroup.ABDUCTORS]: "Abdutores",
-                                [MuscleGroup.TRAPS]: "Trapezio",
-                                [MuscleGroup.LATS]: "Latissimo do dorso",
-                                [MuscleGroup.LOWER_BACK]: "Lombar",
-                                [MuscleGroup.OBLIQUES]: "Oblíquos",
-                                [MuscleGroup.NECK]: "Pescoço",
-                              }[exercise.muscleGroup]
-                            }
-                          </span>
-                          <span>Equipamento: {exercise.equipment}</span>
-                          {reps.map((rep, index) => (
-                            <span key={index}>
-                              {index + 1}ª Série: {rep.join(" ")}
+                                {
+                                  [MuscleGroup.CHEST]: "Peito",
+                                  [MuscleGroup.BACK]: "Costas",
+                                  [MuscleGroup.SHOULDERS]: "Ombros",
+                                  [MuscleGroup.BICEPS]: "Biceps",
+                                  [MuscleGroup.TRICEPS]: "Triceps",
+                                  [MuscleGroup.FOREARMS]: "Antebraço",
+                                  [MuscleGroup.CALVES]: "Panturrilha",
+                                  [MuscleGroup.ABS]: "Abdomen",
+                                  [MuscleGroup.QUADS]: "Quadriceps",
+                                  [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
+                                  [MuscleGroup.GLUTES]: "Gluteos",
+                                  [MuscleGroup.ADDUCTORS]: "Adutores",
+                                  [MuscleGroup.ABDUCTORS]: "Abdutores",
+                                  [MuscleGroup.TRAPS]: "Trapezio",
+                                  [MuscleGroup.LATS]: "Latissimo do dorso",
+                                  [MuscleGroup.LOWER_BACK]: "Lombar",
+                                  [MuscleGroup.OBLIQUES]: "Oblíquos",
+                                  [MuscleGroup.NECK]: "Pescoço",
+                                }[exercise.muscleGroup]
+                              }
                             </span>
-                          ))}
-                        </CardDescription>
-                      </CardContent>
+                            <span>Equipamento: {exercise.equipment}</span>
+                            {reps.map((rep, index) => (
+                              <span key={index}>
+                                {index + 1}ª Série: {rep.join(" ")}
+                              </span>
+                            ))}
+                          </CardDescription>
+                        </CardContent>
 
-                      <Button
-                        type="button"
-                        onClick={() => removeTrainExercise(exercise.id)}
-                        variant="outline"
-                        size="icon"
-                        className="absolute top-1/2 transform -translate-y-1/2 right-8"
-                      >
-                        <TbTrashFilled />
-                      </Button>
-                    </Card>
-                  );
-                })}
-              </div>
+                        <Button
+                          variant="destructive"
+                          className="absolute top-0 bottom-0 my-auto right-12"
+                          onClick={() => removeTrainSelected(exercise.id)}
+                        >
+                          <TbTrashFilled />
+                        </Button>
+                      </Card>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
+                  <span className="text-lg text-muted-foreground">
+                    Nenhum exercício selecionado
+                  </span>
+                </div>
+              )}
             </ScrollArea>
           </div>
 
