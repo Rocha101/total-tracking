@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     }
   }, [account, accountCookie]);
 
-  if (verifyRes.isLoading) {
+  if (verifyRes.isLoading && path.includes("/admin")) {
     return (
       <div className="w-screen h-screen bg-background flex items-center justify-center">
         <TbLoader2 className="text-primary w-32 h-32 animate-spin" />
