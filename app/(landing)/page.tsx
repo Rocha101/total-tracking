@@ -105,7 +105,7 @@ const LandingHomePage = () => {
         </div>
       </section> */}
 
-      <footer className="bg-card justify-center">
+      <footer className="bg-card justify-center" id="contact">
         <div className="mx-auto max-w-screen-xl px-4 py-24 ">
           <div className="w-full grid grid-cols-1 gap-8 lg:grid-cols-2 content-center place-content-center justify-items-center">
             {/* Iron Atlas section */}
