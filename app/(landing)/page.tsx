@@ -80,7 +80,7 @@ const LandingHomePage = () => {
       </section>
 
       <div className="w-full flex items-center justify-center -mb-16">
-        <div className="h-full w-full flex max-w-3xl bg-gradient-to-r from-primary to-orange-500 rounded-xl items-center justify-between py-12 px-12">
+        <div className="h-full w-full flex flex-col md:flex-row gap-6 max-w-3xl bg-gradient-to-r from-primary to-orange-500 rounded-xl items-center justify-between py-12 px-12">
           <h1 className="text-xl text-white">Entre em contato</h1>
           <Link href="https://wa.me/5548998280420" target="_blank">
             <Button
