@@ -129,6 +129,22 @@ const ProtocolCards = ({
     }
   };
 
+  const orderByMealType = (meals: Meal[]) => {
+    const mealTypes = [
+      "BREAKFAST",
+      "MORNING_SNACK",
+      "LUNCH",
+      "AFTERNOON_SNACK",
+      "DINNER",
+    ];
+
+    return meals.sort((a, b) => {
+      return mealTypes.indexOf(a.mealType) - mealTypes.indexOf(b.mealType);
+    });
+  };
+
+  const orderedMeals = diet?.meals ? orderByMealType(diet.meals) : [];
+
   const protocolRef = useRef(null);
   const handlePrint = useReactToPrint({
     documentTitle: "Protocolo de Treino",
@@ -160,7 +176,7 @@ const ProtocolCards = ({
                 <CardDescription>{diet?.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                {diet?.meals.map((meal: Meal) => (
+                {orderedMeals.map((meal: Meal) => (
                   <Card
                     key={meal.id}
                     className="relative shadow-none border-l-4 border-l-primary"

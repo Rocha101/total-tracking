@@ -35,6 +35,7 @@ import { TbSearch } from "react-icons/tb";
 import { Textarea } from "../ui/textarea";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Meal } from "@/app/admin/meals/meals";
+import { useRouter } from "next/navigation";
 
 const mealSchema = object({
   name: string(),
@@ -56,9 +57,11 @@ const mealSchema = object({
 interface MealFormProps {
   onSubmitOk?: () => void;
   isDialog?: boolean;
+  editId: string;
 }
 
-const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
+const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { isLoading: isFoodsLoading, data } = useQuery("foods", async () => {
     const res = await api.get<Food[]>("/food");
@@ -87,24 +90,24 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
 
   const foods = data || [];
 
-  const createMealMutation = useMutation(
-    (values) => api.post("/meal", values),
+  const updateMealMutation = useMutation(
+    (values) => api.put(`/meal/${editId}`, values),
     {
       onSuccess: () => {
-        toast("Refeição criada com sucesso!");
+        toast("Refeição atualizada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
         queryClient.invalidateQueries("meals");
       },
       onError: () => {
-        toast("Erro ao criar refeição!");
+        toast("Erro ao atualizar refeição!");
       },
     }
   );
 
   const onSubmit = (values: any) => {
-    createMealMutation.mutate(values);
+    updateMealMutation.mutate(values);
   };
 
   const handleOpenChangeNewFood = () => {
@@ -126,6 +129,38 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
   };
 
   const foodsCheckbox = form.watch("foods") || [];
+
+  const { isLoading: isLoadingDiet, data: meal } = useQuery(
+    ["meal", editId],
+    async () => {
+      const res = await api.get<Meal>(`/meal/${editId}`);
+      return res.data;
+    },
+    {
+      enabled: !!editId,
+    }
+  );
+
+  useEffect(() => {
+    if (meal) {
+      form.reset({
+        name: meal?.name || undefined,
+        description: meal?.description || undefined,
+        foods: meal?.foods.map((food) => food.id) || undefined,
+        mealType: meal?.mealType as unknown as
+          | "BREAKFAST"
+          | "MORNING_SNACK"
+          | "LUNCH"
+          | "AFTERNOON_SNACK"
+          | "DINNER"
+          | undefined,
+        totalCalories: meal?.totalCalories || undefined,
+        totalProteins: meal?.totalProteins || undefined,
+        totalCarbs: meal?.totalCarbs || undefined,
+        totalFats: meal?.totalFats || undefined,
+      });
+    }
+  }, [meal, form]);
 
   return (
     <Fragment>
@@ -237,7 +272,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               : null}
           </div>
           <Button type="submit" className="w-full">
-            {createMealMutation.isLoading ? "Criando..." : "Criar"}
+            {updateMealMutation.isLoading ? "Atualizando..." : "Atualizar"}
           </Button>
         </form>
       </Form>
@@ -249,4 +284,4 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
   );
 };
 
-export default MealForm;
+export default EditMealForm;

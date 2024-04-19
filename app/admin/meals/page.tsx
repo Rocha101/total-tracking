@@ -8,8 +8,10 @@ import Link from "next/link";
 import PageHeader from "@/components/page-header";
 import { Meal } from "./meals";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const MealPage = () => {
+  const router = useRouter();
   const { isLoading, data } = useQuery("meals", async () => {
     const res = await api.get<Meal[]>("/meal");
     return res.data;
@@ -28,6 +30,7 @@ const MealPage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) => router.push(`/admin/meals/view/${row.id}`)}
       />
     </div>
   );

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  TbBarbell,
   TbBrandGithub,
   TbBrandInstagram,
   TbBrandWhatsapp,
@@ -77,40 +78,29 @@ const LandingHomePage = () => {
           />
         </div>
       </section>
-      {/*  <section
-        id="contact"
-        className="h-screen flex items-center justify-center relative"
-      >
-        <Image
-          src="/landing-page/hero-contact.png"
-          layout="fill"
-          objectFit="cover"
-          alt="Main background image"
-          className="-z-10 blur-sm"
-          quality={100}
-        />
-        <div className="flex flex-col gap-6 items-center justify-center h-screen">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl  font-bold text-center text-white">
-            Contato
-          </h1>
-          <p className="text-md md:text-xl lg:text-2xl text-center text-gray-600 dark:text-gray-300">
-            Entre em contato conosco para saber mais sobre nossos planos
-          </p>
+
+      <div className="w-full flex items-center justify-center -mb-16">
+        <div className="h-full w-full flex max-w-3xl bg-gradient-to-r from-primary to-orange-500 rounded-xl items-center justify-between py-12 px-12">
+          <h1 className="text-xl text-white">Entre em contato</h1>
           <Link href="https://wa.me/5548998280420" target="_blank">
-            <Button className="mt-2 bg-green-600 hover:bg-green-600">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:bg-green-600 rounded-md"
+            >
               <TbBrandWhatsapp className="h-6 w-6 mr-2" />
               Fale conosco
             </Button>
           </Link>
         </div>
-      </section> */}
+      </div>
 
-      <footer className="bg-card justify-center" id="contact">
-        <div className="mx-auto max-w-screen-xl px-4 py-24 ">
+      <footer className="bg-border justify-center border-t" id="contact">
+        <div className="mx-auto max-w-screen-xl px-4 py-36 ">
           <div className="w-full grid grid-cols-1 gap-8 lg:grid-cols-2 content-center place-content-center justify-items-center">
             {/* Iron Atlas section */}
             <div className="flex flex-col justify-start items-center lg:items-start">
-              <div className="flex justify-center text-white sm:justify-start">
+              <div className="flex items-center gap-3 justify-center text-white sm:justify-start">
+                <TbBarbell className="h-12 w-12 text-primary" />
                 <p className="text-2xl font-bold">Iron Atlas</p>
               </div>
               <p className="mt-6 max-w-md text-center leading-relaxed sm:max-w-xs md:text-left">
@@ -135,6 +125,7 @@ const LandingHomePage = () => {
               <div className="mt-6 flex flex-col gap-4 justify-start">
                 <Link
                   href="mailto:iron.atlas.app@gmail.com"
+                  target="_blank"
                   className="flex items-center gap-2 "
                 >
                   <TbMail className="h-6 w-6 text-primary" />
@@ -142,6 +133,7 @@ const LandingHomePage = () => {
                 </Link>
                 <Link
                   href="tel:+5548998280420"
+                  target="_blank"
                   className="flex items-center gap-2 "
                 >
                   <TbPhone className="h-6 w-6 text-primary" />

@@ -78,19 +78,6 @@ const EditDietPage = ({
     updateDietMutation.mutate(values);
   };
 
-  const { isLoading: isLoadingDiet, data: dietData } = useQuery(
-    ["diet", dietId],
-    async () => {
-      const res = await api.get<Diet>(`/diet/${dietId}`);
-      return res.data;
-    },
-    {
-      enabled: !!dietId,
-    }
-  );
-  const diet = dietData;
-  console.log(diet);
-
   const { isLoading: isLoadingMeals, data: mealsData } = useQuery(
     "meals",
     async () => {
@@ -122,12 +109,23 @@ const EditDietPage = ({
     setOpenNewMeal(!openNewMeal);
   };
 
+  const { isLoading: isLoadingDiet, data: diet } = useQuery(
+    ["diet", dietId],
+    async () => {
+      const res = await api.get<Diet>(`/diet/${dietId}`);
+      return res.data;
+    },
+    {
+      enabled: !!dietId,
+    }
+  );
+
   useEffect(() => {
     if (diet) {
       form.reset({
-        name: diet.name,
-        description: diet.description,
-        meals: diet.meals.map((meal) => meal.id),
+        name: diet.name || undefined,
+        description: diet.description || undefined,
+        meals: diet.meals.map((meal) => meal.id) || undefined,
       });
     }
   }, [diet, form]);

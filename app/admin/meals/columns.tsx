@@ -1,16 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Meal, MealType } from "./meals.d";
+import { Meal } from "./meals.d";
 import api from "@/app/utils/api";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
@@ -20,6 +16,7 @@ import { useMutation, useQueryClient } from "react-query";
 
 const MealRowActions = ({ mealId }: { mealId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteMeal = (id: string) => {
     return api.delete(`/meal/${id}`);
@@ -52,13 +49,15 @@ const MealRowActions = ({ mealId }: { mealId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir refeição
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/diets/${mealId}`}
-            className=" pointer-events-none"
-          >
-            Editar refeição
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
+        >
+          Editar refeição
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/meals/view/${mealId}`)}
+        >
+          Ver refeição
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

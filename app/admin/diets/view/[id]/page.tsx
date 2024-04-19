@@ -69,6 +69,22 @@ const ViewDietPage = ({
     }
   );
 
+  const orderByMealType = (meals: Meal[]) => {
+    const mealTypes = [
+      "BREAKFAST",
+      "MORNING_SNACK",
+      "LUNCH",
+      "AFTERNOON_SNACK",
+      "DINNER",
+    ];
+
+    return meals.sort((a, b) => {
+      return mealTypes.indexOf(a.mealType) - mealTypes.indexOf(b.mealType);
+    });
+  };
+
+  const orderedMeals = diet?.meals ? orderByMealType(diet.meals) : [];
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-96">
@@ -96,8 +112,8 @@ const ViewDietPage = ({
           </CardHeader>
         </Card>
       )}
-      <div>
-        {diet?.meals.map((meal: Meal) => (
+      <div className="flex flex-col gap-3">
+        {orderedMeals.map((meal: Meal) => (
           <Card
             key={meal.id}
             className="relative shadow-none border-l-4 border-l-primary"
