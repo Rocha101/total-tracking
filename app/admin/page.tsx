@@ -16,7 +16,7 @@ const Dashboard = () => {
   const { isLoading: ClientsLoading, data: ClientsCount } = useQuery(
     "clientsCount",
     async () => {
-      const res = await api.get("/account/clientsCountNumber");
+      const res = await api.get("/dashboard/clientsCount");
       console.log(res);
       return res.data;
     }
@@ -25,13 +25,11 @@ const Dashboard = () => {
   const { isLoading: ProtocolsLoading, data: ProtocolsCount } = useQuery(
     "protocolsCount",
     async () => {
-      const res = await api.get("/protocol/countNumber");
+      const res = await api.get("/dashboard/protocolCount");
       console.log(res);
       return res.data;
     }
   );
-
-  console.log(ClientsCount, ProtocolsCount);
 
   return (
     <div className="h-full">
