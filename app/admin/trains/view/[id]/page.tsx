@@ -142,7 +142,7 @@ const ViewTrainPage = ({
                 </CardHeader>
                 <CardContent className="pt-6 h-full w-full space-y-1.5 flex flex-col items-end justify-center text-xs">
                   <span>
-                    Grupo Muscular:
+                    Grupo Muscular:{" "}
                     {
                       {
                         [MuscleGroup.CHEST]: "Peito",

@@ -25,8 +25,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "../table-view-options";
-import { TbLoader2 } from "react-icons/tb";
+import { TbChevronLeft, TbChevronRight, TbLoader2 } from "react-icons/tb";
 import { Input } from "../ui/input";
+import { ChevronLeftIcon } from "@radix-ui/react-icons";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -96,7 +97,7 @@ export function DataTable<TData, TValue>({
         <Table className="bg-card">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-card">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id} className="truncate text-xs ">
@@ -157,22 +158,26 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 mt-2">
+      <div className="flex items-center justify-end space-x-2 bg-card px-3 py-2 border border-t-0">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length} resultado
+          {table.getFilteredRowModel().rows.length > 1 ? "s" : ""}
+        </div>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Anterior
+          <TbChevronLeft className="w-4 h-4" />
         </Button>
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Próximo
+          <TbChevronRight className="w-4 h-4" />
         </Button>
       </div>
     </div>

@@ -4,11 +4,11 @@ import { useRef, useState } from "react";
 import PageHeader from "@/components/page-header";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/app/utils/api";
-import { Protocol } from "../../protocols/columns";
-import Diet from "../../diets/diets";
-import { Train } from "../../trains/train";
-import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
-import ExtraCompounds from "../../extra-compounds/extra-compounds";
+import { Protocol } from "../../columns";
+import Diet from "../../../diets/diets";
+import { Train } from "../../../trains/train";
+import { HormonalProtocol } from "../../../hormonal-protocols/hormonal-protocols";
+import ExtraCompounds from "../../../extra-compounds/extra-compounds";
 import { useAuth } from "@/context/auth";
 import { useQuery } from "react-query";
 import ProtocolCards from "@/components/protocol-cards";
@@ -25,10 +25,15 @@ enum WeekDay {
   SUNDAY = "SUNDAY",
 }
 
-const ViewMoreProtocol = () => {
+const ViewMoreProtocol = ({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const protocolId = searchParams.get("protocolId");
+  const protocolId = params.id;
   const { account } = useAuth();
   const [trainWeekDay, setTrainWeekDay] = useState<WeekDay>(
     () => WeekDay.MONDAY

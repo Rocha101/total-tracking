@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -27,11 +27,12 @@ import {
 } from "@/components/ui/card";
 import { TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Hormone from "../../hormones/hormones";
+import Hormone from "../../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
 import { useMutation, useQuery } from "react-query";
 import MultipleSelect from "@/components/multiple-select";
 import { Label } from "@/components/ui/label";
+import { HormonalProtocol } from "../../hormonal-protocols";
 
 const hormonalProtocolSchema = object({
   name: string({
@@ -43,7 +44,8 @@ const hormonalProtocolSchema = object({
   hormones: string().array(),
 });
 
-const NewHormonalProtocolPage = () => {
+const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
+  const hormonalProtocolId = params.id;
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormonalProtocolSchema>>({
     resolver: zodResolver(hormonalProtocolSchema),
@@ -58,9 +60,9 @@ const NewHormonalProtocolPage = () => {
     setOpenNewHormone(false);
   };
 
-  const createHormonalProtocolMutation = useMutation(
+  const updateHormonalProtocolMutation = useMutation(
     (values: Zod.infer<typeof hormonalProtocolSchema>) =>
-      api.post("/hormoneProtocol", values),
+      api.put(`/hormoneProtocol/${hormonalProtocolId}`, values),
     {
       onSuccess: (res) => {
         console.log(res);
@@ -80,22 +82,21 @@ const NewHormonalProtocolPage = () => {
       hormones: protocolHormones.map((hormone) => hormone.id),
     };
 
-    createHormonalProtocolMutation.mutate(hormoneProtocol);
+    updateHormonalProtocolMutation.mutate(hormoneProtocol);
   };
 
-  const { isLoading: isLoadingHormones, data: hormonesData } = useQuery(
+  const { isLoading: isLoadingHormones, data: hormones = [] } = useQuery(
     "hormones",
     async () => {
       const res = await api.get<Hormone[]>("/hormone");
       return res.data;
     }
   );
-  const hormones = hormonesData || [];
 
   const [protocolHormones, setProtocolHormones] = useState<Hormone[]>([]);
 
   const addHormone = (hormoneId: string) => {
-    const hormone = hormones.find((item: Hormone) => item.id === hormoneId);
+    const hormone = hormones?.find((item: Hormone) => item.id === hormoneId);
     const alreadyExistsIndex = protocolHormones.findIndex(
       (item) => item.id === hormoneId
     );
@@ -117,7 +118,30 @@ const NewHormonalProtocolPage = () => {
     );
   };
 
-  console.log(hormones);
+  const { data: hormonalProtocol } = useQuery(
+    ["hormonalProtocol", hormonalProtocolId],
+    async () => {
+      const res = await api.get<HormonalProtocol>(
+        `/hormoneProtocol/${hormonalProtocolId}`
+      );
+      return res.data;
+    },
+    {
+      enabled: !!hormonalProtocolId,
+    }
+  );
+
+  useEffect(() => {
+    if (hormonalProtocol) {
+      form.reset({
+        name: hormonalProtocol?.name || "",
+        description: hormonalProtocol?.description || "",
+        hormones: hormonalProtocol.hormones.map((hormone) => hormone.id),
+      });
+
+      setProtocolHormones(hormonalProtocol.hormones);
+    }
+  }, [form, hormonalProtocol]);
 
   return (
     <div>
@@ -207,9 +231,9 @@ const NewHormonalProtocolPage = () => {
           </div>
           <div className="w-full flex justify-end">
             <Button type="submit" className="w-full">
-              {createHormonalProtocolMutation.isLoading
-                ? "Criando..."
-                : "Criar"}
+              {updateHormonalProtocolMutation.isLoading
+                ? "Salvando..."
+                : "Salvar"}
             </Button>
           </div>
         </form>

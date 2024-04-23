@@ -156,7 +156,12 @@ const ProtocolCards = ({
     <div ref={protocolRef} className="">
       <div className="flex justify-end gap-2 mb-3 print:hidden">
         {extraActions}
-        <Button onClick={handlePrint} variant="secondary" size="sm">
+        <Button
+          onClick={handlePrint}
+          variant="secondary"
+          size="sm"
+          disabled={!protocol}
+        >
           <TbPrinter className="mr-2" />
           Imprimir
         </Button>

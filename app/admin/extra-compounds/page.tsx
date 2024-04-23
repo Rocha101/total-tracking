@@ -16,7 +16,10 @@ const ExtraCompoundsPage = () => {
   const rows = data || [];
   return (
     <div>
-      <PageHeader title="Outros Compostos" />
+      <PageHeader
+        title="Outros Compostos"
+        description="Aqui você pode gerenciar vitaminas, suplementos e outros compostos em geral"
+      />
       <DataTable
         columns={columns}
         data={rows}

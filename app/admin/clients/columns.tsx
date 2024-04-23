@@ -69,23 +69,13 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
             Editar cliente
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            Conectar protocolo
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/clients/protocol/${clientId}`)}
+          >
+            Ver protocolo
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-[900px] max-w-[900px]">
-          <DataTable
-            columns={protocolColumns}
-            data={rows}
-            isLoading={isLoading}
-            onDoubleClick={(row) =>
-              router.push(`/admin/protocols/view?protocolId=${row.id}`)
-            }
-          />
-        </DialogContent>
-      </Dialog>
     </Fragment>
   );
 };

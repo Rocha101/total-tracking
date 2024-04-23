@@ -7,6 +7,7 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const ProtocolPage = () => {
   const router = useRouter();
@@ -24,6 +25,11 @@ const ProtocolPage = () => {
         isLoading={isLoading}
         onDoubleClick={(row) =>
           router.push(`/admin/protocols/view?protocolId=${row.id}`)
+        }
+        actions={
+          <Button onClick={() => router.push("/admin/protocols/new")}>
+            Novo Protocolo
+          </Button>
         }
       />
     </div>

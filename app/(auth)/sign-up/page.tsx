@@ -196,7 +196,7 @@ function SignUpPage() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        disabled={true}
+                        disabled={!!coachId}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue />
@@ -230,6 +230,22 @@ function SignUpPage() {
                       >
                         Quero adquirir uma chave de ativação
                       </Link>
+                    </FormItem>
+                  )}
+                />
+              )}
+              {form.watch("accountType") === "CUSTOMER" && !coachId && (
+                <FormField
+                  control={form.control}
+                  name="coachId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Código do coach</FormLabel>
+
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

@@ -53,14 +53,12 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
           Excluir protocolo
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => router.push(`/admin/diets/${protocolId}`)}
+          onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
         >
           Editar protocolo
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() =>
-            router.push(`/admin/protocols/view?protocolId=${protocolId}`)
-          }
+          onClick={() => router.push(`/admin/protocols/view/${protocolId}`)}
         >
           Ver protocolo
         </DropdownMenuItem>

@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Form,
   FormControl,
   FormField,
@@ -17,12 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,6 +35,7 @@ import { useMutation, useQuery } from "react-query";
 import { TbTrashFilled } from "react-icons/tb";
 import ExtraCompounds from "../../extra-compounds/extra-compounds";
 import MultipleSelect from "@/components/multiple-select";
+import { Account } from "../../exercises/exercise";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -73,6 +67,7 @@ const NewProtocolPage = () => {
   });
   const [openTrainSelect, setOpenTrainSelect] = useState(false);
   const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
+  const [openClientsSelect, setOpenClientsSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
@@ -101,7 +96,7 @@ const NewProtocolPage = () => {
     createProtocolMutation.mutate(protocol);
   };
 
-  const { data: dietsData } = useQuery({
+  const { data: diets = [] } = useQuery({
     queryKey: ["diets"],
     queryFn: async () => {
       const response = await api.get<Diet[]>(`/diet`);
@@ -109,9 +104,7 @@ const NewProtocolPage = () => {
     },
   });
 
-  const diets = dietsData || [];
-
-  const { data: trainsData } = useQuery({
+  const { data: trains = [] } = useQuery({
     queryKey: ["trains"],
     queryFn: async () => {
       const response = await api.get<Train[]>(`/train`);
@@ -119,9 +112,7 @@ const NewProtocolPage = () => {
     },
   });
 
-  const trains = trainsData || [];
-
-  const { data: hormonalProtocolsData } = useQuery({
+  const { data: hormonalProtocols = [] } = useQuery({
     queryKey: ["hormonalProtocols"],
     queryFn: async () => {
       const response = await api.get<HormonalProtocol[]>(`/hormoneProtocol`);
@@ -129,17 +120,13 @@ const NewProtocolPage = () => {
     },
   });
 
-  const hormonalProtocols = hormonalProtocolsData || [];
-
-  const { data: extraCompoundsData } = useQuery({
+  const { data: extraCompounds = [] } = useQuery({
     queryKey: ["extraCompounds"],
     queryFn: async () => {
       const response = await api.get<ExtraCompounds[]>(`/extraCompound`);
       return response.data;
     },
   });
-
-  const extraCompounds = extraCompoundsData || [];
 
   useEffect(() => {
     if (clientId) {
@@ -186,19 +173,10 @@ const NewProtocolPage = () => {
     } else setExtraCompoundsSelected((prev) => [...prev, extraCompound]);
   };
 
-  useEffect(() => {
-    console.log(trainsSelected);
-  }, [trainsSelected]);
-
-  const weekDays = [
-    WeekDay.MONDAY,
-    WeekDay.TUESDAY,
-    WeekDay.WEDNESDAY,
-    WeekDay.THURSDAY,
-    WeekDay.FRIDAY,
-    WeekDay.SATURDAY,
-    WeekDay.SUNDAY,
-  ];
+  const { data: clientsData = [] } = useQuery("clients", async () => {
+    const res = await api.get<Account[]>("/account/clients");
+    return res.data;
+  });
 
   return (
     <div>
@@ -234,6 +212,36 @@ const NewProtocolPage = () => {
               </FormItem>
             )}
           />
+          {!clientId && (
+            <FormField
+              control={form.control}
+              name="clientId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cliente</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um cliente" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {clientsData.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <FormField
             control={form.control}
             name="diet"
@@ -260,12 +268,10 @@ const NewProtocolPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
-
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="hormonalProtocol"
