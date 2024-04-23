@@ -43,10 +43,10 @@ const LandingHomePage = () => {
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_650px]">
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-gray-900 dark:text-gray-50">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-white">
                   Tome o controle dos seus protocolos
                 </h1>
-                <p className="max-w-[600px] text-gray-600 md:text-xl dark:text-gray-400">
+                <p className="max-w-[600px] md:text-xl text-muted dark:text-muted-foreground">
                   Nosso sistema de gestão de fisiculturismo foi desenvolvido
                   para atender às necessidades de atletas e treinadores,
                   garantindo desempenho e progresso ideais
@@ -63,7 +63,7 @@ const LandingHomePage = () => {
       >
         <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-12 px-4 md:px-12 py-24">
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
               Sobre o Iron Atlas
             </h1>
             <p className="text-md md:text-lg text-center text-muted-foreground px-3">
@@ -93,7 +93,7 @@ const LandingHomePage = () => {
       >
         <div className="w-full flex flex-col items-center justify-center gap-12 px-4 md:px-12 py-24">
           <div className="w-full flex flex-col items-center justify-center gap-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center ">
               Recursos
             </h1>
             <p className="text-md md:text-lg text-center text-muted-foreground px-3">
@@ -171,10 +171,10 @@ const LandingHomePage = () => {
       >
         <div className="w-full flex flex-col items-center justify-center gap-12 px-4 md:px-12 py-24">
           <div className="w-full flex flex-col items-center justify-center gap-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center ">
               Perguntas frequentes
             </h1>
-            <p className="text-md md:text-lg text-center text-white px-3">
+            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
               Confira as perguntas mais frequentes sobre o Iron Atlas
             </p>
           </div>
@@ -278,7 +278,7 @@ const LandingHomePage = () => {
             <div className="flex flex-col justify-start items-center lg:items-start">
               <div className="flex items-center gap-3 justify-center text-white sm:justify-start">
                 <TbBarbell className="h-12 w-12 text-primary" />
-                <p className="text-2xl font-bold">Iron Atlas</p>
+                <p className="text-2xl font-bold text-primary">Iron Atlas</p>
               </div>
               <p className="mt-6 max-w-md text-center leading-relaxed sm:max-w-xs md:text-left">
                 A plataforma de gestão para fisiculturismo mais completa do

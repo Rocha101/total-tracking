@@ -35,27 +35,36 @@ const LandingNavBar = () => {
             <nav className="grid gap-6 text-lg font-medium p-4">
               <div className="flex flex-col items-start gap-4 mt-12">
                 <Link href="/#features">
-                  <Button variant={"link"} className="text-white">
+                  <Button
+                    variant={"link"}
+                    className="text-white dark:text-white"
+                  >
                     Funcionalidades
                   </Button>
                 </Link>
                 <Link href="/#pricing">
-                  <Button variant={"link"} className="text-white">
+                  <Button
+                    variant={"link"}
+                    className="text-white dark:text-white"
+                  >
                     Preço
                   </Button>
                 </Link>
                 <Link href="/#contact">
-                  <Button variant={"link"} className="text-white">
+                  <Button
+                    variant={"link"}
+                    className="text-black dark:text-white"
+                  >
                     Contato
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button variant="link" className="text-white">
+                  <Button variant="link" className="text-black dark:text-white">
                     Criar conta
                   </Button>
                 </Link>
                 <Link href="/sign-in">
-                  <Button variant="link" className="text-white">
+                  <Button variant="link" className="text-black dark:text-white">
                     Entrar
                   </Button>
                 </Link>
@@ -67,22 +76,22 @@ const LandingNavBar = () => {
         <nav className="hidden md:flex items-center justify-center">
           <div className="flex gap-6">
             <Link href="/#faq">
-              <Button variant={"link"} className="text-white">
+              <Button variant={"link"} className="text-black dark:text-white">
                 FAQ
               </Button>
             </Link>
             <Link href="/#features">
-              <Button variant={"link"} className="text-white">
+              <Button variant={"link"} className="text-black dark:text-white">
                 Funcionalidades
               </Button>
             </Link>
             <Link href="/#pricing">
-              <Button variant={"link"} className="text-white">
+              <Button variant={"link"} className="text-black dark:text-white">
                 Preço
               </Button>
             </Link>
             <Link href="/#contact">
-              <Button variant={"link"} className="text-white">
+              <Button variant={"link"} className="text-black dark:text-white">
                 Contato
               </Button>
             </Link>
@@ -91,7 +100,7 @@ const LandingNavBar = () => {
 
         <div className="hidden md:flex items-center gap-6">
           <Link href="/sign-up">
-            <Button variant="link" className="text-white">
+            <Button variant="link" className="text-black dark:text-white">
               Criar conta
             </Button>
           </Link>

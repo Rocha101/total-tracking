@@ -18,6 +18,7 @@ import {
   TbMenu,
   TbUser,
   TbFileAnalytics,
+  TbMeat,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -70,7 +71,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
       icon: TbBowl,
       href: "/admin/meals",
     },
-    { name: "Alimentos", icon: TbToolsKitchen3, href: "/admin/foods" },
+    { name: "Alimentos", icon: TbMeat, href: "/admin/foods" },
     {
       name: "Treinos",
       icon: TbBarbell,
