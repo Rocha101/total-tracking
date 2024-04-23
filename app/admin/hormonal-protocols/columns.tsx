@@ -12,9 +12,15 @@ import { TbDots } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
-const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
+const HormoneActionRows = ({
+  hormonalProtocolId,
+}: {
+  hormonalProtocolId: string;
+}) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteHormone = (id: string) => {
     return api.delete(`/hormoneProtocol/${id}`);
@@ -32,7 +38,7 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
   });
 
   const handleDelete = () => {
-    deleteMutation.mutate(hormoneId);
+    deleteMutation.mutate(hormonalProtocolId);
   };
 
   return (
@@ -47,13 +53,19 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir protocolo
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${hormoneId}`}
-            className=" pointer-events-none"
-          >
-            Editar protocolo
-          </Link>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/admin/hormonal-protocols/edit/${hormonalProtocolId}`)
+          }
+        >
+          Editar protocolo
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/admin/hormonal-protocols/view/${hormonalProtocolId}`)
+          }
+        >
+          Ver protocolo
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -83,6 +95,8 @@ export const columns: ColumnDef<HormonalProtocol>[] = [
   },
   {
     header: "Ações",
-    cell: ({ row }) => <HormoneActionRows hormoneId={row.original.id} />,
+    cell: ({ row }) => (
+      <HormoneActionRows hormonalProtocolId={row.original.id} />
+    ),
   },
 ];

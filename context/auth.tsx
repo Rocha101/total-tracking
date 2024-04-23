@@ -16,6 +16,8 @@ interface Account {
     role: string;
     coachId: string;
     accountType: string;
+    accountImageUrl?: string;
+    password?: string;
   };
   token: string;
 }

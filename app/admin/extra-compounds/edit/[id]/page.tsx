@@ -19,14 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { object, string, number, enum as enumValidator, infer } from "zod";
+import { object, string, number, enum as enumValidator } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useMutation, useQuery } from "react-query";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import Link from "next/link";
-import { useMutation } from "react-query";
 import { useEffect } from "react";
+import ExtraCompounds from "../../extra-compounds";
 
 const extraCompoundSchema = object({
   name: string({
@@ -43,51 +43,51 @@ const extraCompoundSchema = object({
   accountId: string().optional(),
 });
 
-const NewExtraCompound = () => {
+const EditHormonePage = ({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) => {
+  const extraCompoundId = params.id;
   const router = useRouter();
   const form = useForm<Zod.infer<typeof extraCompoundSchema>>({
     resolver: zodResolver(extraCompoundSchema),
     defaultValues: {
       unit: "MG",
+      description: "",
+      concentration: 0,
+      quantity: 0,
     },
   });
 
-  const createCompoundMutation = useMutation(
+  const updateHormoneMutation = useMutation(
     (values: Zod.infer<typeof extraCompoundSchema>) =>
-      api.post("/extraCompound", values),
+      api.put(`/extraCompound/${extraCompoundId}`, values),
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Composto criado com sucesso!");
+        toast("Composto editado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Composto!");
+        toast("Erro ao editar Composto!");
       },
     }
   );
 
   const onSubmit = (values: Zod.infer<typeof extraCompoundSchema>) => {
-    const extraCompound = {
+    const hormone = {
       ...values,
       concentrationUnit: getConcentrationUnit(),
     };
 
-    createCompoundMutation.mutate(extraCompound);
+    console.log(hormone);
+
+    updateHormoneMutation.mutate(hormone);
   };
-
-  const unit = form.watch("unit");
-
-  useEffect(() => {
-    console.log(unit);
-    if (unit === "UNIT") {
-      form.setValue("concentration", 0);
-    }
-    if (unit === "MG" || unit === "ML") {
-      form.setValue("concentration", 0);
-    }
-  }, [form, unit]);
 
   const getConcentrationUnit = (): "MG" | "MG_ML" | undefined => {
     switch (form.watch("unit")) {
@@ -102,9 +102,48 @@ const NewExtraCompound = () => {
 
   const concentrationUnit = getConcentrationUnit();
 
+  const { data: extraCompound } = useQuery(
+    ["extraCompound", extraCompoundId],
+    async () => {
+      const res = await api.get<ExtraCompounds>(
+        `/extraCompound/${extraCompoundId}`
+      );
+      console.log(res.data);
+      return res.data;
+    },
+    {
+      enabled: !!extraCompoundId,
+    }
+  );
+
+  const unit = form.watch("unit");
+
+  useEffect(() => {
+    console.log(unit);
+    if (unit === "UNIT") {
+      form.setValue("concentration", 0);
+    }
+    if (unit === "MG" || unit === "ML") {
+      form.setValue("concentration", 0);
+    }
+  }, [form, unit]);
+
+  useEffect(() => {
+    if (extraCompound) {
+      if (extraCompound.name) form.setValue("name", extraCompound.name);
+      if (extraCompound.description)
+        form.setValue("description", extraCompound.description);
+      if (extraCompound.quantity)
+        form.setValue("quantity", extraCompound.quantity);
+      if (extraCompound.unit) form.setValue("unit", extraCompound.unit);
+      if (extraCompound.concentration)
+        form.setValue("concentration", extraCompound.concentration);
+    }
+  }, [extraCompound, form]);
+
   return (
     <div>
-      <PageHeader title="Novo Composto" backlink />
+      <PageHeader title="Editar Composto" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
@@ -117,7 +156,7 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Vitamina K2" {...field} />
+                  <Input placeholder="Enantato de testosterona" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,6 +175,7 @@ const NewExtraCompound = () => {
               </FormItem>
             )}
           />
+
           <div className="flex">
             <FormField
               control={form.control}
@@ -196,8 +236,8 @@ const NewExtraCompound = () => {
                     <FormLabel>Concentração</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
                         placeholder="10"
+                        type="number"
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -220,7 +260,7 @@ const NewExtraCompound = () => {
           )}
 
           <Button type="submit" className="w-full">
-            {createCompoundMutation.isLoading ? "Criando..." : "Criar"}
+            {updateHormoneMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         </form>
       </Form>
@@ -228,4 +268,4 @@ const NewExtraCompound = () => {
   );
 };
 
-export default NewExtraCompound;
+export default EditHormonePage;

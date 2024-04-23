@@ -30,6 +30,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import formatDate from "@/app/utils/formatData";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const subscriptionSchema = z.object({
   activationId: z.string({
@@ -37,12 +38,36 @@ const subscriptionSchema = z.object({
   }),
 });
 
+const accountUpdateSchema = z.object({
+  name: z.string({
+    required_error: "Nome obrigatório",
+  }),
+  email: z
+    .string({
+      required_error: "Email obrigatório",
+    })
+    .email({ message: "Email inválido" }),
+  password: z
+    .string({
+      required_error: "Senha obrigatória",
+    })
+    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+});
 const SettingsPage = () => {
+  const { account } = useAuth();
   const subscriptionForm = useForm<Zod.infer<typeof subscriptionSchema>>({
     resolver: zodResolver(subscriptionSchema),
     defaultValues: {},
   });
-  const { account } = useAuth();
+  const accountUpdateForm = useForm<Zod.infer<typeof accountUpdateSchema>>({
+    resolver: zodResolver(accountUpdateSchema),
+    defaultValues: {
+      name: account?.account?.name,
+      email: account?.account?.email,
+      password: account?.account?.password,
+    },
+  });
+
   const accountId = account?.account?.id;
 
   const subscriptionChangeMutation = useMutation(
@@ -57,6 +82,24 @@ const SettingsPage = () => {
       },
     }
   );
+
+  const accountUpdateMutation = useMutation(
+    (value) => api.put(`/account/${accountId}`, value),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        toast("Conta atualizada com sucesso");
+      },
+      onError: (err: any) => {
+        console.log(err);
+        toast("Erro ao atualizar conta");
+      },
+    }
+  );
+
+  const onSubmitAccount = (data: any) => {
+    accountUpdateMutation.mutate(data);
+  };
 
   const onSubmitSubscription = (data: any) => {
     subscriptionChangeMutation.mutate(data);
@@ -93,22 +136,62 @@ const SettingsPage = () => {
                     usuário.
                   </CardDescription>
                 </div>
-
-                <Button size="sm" className="flex gap-1 items-center">
-                  <TbEdit className="h-3 w-3" /> Editar
-                </Button>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col gap-3">
-                  <Label>Nome</Label>
-                  <Input disabled value={account?.account?.name} />
-                  <Label>Email</Label>
-                  <Input disabled value={account?.account?.email} />
-                  <Label>Tipo da conta</Label>
-                  <Input disabled value={account?.account?.accountType} />
-                  <Label>Senha</Label>
-                  <Input disabled value="********" />
-                </div>
+              <CardContent className="flex flex-col gap-3">
+                <Form {...accountUpdateForm}>
+                  <form
+                    className="flex flex-col gap-4"
+                    onSubmit={accountUpdateForm.handleSubmit(onSubmitAccount)}
+                  >
+                    <FormField
+                      control={accountUpdateForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={accountUpdateForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={accountUpdateForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Senha</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="password" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button className="flex gap-1 items-center">
+                      {accountUpdateMutation.isLoading
+                        ? "Salvando..."
+                        : "Salvar"}
+                    </Button>
+                  </form>
+                </Form>
               </CardContent>
             </Card>
             <Card>
@@ -127,7 +210,7 @@ const SettingsPage = () => {
         </TabsContent>
         <TabsContent value="subscription">
           <div className="flex flex-col gap-3">
-            <Card className="flex items-center justify-between">
+            <Card className="flex flex-col md:flex-row items-start md:items-center justify-between">
               <CardHeader>
                 <CardTitle>Assinatura atual</CardTitle>
                 <CardDescription>
@@ -191,7 +274,11 @@ const SettingsPage = () => {
                         )}
                       />
 
-                      <Button type="submit">Adicionar</Button>
+                      <Button type="submit">
+                        {subscriptionChangeMutation.isLoading
+                          ? "Adicionando..."
+                          : "Adicionar"}
+                      </Button>
                     </form>
                   </Form>
                 </div>

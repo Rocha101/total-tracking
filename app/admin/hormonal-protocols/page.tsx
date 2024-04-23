@@ -8,8 +8,10 @@ import { HormonalProtocol } from "./hormonal-protocols";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const HormonalProtocolPage = () => {
+  const router = useRouter();
   const { isLoading, data } = useQuery("hormonalProtocols", async () => {
     const res = await api.get<HormonalProtocol[]>("/hormoneProtocol");
     return res.data;
@@ -29,6 +31,9 @@ const HormonalProtocolPage = () => {
           >
             <Button className="w-full md:w-32">Novo Protocolo</Button>
           </Link>
+        }
+        onDoubleClick={(row) =>
+          router.push(`/admin/hormonal-protocols/view/${row.id}`)
         }
         isLoading={isLoading}
       />

@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -33,12 +33,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Exercise } from "../../exercises/exercise";
+import { Exercise } from "../../../exercises/exercise";
 import { TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NewExerciseDialog from "@/components/dialogs/new-exercise";
 import { useMutation, useQuery } from "react-query";
 import MultipleSelect from "@/components/multiple-select";
+import { setWeek } from "date-fns";
+import { Train } from "../../train";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -82,16 +84,20 @@ enum MuscleGroup {
 const trainSchema = object({
   name: string(),
   description: string().optional(),
-  exercises: string().array(),
 });
 
-const NewTrainPage = () => {
+const EditTrainPage = ({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) => {
+  const trainId = params.id;
   const router = useRouter();
   const form = useForm<Zod.infer<typeof trainSchema>>({
     resolver: zodResolver(trainSchema),
-    defaultValues: {
-      exercises: [],
-    },
+    defaultValues: {},
   });
   const [openNewExercise, setOpenNewExercise] = useState(false);
   const [openNewExerciseSelect, setOpenNewExerciseSelect] = useState(false);
@@ -100,17 +106,18 @@ const NewTrainPage = () => {
     setOpenNewExercise(false);
   };
 
-  const createTrainMutation = useMutation(
-    (values: Zod.infer<typeof trainSchema>) => api.post("/train", values),
+  const updateTrainMutation = useMutation(
+    (values: Zod.infer<typeof trainSchema>) =>
+      api.put(`/train/${trainId}`, values),
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Treino criado com sucesso!");
+        toast("Treino editado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Treino!");
+        toast("Erro ao editar Treino!");
       },
     }
   );
@@ -122,16 +129,13 @@ const NewTrainPage = () => {
       weekDays: selectedWeekDays,
     };
 
-    createTrainMutation.mutate(train);
+    updateTrainMutation.mutate(train);
   };
 
-  const { isLoading: isLoadingExercises, data: exercisesData } = useQuery(
-    "exercises",
-    async () => {
-      const res = await api.get<Exercise[]>("/exercise");
-      return res.data;
-    }
-  );
+  const { data: exercisesData } = useQuery("exercises", async () => {
+    const res = await api.get<Exercise[]>("/exercise");
+    return res.data;
+  });
   const exercises = exercisesData || [];
 
   const [trainsSelected, setTrainsSelected] = useState<Exercise[]>([]);
@@ -174,9 +178,33 @@ const NewTrainPage = () => {
     setSelectedWeekDays(weekDay);
   };
 
+  const { data: train } = useQuery(
+    ["train", trainId],
+    async () => {
+      const res = await api.get<Train>(`/train/${trainId}`);
+      console.log(res.data);
+      return res.data;
+    },
+    {
+      enabled: !!trainId,
+    }
+  );
+
+  useEffect(() => {
+    if (train) {
+      (["name", "description"] as Array<keyof Train>).forEach((key) => {
+        if (train[key] !== undefined || train[key] !== null)
+          form.setValue(key as any, train[key]);
+      });
+
+      setSelectedWeekDays(train.weekDays);
+      setTrainsSelected(train.exercises);
+    }
+  }, [form, train]);
+
   return (
     <div>
-      <PageHeader title="Novo Treino" backlink />
+      <PageHeader title="Editar Treino" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
@@ -337,7 +365,7 @@ const NewTrainPage = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            {createTrainMutation.isLoading ? "Criando..." : "Criar"}
+            {updateTrainMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         </form>
       </Form>
@@ -349,4 +377,4 @@ const NewTrainPage = () => {
   );
 };
 
-export default NewTrainPage;
+export default EditTrainPage;

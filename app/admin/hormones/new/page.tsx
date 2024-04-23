@@ -245,7 +245,7 @@ const NewExtraCompound = () => {
           )}
 
           <Button type="submit" className="w-full">
-            Criar
+            {createHormoneMutation.isLoading ? "Criando..." : "Criar"}
           </Button>
         </form>
       </Form>

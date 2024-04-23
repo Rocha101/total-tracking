@@ -1,4 +1,5 @@
 import Sidebar from "@/components/sidebar/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
@@ -6,6 +7,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <Sidebar isAdmin>
         <Suspense>{children}</Suspense>
+        <Toaster />
       </Sidebar>
     </div>
   );

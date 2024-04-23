@@ -16,6 +16,7 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
 const ExtraCompoundRowActions = ({
   extraCompoundId,
@@ -23,6 +24,7 @@ const ExtraCompoundRowActions = ({
   extraCompoundId: string;
 }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteExtraCompound = (id: string) => {
     return api.delete(`/extraCompound/${id}`);
@@ -55,13 +57,12 @@ const ExtraCompoundRowActions = ({
         <DropdownMenuItem onClick={handleDelete}>
           Excluir composto
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${extraCompoundId}`}
-            className=" pointer-events-none"
-          >
-            Editar composto
-          </Link>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/admin/extra-compounds/edit/${extraCompoundId}`)
+          }
+        >
+          Editar composto
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -72,6 +73,10 @@ export const columns: ColumnDef<ExtraCompounds>[] = [
   {
     header: "Nome",
     accessorKey: "name",
+  },
+  {
+    header: "Descrição",
+    accessorKey: "description",
   },
   {
     header: "Quantidade",

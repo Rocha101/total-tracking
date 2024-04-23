@@ -16,9 +16,11 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
 const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteHormone = (id: string) => {
     return api.delete(`/hormone/${id}`);
@@ -51,13 +53,10 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir hormônio
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${hormoneId}`}
-            className=" pointer-events-none"
-          >
-            Editar hormônio
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/hormones/edit/${hormoneId}`)}
+        >
+          Editar hormônio
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

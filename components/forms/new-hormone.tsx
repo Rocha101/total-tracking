@@ -87,6 +87,16 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
 
   const unitWatch = form.watch("unit");
 
+  useEffect(() => {
+    console.log(unitWatch);
+    if (unitWatch === "UNIT") {
+      form.setValue("concentration", 0);
+    }
+    if (unitWatch === "MG" || unitWatch === "ML") {
+      form.setValue("concentration", 0);
+    }
+  }, [form, unitWatch]);
+
   const getConcentrationUnit = () => {
     switch (unitWatch) {
       case "ML":

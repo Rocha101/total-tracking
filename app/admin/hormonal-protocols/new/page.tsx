@@ -51,6 +51,8 @@ import Hormone from "../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
 import { useMutation, useQuery } from "react-query";
 import { cn } from "@/lib/utils";
+import MultipleSelect from "@/components/multiple-select";
+import { Label } from "@/components/ui/label";
 
 const hormonalProtocolSchema = object({
   name: string({
@@ -174,63 +176,15 @@ const NewHormonalProtocolPage = () => {
             )}
           />
 
-          <div className="text-sm">
-            Selecione os hormônios que compõem o protocolo
-          </div>
+          <Label>Selecione os hormônios que compõem o protocolo</Label>
           <div className="h-full flex flex-col gap-3">
-            <Popover
+            <MultipleSelect
               open={openSelectHormone}
               onOpenChange={setOpenSelectHormone}
-            >
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="button"
-                  className="w-[200px] justify-between"
-                >
-                  Selecione o Hormônio
-                  <TbCaretUpDownFilled className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput
-                    placeholder="Buscar hormônio..."
-                    className="h-9"
-                  />
-                  <CommandList>
-                    <CommandEmpty>Nenhum Hormônio Encontrado</CommandEmpty>
-                    <CommandGroup>
-                      <CommandItem onSelect={() => setOpenNewHormone(true)}>
-                        Criar Hormônio
-                      </CommandItem>
-                      {hormones.length > 0 &&
-                        hormones.map((hormone) => (
-                          <CommandItem
-                            key={hormone.id}
-                            value={hormone.id}
-                            onSelect={(currentValue) =>
-                              addTrainExercise(currentValue)
-                            }
-                          >
-                            <TbCheck
-                              className={cn(
-                                "h-4 w-4 mr-2",
-                                protocolHormones.find(
-                                  (item) => item.id === hormone.id
-                                )
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {hormone.name}
-                          </CommandItem>
-                        ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+              options={hormones}
+              selectedOptions={protocolHormones}
+              handleSelect={addTrainExercise}
+            />
 
             <ScrollArea className="w-full h-full">
               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">
@@ -260,7 +214,7 @@ const NewHormonalProtocolPage = () => {
                       <Button
                         type="button"
                         onClick={() => removeProtocolHormone(hormone.id)}
-                        variant="outline"
+                        variant="destructive"
                         size="icon"
                         className="absolute top-1/2 transform -translate-y-1/2 right-8"
                       >

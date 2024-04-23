@@ -22,14 +22,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
-import PageHeader from "@/components/page-header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Exercise } from "@/app/admin/exercises/exercise";
 
 enum MuscleGroup {
   CHEST = "CHEST",
@@ -80,16 +80,20 @@ const exerciseSchema = z.object({
   equipment: z.string({
     required_error: "Equipamento é obrigatório",
   }),
-  sets: z.array(
-    z.object({
-      quantity: z.number().int(),
-      weight: z.number().optional(),
-      setType: z.nativeEnum(SetType).optional(),
-    })
-  ),
+  sets: z
+    .array(
+      z.object({
+        quantity: z.number().int(),
+        weight: z.number().optional(),
+        setType: z.nativeEnum(SetType).optional(),
+      })
+    )
+    .optional(),
 });
 
-type Set = {
+type Set = Rep[];
+
+type Rep = {
   quantity: number;
   weight: number;
   setType?: SetType;
@@ -97,24 +101,25 @@ type Set = {
 
 interface NewExerciseFormProps {
   onSubmitOk?: () => void;
+  exerciseId?: string;
 }
 
-const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
+const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
   const clientQuery = useQueryClient();
   const router = useRouter();
   const form = useForm<Zod.infer<typeof exerciseSchema>>({
     resolver: zodResolver(exerciseSchema),
     defaultValues: {
-      sets: [],
       type: ExerciseType.STRENGHT,
     },
   });
 
-  const createExerciseMutation = useMutation(
-    (values: Zod.infer<typeof exerciseSchema>) => api.post("/exercise", values),
+  const updateExerciseMutation = useMutation(
+    (values: Zod.infer<typeof exerciseSchema>) =>
+      api.put(`/exercise/${exerciseId}`, values),
     {
       onSuccess: () => {
-        toast("Exercicio criado com sucesso!");
+        toast("Exercicio editado com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         } else {
@@ -124,13 +129,14 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Exercicio!");
+        toast("Erro ao editar Exercicio!");
       },
     }
   );
 
   const onSubmit = (values: Zod.infer<typeof exerciseSchema>) => {
-    if (sets.length === 0) {
+    console.log(values);
+    if (reps.length === 0) {
       toast("Adicione pelo menos uma série");
       setSetError("Adicione pelo menos uma série");
       return;
@@ -138,28 +144,28 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
 
     const exercise = {
       ...values,
-      sets: sets,
+      sets: reps,
     };
 
     console.log(exercise);
 
-    createExerciseMutation.mutate(exercise);
+    updateExerciseMutation.mutate(exercise);
   };
 
-  const [sets, setSets] = useState<Set[]>([]);
+  const [reps, setReps] = useState<Rep[]>([]);
   const [setError, setSetError] = useState<string | null>(null);
 
-  const addSet = ({ quantity, weight, setType }: Set) => {
+  const addSet = ({ quantity, weight, setType }: Rep) => {
     const newSet = { quantity, weight, setType };
-    setSets((prev) => [...prev, newSet]);
+    setReps((prev) => [...prev, newSet]);
   };
 
   const removeSet = (index: number) => {
-    setSets((prev) => prev.filter((_, i) => i !== index));
+    setReps((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const updateSet = (index: number, set: Set) => {
-    setSets((prev) => {
+  const updateSet = (index: number, set: Rep) => {
+    setReps((prev) => {
       const newSets = [...prev];
       newSets[index] = set;
       return newSets;
@@ -167,16 +173,50 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
   };
 
   const updateReps = (index: number, quantity: number) => {
-    updateSet(index, { ...sets[index], quantity });
+    updateSet(index, { ...reps[index], quantity });
   };
 
   const updateWeight = (index: number, weight: number) => {
-    updateSet(index, { ...sets[index], weight });
+    updateSet(index, { ...reps[index], weight });
   };
 
   const updateType = (index: number, setType: SetType) => {
-    updateSet(index, { ...sets[index], setType });
+    updateSet(index, { ...reps[index], setType });
   };
+
+  const { data: exercise } = useQuery(
+    ["exercise", exerciseId],
+    async () => {
+      const res = await api.get<Exercise>(`/exercise/${exerciseId}`);
+      return res.data;
+    },
+    {
+      enabled: !!exerciseId,
+    }
+  );
+
+  useEffect(() => {
+    if (exercise) {
+      (
+        ["name", "description", "type", "muscleGroup", "equipment"] as Array<
+          keyof Exercise
+        >
+      ).forEach((key) => {
+        if (exercise[key] !== undefined || exercise[key] !== null)
+          form.setValue(key as any, exercise[key]);
+      });
+
+      const exerciseReps = exercise.sets.flatMap((set) =>
+        set.reps.map((rep) => ({
+          id: rep.id,
+          quantity: rep.quantity,
+          weight: rep.weight,
+          setType: rep.setType as unknown as SetType,
+        }))
+      );
+      setReps(exerciseReps);
+    }
+  }, [exercise, form]);
 
   return (
     <Form {...form}>
@@ -325,7 +365,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
             <TbPlus />
             Adicionar Série
           </Button>
-          {sets.length === 0 ? (
+          {reps.length === 0 ? (
             <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
               <span className="text-lg text-muted-foreground">
                 Nenhuma série adicionada
@@ -333,7 +373,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
             </div>
           ) : (
             <div className="w-full flex flex-col gap-4 py-1">
-              {sets.map((set, index) => (
+              {reps.map((set, index) => (
                 <div key={index} className="w-full flex gap-2 items-end">
                   <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
                     <Label>Tipo</Label>
@@ -406,11 +446,11 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
         </ScrollArea>
 
         <Button type="submit" className="w-full">
-          {createExerciseMutation.isLoading ? "Criando..." : "Criar"}
+          {updateExerciseMutation.isLoading ? "Salvando..." : "Salvar"}
         </Button>
       </form>
     </Form>
   );
 };
 
-export default NewExerciseForm;
+export default EditExerciseForm;

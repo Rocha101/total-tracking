@@ -21,9 +21,11 @@ enum SetType {
 }
 
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
 const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteExercise = (id: string) => {
     return api.delete(`/exercise/${id}`);
@@ -56,13 +58,10 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir exercício
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${exerciseId}`}
-            className=" pointer-events-none"
-          >
-            Editar exercício
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
+        >
+          Editar exercício
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
