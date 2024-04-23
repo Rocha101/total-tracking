@@ -119,8 +119,10 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <div className="flex select-none items-center gap-2 font-semibold">
-              <TbBarbell className="h-6 w-6" />
-              <span className="">Iron Atlas</span>
+              <TbBarbell className="h-8 w-8 text-primary" />
+              <span className="text-lg leading-relaxed font-bold">
+                Iron Atlas
+              </span>
             </div>
           </div>
           <div className="flex-1">

@@ -80,6 +80,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
         console.log(error);
         handleTokenError(error);
       },
+      retryDelay: 60 * 60 * 1,
     }
   );
 
