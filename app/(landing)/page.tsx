@@ -33,7 +33,7 @@ const LandingHomePage = () => {
       <LandingNavBar />
 
       <section
-        id="features"
+        id="hero"
         className="w-full h-screen bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/landing-page/pricing-hero.png')",

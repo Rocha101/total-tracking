@@ -66,6 +66,11 @@ const LandingNavBar = () => {
 
         <nav className="hidden md:flex items-center justify-center">
           <div className="flex gap-6">
+            <Link href="/#faq">
+              <Button variant={"link"} className="text-white">
+                FAQ
+              </Button>
+            </Link>
             <Link href="/#features">
               <Button variant={"link"} className="text-white">
                 Funcionalidades
