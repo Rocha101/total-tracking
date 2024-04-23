@@ -4,38 +4,215 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  Tb24Hours,
   TbBarbell,
   TbBrandGithub,
   TbBrandInstagram,
   TbBrandWhatsapp,
+  TbDeviceMobile,
   TbMail,
+  TbNumber,
   TbPhone,
+  TbPill,
+  TbToolsKitchen3,
+  TbUser,
+  TbUsers,
+  TbVaccine,
 } from "react-icons/tb";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
+import FaqItem from "@/components/landing-page/faq-item";
 
 const LandingHomePage = () => {
   return (
     <div className="relative z-30 bg-background">
-      {/* <div className="-z-10 absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black to-transparent" /> */}
       <LandingNavBar />
-      <section id="features" className="h-screen relative">
-        <div className="z-30 h-full px-4 md:px-12 py-24">
-          <div className="-z-20 h-full flex flex-col items-center justify-center relative">
+
+      <section
+        id="features"
+        className="w-full h-screen bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/landing-page/pricing-hero.png')",
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-black/80 to-black/50 flex items-center justify-center">
+          <div className="container px-4 md:px-6">
+            <div className="grid items-center gap-6 lg:grid-cols-[1fr_550px] lg:gap-12 xl:grid-cols-[1fr_650px]">
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-gray-900 dark:text-gray-50">
+                  Tome o controle dos seus protocolos
+                </h1>
+                <p className="max-w-[600px] text-gray-600 md:text-xl dark:text-gray-400">
+                  Nosso sistema de gestão de fisiculturismo foi desenvolvido
+                  para atender às necessidades de atletas e treinadores,
+                  garantindo desempenho e progresso ideais
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="about"
+        className="h-full min-h-screen flex items-center justify-center relative"
+      >
+        <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-12 px-4 md:px-12 py-24">
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+              Sobre o Iron Atlas
+            </h1>
+            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
+              O Iron Atlas é uma plataforma de gestão para fisiculturismo que
+              visa auxiliar atletas e treinadores a alcançarem seus objetivos de
+              forma mais eficiente e organizada
+            </p>
+          </div>
+          <div className="w-full lg:w-1/2 flex items-center justify-center">
             <Image
-              src="/landing-page/pricing-hero.png"
-              layout="fill"
-              objectFit="cover"
-              alt="Main background image"
-              className="rounded-3xl brightness-[50%]"
+              src="/landing-page/about-us.png"
+              layout="intrinsic"
+              width={500}
+              height={500}
+              objectFit="contain"
+              alt="About image"
               quality={100}
+              className="rounded-3xl"
             />
-            <div className="z-30 h-full flex flex-col items-center justify-center absolute">
-              <h1 className="z-30 text-5xl md:text-6xl lg:text-7xl font-bold text-center text-white">
-                Iron Atlas
-              </h1>
-              <p className="z-30 text-md md:text-xl text-center text-white px-3">
-                A plataforma de gestão para fisiculturismo mais completa do
-                mercado
-              </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="features"
+        className="h-full min-h-screen flex items-center justify-center relative"
+      >
+        <div className="w-full flex flex-col items-center justify-center gap-12 px-4 md:px-12 py-24">
+          <div className="w-full flex flex-col items-center justify-center gap-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+              Recursos
+            </h1>
+            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
+              O Iron Atlas conta com uma série de recursos que visam otimizar a
+              gestão de atletas e treinadores de fisiculturismo
+            </p>
+          </div>
+          <div className="w-full flex items-center justify-center">
+            <div className="grid grid-cols-1 md:grids-cols-2 lg:grid-cols-3 gap-24">
+              {[
+                {
+                  id: 1,
+                  title: "Planos de treino personalizados",
+                  description:
+                    "Crie rotinas de exercícios sob medida para atender às necessidades e objetivos exclusivos de cada atleta, garantindo desempenho e progresso ideais.",
+                  icon: TbBarbell,
+                },
+                {
+                  id: 2,
+                  title: "Planos alimentares personalizados",
+                  description:
+                    "Desenvolva planos dietéticos individualizados adaptados às necessidades de cada atleta, otimizando a nutrição para o máximo desempenho e bem-estar.",
+                  icon: TbToolsKitchen3,
+                },
+                {
+                  id: 3,
+                  title: "Protocolos hormonais",
+                  description:
+                    "Elabore protocolos hormonais personalizados alinhados com as necessidades e objetivos específicos de cada atleta, aprimorando os resultados do treinamento e a recuperação.",
+                  icon: TbVaccine,
+                },
+                {
+                  id: 4,
+                  title: "Planos de suplementação",
+                  description:
+                    "Crie planos de suplementação personalizados de acordo com as necessidades de cada atleta",
+                  icon: TbPill,
+                },
+                {
+                  id: 5,
+                  title: "Suporte 24 horas",
+                  description:
+                    "Receba assistência 24 horas para atender prontamente às necessidades de atletas e treinadores, garantindo orientação e suporte contínuos.",
+                  icon: Tb24Hours,
+                },
+                {
+                  id: 6,
+                  title: "Totalmente responsivo",
+                  description:
+                    "Acesse a plataforma de forma fluida a partir de qualquer dispositivo, seja um smartphone, tablet ou computador, garantindo conveniência e flexibilidade para os usuários em movimento.",
+                  icon: TbDeviceMobile,
+                },
+              ].map((feature) => (
+                <div
+                  key={feature.id}
+                  className="flex flex-col items-center justify-center gap-4"
+                >
+                  <feature.icon className="h-12 w-12 text-primary" />
+                  <h1 className="text-xl font-bold text-center text-white">
+                    {feature.title}
+                  </h1>
+                  <p className="max-w-xs text-md text-center text-muted-foreground px-3">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="faq"
+        className="h-full min-h-screen flex items-center justify-center relative"
+      >
+        <div className="w-full flex flex-col items-center justify-center gap-12 px-4 md:px-12 py-24">
+          <div className="w-full flex flex-col items-center justify-center gap-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-white">
+              Perguntas frequentes
+            </h1>
+            <p className="text-md md:text-lg text-center text-white px-3">
+              Confira as perguntas mais frequentes sobre o Iron Atlas
+            </p>
+          </div>
+          <div className="w-full flex items-center justify-center">
+            <div className="w-full max-w-5xl flex flex-col gap-6">
+              {[
+                {
+                  id: 1,
+                  question: "Como posso adquirir o Iron Atlas?",
+                  answer:
+                    "Para adquirir o Iron Atlas, entre em contato conosco através do WhatsApp ou do e-mail disponíveis no rodapé da página",
+                },
+                {
+                  id: 2,
+                  question: "Quais são os planos disponíveis?",
+                  answer:
+                    "Atualmente, oferecemos dois planos: o plano mensal, com acesso completo à plataforma por 30 dias, e o plano personalizado, que pode ser adaptado de acordo com as necessidades de cada usuário",
+                },
+                {
+                  id: 3,
+                  question: "O Iron Atlas é responsivo?",
+                  answer:
+                    "Sim, o Iron Atlas é totalmente responsivo, o que significa que você pode acessar a plataforma de forma fluida a partir de qualquer dispositivo, seja um smartphone, tablet ou computador",
+                },
+                {
+                  id: 4,
+                  question: "Como adicionar meus clientes na plataforma?",
+                  answer:
+                    "Para adicionar seus clientes na plataforma, basta compartilhar o link de cadastro com eles. Assim que se cadastrarem, você poderá gerenciar suas informações de forma prática e eficiente",
+                },
+              ].map((faq) => (
+                <FaqItem
+                  key={faq.id}
+                  id={faq.id}
+                  question={faq.question}
+                  answer={faq.answer}
+                />
+              ))}
             </div>
           </div>
         </div>

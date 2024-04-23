@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
-import { TbMenu } from "react-icons/tb";
+import { TbBarbell, TbMenu } from "react-icons/tb";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -16,7 +16,10 @@ const LandingNavBar = () => {
   return (
     <header className="fixed top-0 w-full z-10 bg-background">
       <div className="container mx-auto px-4 md:px-12 py-4 flex justify-between items-center">
-        <p className="text-xl font-bold">Iron Atlas</p>
+        <div className="flex items-center gap-3">
+          <TbBarbell className="h-8 w-8 text-primary" />
+          <p className="text-xl font-bold">Iron Atlas</p>
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button
