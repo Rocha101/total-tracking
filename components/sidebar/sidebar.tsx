@@ -72,14 +72,11 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     }
   );
 
-  const { data: notificationData = [] } = useQuery(
-    "notifications",
-    async () => {
-      const res = await api.get(`/notification`);
-      console.log(res);
-      return res.data;
-    }
-  );
+  const { data: notificationData = [] } = useQuery("notification", async () => {
+    const res = await api.get(`/notification`);
+    console.log(res);
+    return res.data;
+  });
 
   const readNotificationMutation = useMutation(
     (id: string) =>
