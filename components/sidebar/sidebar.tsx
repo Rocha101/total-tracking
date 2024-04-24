@@ -19,9 +19,13 @@ import {
   TbFileAnalytics,
   TbMeat,
   TbBolt,
+  TbNotification,
+  TbBell,
+  TbCheck,
 } from "react-icons/tb";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -33,7 +37,7 @@ import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import api from "@/app/utils/api";
 import Image from "next/image";
 
@@ -41,6 +45,14 @@ interface SidebarProps {
   isAdmin?: boolean;
   children: React.ReactNode;
 }
+
+type Notification = {
+  id: string;
+  title: string;
+  message?: string;
+  read: boolean;
+  createdAt: string;
+};
 
 const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const { logout, account } = useAuth();
@@ -57,6 +69,30 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     },
     {
       enabled: !!accountId,
+    }
+  );
+
+  const { data: notificationData = [] } = useQuery(
+    "notifications",
+    async () => {
+      const res = await api.get(`/notification`);
+      console.log(res);
+      return res.data;
+    }
+  );
+
+  const readNotificationMutation = useMutation(
+    (id: string) =>
+      api.put(`/notification/${id}`, {
+        read: true,
+      }),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
     }
   );
 
@@ -214,35 +250,68 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
               Iron Atlas
             </span>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="rounded-full ml-auto"
-              >
-                <TbUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => router.push("/admin/settings")}
-                className="flex gap-2"
-              >
-                <TbSettings className="h-4 w-4" />
-                Configurações
-              </DropdownMenuItem>
-              <ModeToggle />
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} className="flex gap-2">
-                <TbLogout className="h-4 w-4" />
-                Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex gap-2 items-center  ml-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <TbBell className="h-5 w-5" />
+                  <span className="sr-only">Toggle notifications view</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className=" min-w-72">
+                <DropdownMenuLabel>Notificações</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {notificationData.length === 0 && (
+                  <DropdownMenuItem>Nenhuma notificação</DropdownMenuItem>
+                )}
+                {notificationData.map((notification: Notification) => (
+                  <DropdownMenuCheckboxItem
+                    key={notification.id}
+                    checked={notification.read}
+                    onCheckedChange={() =>
+                      readNotificationMutation.mutate(notification.id)
+                    }
+                  >
+                    <div>
+                      <span className="font-semibold">
+                        {notification.title}
+                      </span>
+                      <span className="text-sm">{notification.message}</span>
+                    </div>
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full"
+                >
+                  <TbUser className="h-5 w-5" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => router.push("/admin/settings")}
+                  className="flex gap-2"
+                >
+                  <TbSettings className="h-4 w-4" />
+                  Configurações
+                </DropdownMenuItem>
+                <ModeToggle />
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="flex gap-2">
+                  <TbLogout className="h-4 w-4" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </header>
         <main className="h-full flex flex-col overflow-auto gap-4 p-4 lg:border-l border-t">
           {children}
