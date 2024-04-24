@@ -235,7 +235,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
           )}
         />
         <Button type="submit" className="w-full">
-          Criar
+          {createFoodMutation.isLoading ? "Criando..." : "Criar"}
         </Button>
       </form>
     </Form>

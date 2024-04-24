@@ -226,7 +226,7 @@ const LandingHomePage = () => {
           <PricingPlanCard
             title="Plano mensal"
             description="Acesso completo a plataforma por 30 dias"
-            price="R$ 29,90"
+            price="R$ 39,90"
             duration="mês"
             features={[
               "Planos de treino personalizados",

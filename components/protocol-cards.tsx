@@ -24,6 +24,8 @@ import { Meal } from "@/app/admin/meals/meals";
 import { Button } from "./ui/button";
 import { TbPrinter } from "react-icons/tb";
 import { useReactToPrint } from "react-to-print";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import TrainingDay from "./train-day";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -170,7 +172,7 @@ const ProtocolCards = ({
         <div className="grid grid-cols-5 gap-3 mt-3">
           <Card className="col-span-5 row-span-1">
             <CardHeader>
-              <CardTitle>Protocolo - {protocol?.name}</CardTitle>
+              <CardTitle>{protocol?.name}</CardTitle>
               <CardDescription>{protocol?.description}</CardDescription>
             </CardHeader>
           </Card>
@@ -206,7 +208,7 @@ const ProtocolCards = ({
               </CardContent>
             </Card>
           ) : (
-            <Card className="col-span-5 lg:col-span-2 row-span-2">
+            <Card className="col-span-5 lg:col-span-2 row-span-2 print:hidden">
               <CardHeader>
                 <CardTitle>Dieta</CardTitle>
               </CardHeader>
@@ -217,108 +219,39 @@ const ProtocolCards = ({
           )}
 
           <Card className="col-span-5 lg:col-span-3 row-span-2">
-            <CardHeader>
+            <div className="p-6 flex items-start justify-between gap-3">
               <CardTitle className="">Treinos</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-3">
-              {train.length > 0 ? (
-                <>
-                  <Select
-                    value={trainWeekDay}
-                    onValueChange={(value: WeekDay) => setTrainWeekDay(value)}
+              <ToggleGroup
+                type="single"
+                variant="default"
+                className="justify-start overflow-x-auto print:hidden"
+                value={trainWeekDay}
+                onValueChange={(value: WeekDay) => setTrainWeekDay(value)}
+              >
+                {Object.keys(WeekDay).map((key) => (
+                  <ToggleGroupItem
+                    key={key}
+                    className="data-[state=on]:bg-primary p-1 h-5"
+                    value={key}
                   >
-                    <SelectTrigger className="w-full print:hidden">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(WeekDay).map((weekDay) => (
-                        <SelectItem key={weekDay} value={weekDay}>
-                          {
-                            {
-                              [WeekDay.MONDAY]: "Segunda",
-                              [WeekDay.TUESDAY]: "Terça",
-                              [WeekDay.WEDNESDAY]: "Quarta",
-                              [WeekDay.THURSDAY]: "Quinta",
-                              [WeekDay.FRIDAY]: "Sexta",
-                              [WeekDay.SATURDAY]: "Sábado",
-                              [WeekDay.SUNDAY]: "Domingo",
-                            }[weekDay]
-                          }
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Fragment>
-                    {train
-                      ?.find((train) => train?.weekDays?.includes(trainWeekDay))
-                      ?.exercises?.map((exercise: Exercise) => {
-                        console.log(exercise);
-                        const reps = exercise.sets.map((set) => {
-                          const reps = set.reps;
-                          return reps.map((rep) => {
-                            return `${
-                              {
-                                [SetType.WARM_UP]: "Aquecimento",
-                                [SetType.WORKING]: "Trabalho",
-                                [SetType.FEEDER]: "Feeder",
-                                [SetType.TOP]: "Top",
-                                [SetType.BACK_OFF]: "Back off",
-                              }[rep.setType] || ""
-                            }${rep.setType ? " - " : ""}${rep.quantity} x ${
-                              rep.weight
-                            }Kg`;
-                          });
-                        });
+                    {
+                      {
+                        MONDAY: "S",
+                        TUESDAY: "T",
+                        WEDNESDAY: "Q",
+                        THURSDAY: "Q",
+                        FRIDAY: "S",
+                        SATURDAY: "S",
+                        SUNDAY: "D",
+                      }[key]
+                    }
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
 
-                        return (
-                          <Card
-                            key={exercise.id}
-                            className="relative shadow-none border-l-4 border-l-primary"
-                          >
-                            <CardHeader>
-                              <CardTitle>{exercise.name}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
-                              <span>
-                                Grupo Muscular:{" "}
-                                {
-                                  {
-                                    [MuscleGroup.CHEST]: "Peito",
-                                    [MuscleGroup.BACK]: "Costas",
-                                    [MuscleGroup.SHOULDERS]: "Ombros",
-                                    [MuscleGroup.BICEPS]: "Biceps",
-                                    [MuscleGroup.TRICEPS]: "Triceps",
-                                    [MuscleGroup.FOREARMS]: "Antebraço",
-                                    [MuscleGroup.CALVES]: "Panturrilha",
-                                    [MuscleGroup.ABS]: "Abdomen",
-                                    [MuscleGroup.QUADS]: "Quadriceps",
-                                    [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-                                    [MuscleGroup.GLUTES]: "Gluteos",
-                                    [MuscleGroup.ADDUCTORS]: "Adutores",
-                                    [MuscleGroup.ABDUCTORS]: "Abdutores",
-                                    [MuscleGroup.TRAPS]: "Trapezio",
-                                    [MuscleGroup.LATS]: "Latissimo do dorso",
-                                    [MuscleGroup.LOWER_BACK]: "Lombar",
-                                    [MuscleGroup.OBLIQUES]: "Oblíquos",
-                                    [MuscleGroup.NECK]: "Pescoço",
-                                  }[exercise.muscleGroup]
-                                }
-                              </span>
-                              <span>Equipamento: {exercise.equipment}</span>
-                              {reps.map((rep, index) => (
-                                <span key={index}>
-                                  {index + 1}ª Série: {rep.join(" ")}
-                                </span>
-                              ))}
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
-                  </Fragment>
-                </>
-              ) : (
-                <p className="text-muted-foreground">Sem treinos disponíveis</p>
-              )}
+            <CardContent className="flex flex-col gap-3">
+              <TrainingDay train={train} trainWeekDay={trainWeekDay} />
             </CardContent>
           </Card>
 
@@ -347,19 +280,21 @@ const ProtocolCards = ({
                         {hormone.quantity}{" "}
                         <span className="text-xs">{hormone.unit}</span>
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {hormone.concentration}{" "}
-                        <span className="text-xs">
-                          {hormone.concentrationUnit?.replace("_", "/")}
-                        </span>
-                      </p>
+                      {hormone.concentration !== 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          {hormone.concentration}{" "}
+                          <span className="text-xs">
+                            {hormone.concentrationUnit?.replace("_", "/")}
+                          </span>
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
               </CardContent>
             </Card>
           ) : (
-            <Card className="col-span-5 lg:col-span-3">
+            <Card className="col-span-5 lg:col-span-3 print:hidden">
               <CardHeader>
                 <CardTitle>Protocolo Hormonal</CardTitle>
               </CardHeader>
@@ -379,10 +314,10 @@ const ProtocolCards = ({
               {extraCompounds.length > 0 ? (
                 extraCompounds.map((extraCompound) => (
                   <Card
-                    className="flex shadow-none border-l-4 border-l-primary"
+                    className="w-full flex shadow-none border-l-4 border-l-primary"
                     key={extraCompound.id}
                   >
-                    <CardHeader>
+                    <CardHeader className="w-full">
                       <CardTitle>{extraCompound.name}</CardTitle>
                       <CardDescription>
                         {extraCompound.description}
@@ -393,12 +328,14 @@ const ProtocolCards = ({
                         {extraCompound.quantity}{" "}
                         <span className="text-xs">{extraCompound.unit}</span>
                       </p>
-                      <p>
-                        {extraCompound.concentration}{" "}
-                        <span className="text-xs">
-                          {extraCompound.concentrationUnit}
-                        </span>
-                      </p>
+                      {extraCompound.concentration !== 0 && (
+                        <p className="text-sm text-muted-foreground">
+                          {extraCompound.concentration}{" "}
+                          <span className="text-xs">
+                            {extraCompound.concentrationUnit?.replace("_", "/")}
+                          </span>
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 ))

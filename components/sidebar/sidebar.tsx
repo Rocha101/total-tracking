@@ -12,13 +12,13 @@ import {
   TbBowl,
   TbChartBar,
   TbPill,
-  TbToolsKitchen3,
   TbVaccine,
   TbVaccineBottle,
   TbMenu,
   TbUser,
   TbFileAnalytics,
   TbMeat,
+  TbBolt,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -31,7 +31,6 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
@@ -46,8 +45,8 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const path = usePathname();
   const adminLinks = [
     {
-      name: "Dashboard",
-      icon: TbChartBar,
+      name: "Atalhos",
+      icon: TbBolt,
       href: "/admin",
       key: "/admin/dashboard",
     },

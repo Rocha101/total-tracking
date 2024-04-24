@@ -23,9 +23,7 @@ const ProtocolPage = () => {
         columns={columns}
         data={rows}
         isLoading={isLoading}
-        onDoubleClick={(row) =>
-          router.push(`/admin/protocols/view?protocolId=${row.id}`)
-        }
+        onDoubleClick={(row) => router.push(`/admin/protocols/view/${row.id}`)}
         actions={
           <Button onClick={() => router.push("/admin/protocols/new")}>
             Novo Protocolo

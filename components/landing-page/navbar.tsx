@@ -34,10 +34,18 @@ const LandingNavBar = () => {
           <SheetContent side="left" className="h-screen flex flex-col">
             <nav className="grid gap-6 text-lg font-medium p-4">
               <div className="flex flex-col items-start gap-4 mt-12">
+                <Link href="/#faq">
+                  <Button
+                    variant={"link"}
+                    className="text-black dark:text-white"
+                  >
+                    FAQ
+                  </Button>
+                </Link>
                 <Link href="/#features">
                   <Button
                     variant={"link"}
-                    className="text-white dark:text-white"
+                    className="text-black dark:text-white"
                   >
                     Funcionalidades
                   </Button>
@@ -45,7 +53,7 @@ const LandingNavBar = () => {
                 <Link href="/#pricing">
                   <Button
                     variant={"link"}
-                    className="text-white dark:text-white"
+                    className="text-black dark:text-white"
                   >
                     Preço
                   </Button>
