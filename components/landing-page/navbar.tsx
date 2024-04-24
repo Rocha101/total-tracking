@@ -11,13 +11,20 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
+import Image from "next/image";
 
 const LandingNavBar = () => {
   return (
     <header className="fixed top-0 w-full z-10 bg-background">
       <div className="container mx-auto px-4 md:px-12 py-4 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <TbBarbell className="h-8 w-8 text-primary" />
+          <Image
+            src="/logo1.png"
+            width={100}
+            height={30}
+            alt="Iron Atlas"
+            className="h-8 w-8"
+          />
           <p className="text-xl font-bold">Iron Atlas</p>
         </div>
         <Sheet>

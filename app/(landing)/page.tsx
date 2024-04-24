@@ -277,7 +277,13 @@ const LandingHomePage = () => {
             {/* Iron Atlas section */}
             <div className="flex flex-col justify-start items-center lg:items-start">
               <div className="flex items-center gap-3 justify-center text-white sm:justify-start">
-                <TbBarbell className="h-12 w-12 text-primary" />
+                <Image
+                  src="/logo1.png"
+                  width={100}
+                  height={30}
+                  alt="Iron Atlas"
+                  className="h-12 w-12"
+                />
                 <p className="text-2xl font-bold text-primary">Iron Atlas</p>
               </div>
               <p className="mt-6 max-w-md text-center leading-relaxed sm:max-w-xs md:text-left">

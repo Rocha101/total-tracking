@@ -136,7 +136,7 @@ function SignUpPage() {
       />
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Criar conta 💉</CardTitle>
+          <CardTitle className="text-2xl">Criar conta</CardTitle>
           <CardDescription>
             Preencha os campos abaixo para criar sua conta
           </CardDescription>

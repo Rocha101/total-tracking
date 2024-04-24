@@ -83,7 +83,7 @@ function SignInPage() {
       />
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Login 💉</CardTitle>
+          <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Insira suas credenciais para acessar o sistema.
           </CardDescription>

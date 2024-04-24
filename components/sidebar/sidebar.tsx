@@ -33,6 +33,9 @@ import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { useQuery } from "react-query";
+import api from "@/app/utils/api";
+import Image from "next/image";
 
 interface SidebarProps {
   isAdmin?: boolean;
@@ -40,9 +43,23 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isAdmin, children }: SidebarProps) => {
-  const { logout } = useAuth();
+  const { logout, account } = useAuth();
+  const accountId = account?.account?.id;
   const router = useRouter();
   const path = usePathname();
+
+  const { data: subscriptionData } = useQuery(
+    ["subscription", accountId],
+    async () => {
+      const res = await api.get(`/subscription/verify/${accountId}`);
+      console.log(res);
+      return res.data;
+    },
+    {
+      enabled: !!accountId,
+    }
+  );
+
   const adminLinks = [
     {
       name: "Atalhos",
@@ -119,7 +136,13 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
             <div className="flex select-none items-center gap-2 font-semibold">
-              <TbBarbell className="h-8 w-8 text-primary" />
+              <Image
+                src="/logo1.png"
+                width={100}
+                height={30}
+                alt="Iron Atlas"
+                className="h-8 w-8"
+              />
               <span className="text-lg leading-relaxed font-bold">
                 Iron Atlas
               </span>
@@ -179,6 +202,18 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
               </nav>
             </SheetContent>
           </Sheet>
+          <div className="flex select-none items-center gap-2 font-semibold lg:hidden">
+            <Image
+              src="/logo1.png"
+              width={100}
+              height={30}
+              alt="Iron Atlas"
+              className="h-8 w-8"
+            />
+            <span className="text-lg leading-relaxed font-bold">
+              Iron Atlas
+            </span>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
