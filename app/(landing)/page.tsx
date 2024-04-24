@@ -326,6 +326,9 @@ const LandingHomePage = () => {
             </div>
           </div>
         </div>
+        <div className="text-center text-sm py-4">
+          © 2024 Rocha Soluções em Tecnologia. Todos os direitos reservados.
+        </div>
       </footer>
     </div>
   );
