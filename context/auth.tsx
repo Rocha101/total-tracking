@@ -60,7 +60,10 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const value = { account, login, logout };
 
   const handleTokenError = (error: any) => {
-    if (error.request.response.includes("Token inválido")) {
+    if (
+      error.request.response.includes("Token inválido") ||
+      error.request.response.includes("Token não encontrado")
+    ) {
       toast("Faça login para acessar a página");
       logout();
     }
@@ -89,14 +92,6 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       setAccount(accountCookie);
     }
   }, [account, accountCookie]);
-
-  if (verifyRes.isLoading && path.includes("/admin")) {
-    return (
-      <div className="w-screen h-screen bg-background flex items-center justify-center">
-        <TbLoader2 className="text-primary w-32 h-32 animate-spin" />
-      </div>
-    );
-  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
