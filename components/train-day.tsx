@@ -92,13 +92,13 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
   return (
     <Card
       key={exercise.id}
-      className="flex relative shadow-none border-l-4 border-l-primary"
+      className="flex flex-col md:flex-row relative shadow-none border-l-4 border-l-primary"
     >
       <CardHeader>
         <CardTitle>{exercise.name}</CardTitle>
         <CardDescription>{exercise.description}</CardDescription>
       </CardHeader>
-      <CardContent className="pt-6 h-full w-full space-y-1.5 flex flex-col items-end justify-center text-xs">
+      <CardContent className="md:pt-6 h-full w-full space-y-1.5 flex flex-col md:items-end justify-center text-xs">
         <span>
           Grupo Muscular:{" "}
           {MuscleGroupLabels[exercise.muscleGroup as MuscleGroup]}
