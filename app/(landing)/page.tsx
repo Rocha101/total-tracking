@@ -236,7 +236,7 @@ const LandingHomePage = () => {
                           objectFit="contain"
                           alt="Screenshot"
                           quality={100}
-                          className="rounded-3xl"
+                          className="rounded-3xl hover:ring hover:ring-primary hover:cursor-pointer"
                         />
                       </div>
                     </DialogTrigger>
