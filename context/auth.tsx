@@ -83,6 +83,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
         console.log(error);
         handleTokenError(error);
       },
+      enabled: !!account?.token,
     }
   );
 

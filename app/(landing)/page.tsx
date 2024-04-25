@@ -11,20 +11,11 @@ import {
   TbBrandWhatsapp,
   TbDeviceMobile,
   TbMail,
-  TbNumber,
   TbPhone,
   TbPill,
   TbToolsKitchen3,
-  TbUser,
-  TbUsers,
   TbVaccine,
 } from "react-icons/tb";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
 import FaqItem from "@/components/landing-page/faq-item";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 

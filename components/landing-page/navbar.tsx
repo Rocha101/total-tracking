@@ -41,7 +41,7 @@ const LandingNavBar = () => {
           <SheetContent side="left" className="h-screen flex flex-col">
             <nav className="grid gap-6 text-lg font-medium p-4">
               <div className="flex flex-col items-start gap-4 mt-12">
-                <Link href="/#faq">
+                <Link href="/#faq" passHref>
                   <Button
                     variant={"link"}
                     className="text-black dark:text-white"
@@ -49,7 +49,7 @@ const LandingNavBar = () => {
                     FAQ
                   </Button>
                 </Link>
-                <Link href="/#features">
+                <Link href="/#features" passHref>
                   <Button
                     variant={"link"}
                     className="text-black dark:text-white"
@@ -57,7 +57,7 @@ const LandingNavBar = () => {
                     Funcionalidades
                   </Button>
                 </Link>
-                <Link href="/#pricing">
+                <Link href="/#pricing" passHref>
                   <Button
                     variant={"link"}
                     className="text-black dark:text-white"
@@ -65,7 +65,7 @@ const LandingNavBar = () => {
                     Preço
                   </Button>
                 </Link>
-                <Link href="/#contact">
+                <Link href="/#contact" passHref>
                   <Button
                     variant={"link"}
                     className="text-black dark:text-white"
@@ -73,12 +73,12 @@ const LandingNavBar = () => {
                     Contato
                   </Button>
                 </Link>
-                <Link href="/sign-up">
+                <Link href="/sign-up" passHref>
                   <Button variant="link" className="text-black dark:text-white">
                     Criar conta
                   </Button>
                 </Link>
-                <Link href="/sign-in">
+                <Link href="/sign-in" passHref>
                   <Button variant="link" className="text-black dark:text-white">
                     Entrar
                   </Button>
@@ -90,22 +90,22 @@ const LandingNavBar = () => {
 
         <nav className="hidden md:flex items-center justify-center">
           <div className="flex gap-6">
-            <Link href="/#faq">
+            <Link href="/#faq" passHref>
               <Button variant={"link"} className="text-black dark:text-white">
                 FAQ
               </Button>
             </Link>
-            <Link href="/#features">
+            <Link href="/#features" passHref>
               <Button variant={"link"} className="text-black dark:text-white">
                 Funcionalidades
               </Button>
             </Link>
-            <Link href="/#pricing">
+            <Link href="/#pricing" passHref>
               <Button variant={"link"} className="text-black dark:text-white">
                 Preço
               </Button>
             </Link>
-            <Link href="/#contact">
+            <Link href="/#contact" passHref>
               <Button variant={"link"} className="text-black dark:text-white">
                 Contato
               </Button>
@@ -114,12 +114,12 @@ const LandingNavBar = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link href="/sign-up">
+          <Link href="/sign-up" passHref>
             <Button variant="link" className="text-black dark:text-white">
               Criar conta
             </Button>
           </Link>
-          <Link href="/sign-in">
+          <Link href="/sign-in" passHref>
             <Button variant="outline">Entrar</Button>
           </Link>
         </div>
