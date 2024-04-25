@@ -43,6 +43,7 @@ const ClientProtocol = ({
     queryKey: ["protocol", { clientId }],
     queryFn: async () => {
       const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
+      console.log(response);
       return response.data;
     },
     enabled: !!clientId,

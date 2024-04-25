@@ -152,7 +152,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     {
       name: "Meu Protocolo",
       icon: TbChartBar,
-      href: "/app/protocol",
+      href: "/app",
     },
   ];
 
