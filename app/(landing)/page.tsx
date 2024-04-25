@@ -179,7 +179,7 @@ const LandingHomePage = () => {
               {[
                 {
                   id: 1,
-                  image: "/landing-page/mockups/mockup1.png",
+                  image: "/landing-page/mockups/mockup13.png",
                 },
                 {
                   id: 2,

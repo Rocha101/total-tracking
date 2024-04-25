@@ -59,7 +59,7 @@ const ViewHormonalProtocol = ({
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Protocolo Hormonal - {hormonalProtocol?.name}</CardTitle>
+            <CardTitle>{hormonalProtocol?.name}</CardTitle>
             <CardDescription>{hormonalProtocol?.description}</CardDescription>
           </CardHeader>
         </Card>

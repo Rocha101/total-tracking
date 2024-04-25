@@ -26,6 +26,7 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import Link from "next/link";
 import { useMutation } from "react-query";
+import { Textarea } from "@/components/ui/textarea";
 
 const hormoneScheme = object({
   name: string({
@@ -125,7 +126,7 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Textarea placeholder="" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
