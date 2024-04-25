@@ -26,6 +26,7 @@ import { TbPrinter } from "react-icons/tb";
 import { useReactToPrint } from "react-to-print";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import TrainingDay from "./train-day";
+import { Skeleton } from "./ui/skeleton";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -89,6 +90,7 @@ interface ProtocolCardsProps {
   trainWeekDay: WeekDay;
   setTrainWeekDay: (value: WeekDay) => void;
   extraActions?: React.ReactNode;
+  loading: boolean;
 }
 
 const ProtocolCards = ({
@@ -100,6 +102,7 @@ const ProtocolCards = ({
   trainWeekDay,
   setTrainWeekDay,
   extraActions,
+  loading,
 }: ProtocolCardsProps) => {
   const getMealType = (mealType: string) => {
     switch (mealType) {
@@ -153,6 +156,18 @@ const ProtocolCards = ({
     removeAfterPrint: true,
     content: () => protocolRef.current,
   });
+
+  if (loading) {
+    return (
+      <div className="w-full grid grid-cols-5 gap-3 mt-12">
+        <Skeleton className="h-36 w-full col-span-5 row-span-1"></Skeleton>
+        <Skeleton className="h-36 w-full col-span-5 lg:col-span-2 row-span-2"></Skeleton>
+        <Skeleton className="h-36 w-full col-span-5 lg:col-span-3 row-span-2 print:hidden"></Skeleton>
+        <Skeleton className="h-36 w-full col-span-5 lg:col-span-3 row-span-2"></Skeleton>
+        <Skeleton className="h-36 w-full col-span-5 lg:col-span-2"></Skeleton>
+      </div>
+    );
+  }
 
   return (
     <div ref={protocolRef} className="">

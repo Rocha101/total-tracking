@@ -12,9 +12,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
 
 const FoodActionRows = ({ foodId }: { foodId: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const deleteFood = (id: string) => {
     return api.delete(`/food/${id}`);
@@ -47,13 +49,10 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
         <DropdownMenuItem onClick={handleDelete}>
           Excluir alimento
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link
-            href={`/admin/clients/edit/${foodId}`}
-            className=" pointer-events-none"
-          >
-            Editar alimento
-          </Link>
+        <DropdownMenuItem
+          onClick={() => router.push(`/admin/foods/edit/${foodId}`)}
+        >
+          Editar alimento
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -64,6 +63,10 @@ export const columns: ColumnDef<Food>[] = [
   {
     header: "Nome",
     accessorKey: "name",
+  },
+  {
+    header: "Descrição",
+    accessorKey: "description",
   },
   {
     header: "Quantidade",

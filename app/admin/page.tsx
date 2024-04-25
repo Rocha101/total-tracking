@@ -111,7 +111,7 @@ const Dashboard = () => {
           {
             id: 7,
             title: "Novo protocolo hormonal",
-            description: "Crie um novo protocolo hormonal",
+            description: "Crie um novo protocolo",
             icon: TbVaccine,
             href: "/admin/hormonal-protocols/new",
           },

@@ -12,6 +12,7 @@ import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protoc
 import Diet from "@/app/admin/diets/diets";
 import { Train } from "@/app/admin/trains/train";
 import { TbLoader2 } from "react-icons/tb";
+import { Skeleton } from "@/components/ui/skeleton";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -106,21 +107,17 @@ const ClientProtocol = () => {
   return (
     <div className="h-full">
       <PageHeader title={`Protocolo ${account?.account.name || ""}`} />
-      {loading ? (
-        <div className="w-full h-96 bg-card flex items-center justify-center">
-          <TbLoader2 className="animate-spin h-10 w-10" />
-        </div>
-      ) : (
-        <ProtocolCards
-          protocol={protocol}
-          diet={diet}
-          train={train}
-          hormonalProtocol={hormonalProtocol}
-          extraCompounds={extraCompounds}
-          trainWeekDay={trainWeekDay}
-          setTrainWeekDay={setTrainWeekDay}
-        />
-      )}
+
+      <ProtocolCards
+        protocol={protocol}
+        diet={diet}
+        train={train}
+        hormonalProtocol={hormonalProtocol}
+        extraCompounds={extraCompounds}
+        trainWeekDay={trainWeekDay}
+        setTrainWeekDay={setTrainWeekDay}
+        loading={loading}
+      />
     </div>
   );
 };

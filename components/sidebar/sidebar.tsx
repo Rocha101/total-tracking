@@ -40,6 +40,9 @@ import { cn } from "@/lib/utils";
 import { useMutation, useQuery } from "react-query";
 import api from "@/app/utils/api";
 import Image from "next/image";
+import { useState } from "react";
+import { Badge } from "../ui/badge";
+import formatDate from "@/app/utils/formatData";
 
 interface SidebarProps {
   isAdmin?: boolean;
@@ -59,16 +62,20 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const accountId = account?.account?.id;
   const router = useRouter();
   const path = usePathname();
+  const [enabledLinks, setEnabledLinks] = useState(true);
 
   const { data: subscriptionData } = useQuery(
     ["subscription", accountId],
     async () => {
       const res = await api.get(`/subscription/verify/${accountId}`);
       console.log(res);
+      if (res.data.expiresAt < new Date().toISOString()) {
+        setEnabledLinks(false);
+      }
       return res.data;
     },
     {
-      enabled: !!accountId,
+      enabled: !!accountId && isAdmin,
     }
   );
 
@@ -163,6 +170,8 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     key?: string;
   }[] = isAdmin ? adminLinks : clientLinks;
 
+  const isExpired = subscriptionData?.expiresAt < new Date().toISOString();
+
   return (
     <div className="flex min-h-screen w-full">
       <div className="hidden  bg-card lg:block w-72">
@@ -184,20 +193,22 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
           <div className="flex-1">
             <nav className="relative grid items-start px-2 text-sm font-medium lg:px-4 gap-2">
               {links.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 hover:bg-muted transition-all duration-300 ease-in-out",
-                    {
-                      "bg-muted":
-                        (!link.key && path.includes(link.href)) ||
-                        link.href === path,
-                    }
-                  )}
-                >
-                  <link.icon className="h-5 w-5" />
-                  {link.name}
+                <Link key={link.name} href={link.href} passHref>
+                  <Button
+                    variant="ghost"
+                    disabled={!enabledLinks}
+                    className={cn(
+                      "w-full flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-muted transition-all duration-300 ease-in-out",
+                      {
+                        "bg-muted":
+                          (!link.key && path.includes(link.href)) ||
+                          link.href === path,
+                      }
+                    )}
+                  >
+                    <link.icon className="h-5 w-5" />
+                    {link.name}
+                  </Button>
                 </Link>
               ))}
             </nav>
@@ -212,6 +223,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                 variant="outline"
                 size="icon"
                 className="shrink-0 lg:hidden"
+                disabled={!enabledLinks}
               >
                 <TbMenu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
@@ -248,6 +260,20 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </span>
           </div>
           <div className="flex gap-2 items-center  ml-auto">
+            {isAdmin && (
+              <Badge
+                variant={isExpired ? "destructive" : "outline"}
+                className="rounded-full hidden md:flex hover:cursor-pointer"
+                onClick={() => router.push("/admin/settings")}
+              >
+                {isExpired
+                  ? "Sua assinatura expirou"
+                  : `Sua assinatura expira em ${formatDate(
+                      subscriptionData?.expiresAt
+                    )}`}
+              </Badge>
+            )}
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -311,6 +337,17 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
           </div>
         </header>
         <main className="h-full flex flex-col overflow-auto gap-4 p-4 lg:border-l border-t">
+          {isExpired && isAdmin && (
+            <div className="h-12 w-full md:hidden">
+              <Badge
+                variant="destructive"
+                className="w-full flex items-center justify-center hover:cursor-pointer"
+                onClick={() => router.push("/admin/settings")}
+              >
+                Sua assinatura expirou
+              </Badge>
+            </div>
+          )}
           {children}
         </main>
       </div>

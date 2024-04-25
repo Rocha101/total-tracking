@@ -112,37 +112,27 @@ const ViewMoreProtocol = ({
 
   return (
     <div className="h-full">
-      <PageHeader
-        title={!loading ? `Protocolo - ${account?.account.name}` : "Protocolo"}
-        backlink
-      />
+      <PageHeader title={`Protocolo`} backlink />
 
-      {loading ? (
-        <div className="w-full h-96 bg-card flex items-center justify-center">
-          <TbLoader2 className="animate-spin h-10 w-10" />
-        </div>
-      ) : (
-        <ProtocolCards
-          protocol={protocol}
-          diet={diet}
-          train={train}
-          hormonalProtocol={hormonalProtocol}
-          extraCompounds={extraCompounds}
-          trainWeekDay={trainWeekDay}
-          setTrainWeekDay={setTrainWeekDay}
-          extraActions={
-            <Button
-              size="sm"
-              onClick={() =>
-                router.push(`/admin/protocols/edit/${protocol?.id}`)
-              }
-            >
-              <TbEdit className="mr-2" />
-              Editar
-            </Button>
-          }
-        />
-      )}
+      <ProtocolCards
+        protocol={protocol}
+        diet={diet}
+        train={train}
+        hormonalProtocol={hormonalProtocol}
+        extraCompounds={extraCompounds}
+        trainWeekDay={trainWeekDay}
+        setTrainWeekDay={setTrainWeekDay}
+        extraActions={
+          <Button
+            size="sm"
+            onClick={() => router.push(`/admin/protocols/edit/${protocol?.id}`)}
+          >
+            <TbEdit className="mr-2" />
+            Editar
+          </Button>
+        }
+        loading={loading}
+      />
     </div>
   );
 };

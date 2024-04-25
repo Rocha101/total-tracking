@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import FaqItem from "@/components/landing-page/faq-item";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const LandingHomePage = () => {
   return (
@@ -66,10 +67,14 @@ const LandingHomePage = () => {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
               Sobre o Iron Atlas
             </h1>
-            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
-              O Iron Atlas é uma plataforma de gestão para fisiculturismo que
-              visa auxiliar atletas e treinadores a alcançarem seus objetivos de
-              forma mais eficiente e organizada
+            <p className="text-md md:text-lg text-justify text-muted-foreground px-3">
+              O Iron Atlas foi desenvolvido para atender às necessidades de
+              atletas e treinadores de fisiculturismo, oferecendo uma plataforma
+              completa e intuitiva para a gestão de treinos, alimentação,
+              suplementação e protocolos hormonais. Hoje no mercado, não existe
+              uma plataforma que atenda todas as necessidades de um coach de
+              fisiculturismo, o Iron Atlas veio para suprir essa necessidade,
+              com um sistema completo e integrado.
             </p>
           </div>
           <div className="w-full lg:w-1/2 flex items-center justify-center">
@@ -161,6 +166,128 @@ const LandingHomePage = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="screenshots"
+        className="h-full min-h-screen flex items-center justify-center relative"
+      >
+        <div className="w-full flex flex-col items-center justify-center gap-12 px-4 md:px-12 py-24">
+          <div className="w-full flex flex-col items-center justify-center gap-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center ">
+              Capturas de tela
+            </h1>
+            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
+              Confira algumas capturas de tela da plataforma Iron Atlas
+            </p>
+          </div>
+          <div className="w-full flex items-center justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  id: 1,
+                  image: "/landing-page/mockups/mockup1.png",
+                },
+                {
+                  id: 2,
+                  image: "/landing-page/mockups/mockup2.png",
+                },
+                {
+                  id: 3,
+                  image: "/landing-page/mockups/mockup3.png",
+                },
+                {
+                  id: 4,
+                  image: "/landing-page/mockups/mockup4.png",
+                },
+
+                {
+                  id: 7,
+                  image: "/landing-page/mockups/mockup7.png",
+                },
+                {
+                  id: 8,
+                  image: "/landing-page/mockups/mockup8.png",
+                },
+              ].map((screenshot) => (
+                <>
+                  <div className="flex items-center justify-center md:hidden">
+                    <Image
+                      src={screenshot.image}
+                      layout="intrinsic"
+                      width={500}
+                      height={500}
+                      objectFit="contain"
+                      alt="Screenshot"
+                      quality={100}
+                      className="rounded-3xl"
+                    />
+                  </div>
+                  <Dialog key={screenshot.id}>
+                    <DialogTrigger asChild className="hidden md:flex">
+                      <div className="flex items-center justify-center">
+                        <Image
+                          src={screenshot.image}
+                          layout="intrinsic"
+                          width={500}
+                          height={500}
+                          objectFit="contain"
+                          alt="Screenshot"
+                          quality={100}
+                          className="rounded-3xl"
+                        />
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent className="h-5/6 max-w-5xl">
+                      <div className="h-full w-full flex items-center justify-center p-6">
+                        <Image
+                          src={screenshot.image}
+                          layout="intrinsic"
+                          width={1000}
+                          height={1000}
+                          objectFit="contain"
+                          alt="Screenshot"
+                          quality={100}
+                          className="rounded-3xl"
+                        />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="customerWebApp"
+        className="h-full min-h-screen flex items-center justify-center relative"
+      >
+        <div className="w-full flex flex-col-reverse lg:flex-row items-center justify-center gap-12 px-4 md:px-12 py-24">
+          <div className="w-full lg:w-1/2 flex items-center justify-center">
+            <Image
+              src="/landing-page/mockups/mockup9.png"
+              layout="intrinsic"
+              width={500}
+              height={500}
+              objectFit="contain"
+              alt="Customer web app"
+              quality={100}
+              className="rounded-3xl"
+            />
+          </div>
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+              Aplicativo web para clientes
+            </h1>
+            <p className="text-md md:text-lg text-center text-muted-foreground px-3">
+              O Iron Atlas conta com um aplicativo web para clientes, que
+              permite que atletas acessem seus protocolos de forma prática e
+              eficiente
+            </p>
           </div>
         </div>
       </section>

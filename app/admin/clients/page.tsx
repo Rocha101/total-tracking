@@ -26,7 +26,7 @@ const ClientPage = () => {
         columns={columns}
         data={rows}
         onDoubleClick={(row) =>
-          router.push(`/admin/clients/protocol?clientId=${row.id}`)
+          router.push(`/admin/clients/protocol/${row.id}`)
         }
         isLoading={isLoading}
         actions={<ReferralLink />}

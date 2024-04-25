@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
         console.log(error);
         handleTokenError(error);
       },
-      retryDelay: 60 * 60 * 1,
     }
   );
 
@@ -91,7 +90,21 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     if (account === null && accountCookie) {
       setAccount(accountCookie);
     }
-  }, [account, accountCookie]);
+    if (
+      account &&
+      path === "/sign-in" &&
+      account.account.accountType === "COACH"
+    ) {
+      router.push("/admin");
+    }
+    if (
+      account &&
+      path === "/sign-in" &&
+      account.account.accountType === "CUSTOMER"
+    ) {
+      router.push("/app");
+    }
+  }, [account, accountCookie, path, router]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

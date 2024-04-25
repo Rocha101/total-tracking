@@ -39,7 +39,7 @@ const ClientProtocol = ({
     () => WeekDay.MONDAY
   );
 
-  const { data: protocolData } = useQuery({
+  const { isLoading: protocolLoading, data: protocolData } = useQuery({
     queryKey: ["protocol", { clientId }],
     queryFn: async () => {
       const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
@@ -52,7 +52,7 @@ const ClientProtocol = ({
   const protocol = protocolData;
   const protocolId = protocolData ? protocolData.id : null;
 
-  const { data: extraCompounds } = useQuery({
+  const { isLoading: extraCompoundsLoading, data: extraCompounds } = useQuery({
     queryKey: ["extraCompound", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<ExtraCompounds[]>(
@@ -63,19 +63,20 @@ const ClientProtocol = ({
     enabled: !!protocolId,
   });
 
-  const { data: hormonalProtocol } = useQuery({
-    queryKey: ["hormonalProtocol", { protocolId: protocolId }],
-    queryFn: async () => {
-      const response = await api.get<HormonalProtocol[]>(
-        `/hormonalProtocol/protocol/${protocolId}`
-      );
-      console.log(response);
-      return response.data[0];
-    },
-    enabled: !!protocolId,
-  });
+  const { isLoading: hormonalProtocolLoading, data: hormonalProtocol } =
+    useQuery({
+      queryKey: ["hormonalProtocol", { protocolId: protocolId }],
+      queryFn: async () => {
+        const response = await api.get<HormonalProtocol[]>(
+          `/hormonalProtocol/protocol/${protocolId}`
+        );
+        console.log(response);
+        return response.data[0];
+      },
+      enabled: !!protocolId,
+    });
 
-  const { data: dietData } = useQuery({
+  const { isLoading: dietsLoading, data: dietData } = useQuery({
     queryKey: ["diet", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<Diet[]>(`/diet/protocol/${protocolId}`);
@@ -86,7 +87,7 @@ const ClientProtocol = ({
 
   const diet = dietData;
 
-  const { data: train } = useQuery({
+  const { isLoading: trainsLoading, data: train } = useQuery({
     queryKey: ["train", { protocolId: protocolId }],
     queryFn: async () => {
       const response = await api.get<Train[]>(`/train/protocol/${protocolId}`);
@@ -95,9 +96,16 @@ const ClientProtocol = ({
     enabled: !!protocolId,
   });
 
+  const loading =
+    protocolLoading ||
+    extraCompoundsLoading ||
+    hormonalProtocolLoading ||
+    dietsLoading ||
+    trainsLoading;
+
   return (
     <div className="h-full">
-      <PageHeader title={`Protocolo ${account?.account.name || ""}`} backlink />
+      <PageHeader title={`Protocolo`} backlink />
       <ProtocolCards
         protocol={protocol}
         diet={diet}
@@ -116,6 +124,7 @@ const ClientProtocol = ({
             Editar
           </Button>
         }
+        loading={loading}
       />
     </div>
   );

@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import PageHeader from "@/components/page-header";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const FoodsPage = () => {
-  const { isLoading, data } = useQuery("foods", async () => {
+  const router = useRouter();
+  const { isLoading, data: rows = [] } = useQuery("foods", async () => {
     const res = await api.get<Food[]>("/food");
     return res.data;
   });
-  const rows = data || [];
   return (
     <div>
       <PageHeader title="Alimentos" />
@@ -26,6 +27,7 @@ const FoodsPage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) => router.push(`/admin/foods/edit/${row.id}`)}
       />
     </div>
   );
