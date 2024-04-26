@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "./ui/checkbox";
 import { Badge } from "./ui/badge";
+import { cn } from "@/lib/utils";
 
 interface FoodCardProps {
   item: Meal;
@@ -30,9 +31,10 @@ const FoodCard = ({
     >
       <Card
         key={item.id}
-        className={`h-full w-full ${
+        className={cn(
+          "h-full w-full hover:border hover:border-primary hover:cursor-pointer ",
           itemsCheckbox.includes(item.id) ? "border-primary" : ""
-        }`}
+        )}
       >
         <CardHeader className="relative">
           <CardTitle>{item.name}</CardTitle>

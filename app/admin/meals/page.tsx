@@ -12,11 +12,10 @@ import { useRouter } from "next/navigation";
 
 const MealPage = () => {
   const router = useRouter();
-  const { isLoading, data } = useQuery("meals", async () => {
+  const { isLoading, data: rows = [] } = useQuery("meals", async () => {
     const res = await api.get<Meal[]>("/meal");
     return res.data;
   });
-  const rows = data || [];
 
   return (
     <div>

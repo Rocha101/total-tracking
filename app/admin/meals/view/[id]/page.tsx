@@ -81,7 +81,7 @@ const ViewMealPage = ({
       <div className="flex justify-end">
         <Button
           size="sm"
-          onClick={() => router.push(`/admin/diets/edit/${mealId}`)}
+          onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
         >
           <TbEdit className="mr-2" />
           Editar

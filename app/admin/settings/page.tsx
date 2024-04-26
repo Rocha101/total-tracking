@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import formatDate from "@/app/utils/formatData";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect } from "react";
 
 const subscriptionSchema = z.object({
   activationId: z.string({
@@ -55,30 +56,25 @@ const accountUpdateSchema = z.object({
 });
 const SettingsPage = () => {
   const { account } = useAuth();
+  const currentAccount = account?.account || null;
+  const accountId = currentAccount?.id || "";
   const subscriptionForm = useForm<Zod.infer<typeof subscriptionSchema>>({
     resolver: zodResolver(subscriptionSchema),
     defaultValues: {},
   });
   const accountUpdateForm = useForm<Zod.infer<typeof accountUpdateSchema>>({
     resolver: zodResolver(accountUpdateSchema),
-    defaultValues: {
-      name: account?.account?.name,
-      email: account?.account?.email,
-      password: account?.account?.password,
-    },
   });
-
-  const accountId = account?.account?.id;
 
   const subscriptionChangeMutation = useMutation(
     (value) => api.post("/subscription/change", value),
     {
       onSuccess: (res) => {
-        console.log(res);
+        toast("Assinatura alterada com sucesso");
       },
       onError: (err: any) => {
         console.log(err);
-        toast("Erro ao realizar checkout");
+        toast("Erro ao realizar mudança de assinatura");
       },
     }
   );
@@ -87,7 +83,6 @@ const SettingsPage = () => {
     (value) => api.put(`/account/${accountId}`, value),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast("Conta atualizada com sucesso");
       },
       onError: (err: any) => {
@@ -109,13 +104,22 @@ const SettingsPage = () => {
     ["subscription", accountId],
     async () => {
       const res = await api.get(`/subscription/verify/${accountId}`);
-      console.log(res);
       return res.data;
     },
     {
       enabled: !!accountId,
     }
   );
+
+  useEffect(() => {
+    if (currentAccount !== null) {
+      accountUpdateForm.reset({
+        name: currentAccount.name || "",
+        email: currentAccount.email || "",
+        password: currentAccount.password || "",
+      });
+    }
+  }, [currentAccount, accountUpdateForm]);
 
   return (
     <div>

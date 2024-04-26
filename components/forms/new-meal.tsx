@@ -32,9 +32,9 @@ import NewFoodDialog from "../dialogs/new-food";
 import FoodCard from "../food-card";
 import { Fragment, useEffect, useState } from "react";
 import { TbSearch } from "react-icons/tb";
-import { Textarea } from "../ui/textarea";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { Meal } from "@/app/admin/meals/meals";
+import { cn } from "@/lib/utils";
 
 const mealSchema = object({
   name: string(),
@@ -154,7 +154,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Café" {...field} />
+                  <Input placeholder="Café" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -207,7 +207,10 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
             }
           >
             <Card
-              className={isDialog ? "h-32 w-full" : "h-38 w-full"}
+              className={cn(
+                "hover:border hover:border-primary hover:cursor-pointer",
+                isDialog ? "h-32 w-full" : "h-38 w-full"
+              )}
               onClick={() => setOpenNewFood(true)}
             >
               <CardHeader>

@@ -34,7 +34,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Exercise } from "../../../exercises/exercise";
-import { TbTrashFilled } from "react-icons/tb";
+import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NewExerciseDialog from "@/components/dialogs/new-exercise";
 import { useMutation, useQuery } from "react-query";
@@ -273,13 +273,24 @@ const EditTrainPage = ({
             Selecione os exercícios que compõem o treino
           </div>
           <div className="h-full flex flex-col gap-3">
-            <MultipleSelect
-              options={exercises}
-              selectedOptions={trainsSelected}
-              handleSelect={addTrainSelected}
-              open={openNewExerciseSelect}
-              onOpenChange={setOpenNewExerciseSelect}
-            />
+            <div className="flex">
+              <MultipleSelect
+                options={exercises}
+                selectedOptions={trainsSelected}
+                handleSelect={addTrainSelected}
+                open={openNewExerciseSelect}
+                onOpenChange={setOpenNewExerciseSelect}
+                add
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-tl-none rounded-bl-none border-l-0"
+                onClick={() => setOpenNewExercise(true)}
+              >
+                <TbPlus className="h-4 w-4" />
+              </Button>
+            </div>
 
             <ScrollArea className="w-full h-full">
               {trainsSelected.length > 0 ? (

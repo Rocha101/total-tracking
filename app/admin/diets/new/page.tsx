@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/card";
 import NewMealDialog from "@/components/dialogs/new-meal";
 import MealCard from "@/components/meal-card";
-import { Textarea } from "@/components/ui/textarea";
 import { TbSearch } from "react-icons/tb";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Meal } from "../../meals/meals";
@@ -128,7 +127,7 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Seca tudo" {...field} />
+                  <Input placeholder="Cutting" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

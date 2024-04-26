@@ -12,11 +12,10 @@ import { useRouter } from "next/navigation";
 
 const DietPage = () => {
   const router = useRouter();
-  const { isLoading, data } = useQuery("diets", async () => {
+  const { isLoading, data: rows = [] } = useQuery("diets", async () => {
     const res = await api.get<Diet[]>("/diet");
     return res.data;
   });
-  const rows = data || [];
   return (
     <div>
       <PageHeader title="Dietas" />

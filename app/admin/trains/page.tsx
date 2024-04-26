@@ -12,11 +12,10 @@ import { useRouter } from "next/navigation";
 
 const TrainPage = () => {
   const router = useRouter();
-  const { isLoading, data } = useQuery("trains", async () => {
+  const { isLoading, data: rows = [] } = useQuery("trains", async () => {
     const res = await api.get<Train[]>("/train");
     return res.data;
   });
-  const rows = data || [];
 
   return (
     <div>

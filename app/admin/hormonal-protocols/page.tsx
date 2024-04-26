@@ -12,11 +12,13 @@ import { useRouter } from "next/navigation";
 
 const HormonalProtocolPage = () => {
   const router = useRouter();
-  const { isLoading, data } = useQuery("hormonalProtocols", async () => {
-    const res = await api.get<HormonalProtocol[]>("/hormoneProtocol");
-    return res.data;
-  });
-  const rows = data || [];
+  const { isLoading, data: rows = [] } = useQuery(
+    "hormonalProtocols",
+    async () => {
+      const res = await api.get<HormonalProtocol[]>("/hormoneProtocol");
+      return res.data;
+    }
+  );
   return (
     <div>
       <PageHeader title="Protocolos Hormonais" />

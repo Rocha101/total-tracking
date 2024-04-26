@@ -13,11 +13,11 @@ import { Label } from "@/components/ui/label";
 const ClientPage = () => {
   const router = useRouter();
 
-  const { isLoading, data } = useQuery("clients", async () => {
+  const { isLoading, data: rows = [] } = useQuery("clients", async () => {
     const res = await api.get<Account[]>("/account/clients");
+    console.log(res.data);
     return res.data;
   });
-  const rows = data || [];
 
   return (
     <div>

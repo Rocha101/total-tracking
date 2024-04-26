@@ -23,7 +23,6 @@ import { object, string, number, enum as enumValidator } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
-import { Textarea } from "../ui/textarea";
 import { useMutation, useQueryClient } from "react-query";
 
 const foodSchema = object({
@@ -48,6 +47,10 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
     resolver: zodResolver(foodSchema),
     defaultValues: {
       unit: "GR",
+      calories: 0,
+      proteins: 0,
+      carbs: 0,
+      fats: 0,
     },
   });
   const MealUnit = [
@@ -102,7 +105,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Textarea placeholder="Cozida" {...field} />
+                <Input placeholder="Cozida" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

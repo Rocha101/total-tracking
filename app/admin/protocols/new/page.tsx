@@ -32,7 +32,7 @@ import { HormonalProtocol } from "../../hormonal-protocols/hormonal-protocols";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQuery } from "react-query";
-import { TbTrashFilled } from "react-icons/tb";
+import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import ExtraCompounds from "../../extra-compounds/extra-compounds";
 import MultipleSelect from "@/components/multiple-select";
 import { Account } from "../../exercises/exercise";
@@ -248,26 +248,30 @@ const NewProtocolPage = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Dieta</FormLabel>
-
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <Link href="/admin/diets/new">
-                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                        Nova Dieta
-                      </div>
-                    </Link>
-                    {diets.map((diet) => (
-                      <SelectItem key={diet.id} value={diet.id}>
-                        {diet.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex">
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="rounded-tr-none rounded-br-none">
+                        <SelectValue placeholder="Selecione um item" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {diets.map((diet) => (
+                        <SelectItem key={diet.id} value={diet.id}>
+                          {diet.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-tl-none rounded-bl-none border-l-0"
+                    onClick={() => router.push("/admin/diets/new")}
+                  >
+                    <TbPlus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -278,28 +282,33 @@ const NewProtocolPage = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Protocolo Hormonal</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <Link href="/admin/hormonal-protocols/new">
-                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                        Novo Protocolo Hormonal
-                      </div>
-                    </Link>
-                    {hormonalProtocols.map((hormonalProtocol) => (
-                      <SelectItem
-                        key={hormonalProtocol.id}
-                        value={hormonalProtocol.id}
-                      >
-                        {hormonalProtocol.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex">
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="rounded-tr-none rounded-br-none">
+                        <SelectValue placeholder="Selecione um item" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {hormonalProtocols.map((hormonalProtocol) => (
+                        <SelectItem
+                          key={hormonalProtocol.id}
+                          value={hormonalProtocol.id}
+                        >
+                          {hormonalProtocol.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-tl-none rounded-bl-none border-l-0"
+                    onClick={() => router.push("/admin/hormonal-protocols/new")}
+                  >
+                    <TbPlus className="h-4 w-4" />
+                  </Button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -322,7 +331,7 @@ const NewProtocolPage = () => {
                 className="rounded-tl-none rounded-bl-none border-l-0"
                 onClick={() => router.push("/admin/trains/new")}
               >
-                Adicionar Treino
+                <TbPlus className="h-4 w-4" />
               </Button>
             </div>
           </FormItem>
@@ -342,9 +351,9 @@ const NewProtocolPage = () => {
                 type="button"
                 variant="outline"
                 className="rounded-tl-none rounded-bl-none border-l-0"
-                onClick={() => router.push("/admin/trains/new")}
+                onClick={() => router.push("/admin/extra-compounds/new")}
               >
-                Adicionar Composto
+                <TbPlus className="h-4 w-4" />
               </Button>
             </div>
           </FormItem>

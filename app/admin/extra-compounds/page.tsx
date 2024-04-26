@@ -7,13 +7,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ExtraCompounds from "./extra-compounds";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const ExtraCompoundsPage = () => {
-  const { isLoading, data } = useQuery("extraCompounds", async () => {
-    const res = await api.get<ExtraCompounds[]>("/extraCompound");
-    return res.data;
-  });
-  const rows = data || [];
+  const router = useRouter();
+  const { isLoading, data: rows = [] } = useQuery(
+    "extraCompounds",
+    async () => {
+      const res = await api.get<ExtraCompounds[]>("/extraCompound");
+      return res.data;
+    }
+  );
   return (
     <div>
       <PageHeader
@@ -33,6 +37,9 @@ const ExtraCompoundsPage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) =>
+          router.push(`/admin/extra-compounds/edit/${row.id}`)
+        }
       />
     </div>
   );

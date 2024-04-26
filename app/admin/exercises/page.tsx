@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Exercise } from "./exercise";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const ExercisePage = () => {
-  const { isLoading, data } = useQuery("exercises", async () => {
+  const router = useRouter();
+  const { isLoading, data: rows = [] } = useQuery("exercises", async () => {
     const res = await api.get<Exercise[]>("/exercise");
     return res.data;
   });
-  const rows = data || [];
   return (
     <div>
       <PageHeader title="Exercícios" />
@@ -27,6 +28,7 @@ const ExercisePage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) => router.push(`/admin/exercises/edit/${row.id}`)}
       />
     </div>
   );

@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TbTrashFilled } from "react-icons/tb";
+import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Hormone from "../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
@@ -157,13 +157,24 @@ const NewHormonalProtocolPage = () => {
 
           <Label>Selecione os hormônios que compõem o protocolo</Label>
           <div className="h-full flex flex-col gap-3">
-            <MultipleSelect
-              open={openSelectHormone}
-              onOpenChange={setOpenSelectHormone}
-              options={hormones}
-              selectedOptions={protocolHormones}
-              handleSelect={addHormone}
-            />
+            <div className="flex">
+              <MultipleSelect
+                open={openSelectHormone}
+                onOpenChange={setOpenSelectHormone}
+                options={hormones}
+                selectedOptions={protocolHormones}
+                handleSelect={addHormone}
+                add
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-tl-none rounded-bl-none border-l-0"
+                onClick={() => setOpenNewHormone(true)}
+              >
+                <TbPlus className="w-4 h-4" />
+              </Button>
+            </div>
 
             <ScrollArea className="w-full h-full">
               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">

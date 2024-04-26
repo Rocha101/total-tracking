@@ -8,13 +8,14 @@ import Hormone from "./hormones";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
+import { useRouter } from "next/navigation";
 
 const HormonesPage = () => {
-  const { isLoading, data } = useQuery("hormones", async () => {
+  const router = useRouter();
+  const { isLoading, data: rows = [] } = useQuery("hormones", async () => {
     const res = await api.get<Hormone[]>("/hormone");
     return res.data;
   });
-  const rows = data || [];
   return (
     <div>
       <PageHeader title="Hormônios" />
@@ -27,6 +28,7 @@ const HormonesPage = () => {
           </Link>
         }
         isLoading={isLoading}
+        onDoubleClick={(row) => router.push(`/admin/hormones/edit/${row.id}`)}
       />
     </div>
   );

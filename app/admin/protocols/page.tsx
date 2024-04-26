@@ -11,11 +11,10 @@ import { Button } from "@/components/ui/button";
 
 const ProtocolPage = () => {
   const router = useRouter();
-  const { isLoading, data } = useQuery("protocols", async () => {
+  const { isLoading, data: rows = [] } = useQuery("protocols", async () => {
     const res = await api.get<Protocol[]>("/protocol");
     return res.data;
   });
-  const rows = data || [];
   return (
     <div>
       <PageHeader title="Protocolos" />

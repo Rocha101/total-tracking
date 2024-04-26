@@ -24,7 +24,6 @@ import { toast } from "sonner";
 import api from "@/app/utils/api";
 import { useEffect, useState } from "react";
 import z from "zod";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -244,7 +243,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Textarea placeholder="Parte superior" {...field} />
+                <Input placeholder="Parte superior" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -261,7 +260,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue placeholder="Selecione um item" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -320,7 +319,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue placeholder="Selecione um item" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

@@ -23,7 +23,6 @@ import { object, string, number, enum as enumValidator } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
-import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useEffect } from "react";
 import PageHeader from "@/components/page-header";
@@ -53,6 +52,10 @@ const FoodForm = ({
     resolver: zodResolver(foodSchema),
     defaultValues: {
       unit: "GR",
+      calories: 0,
+      proteins: 0,
+      carbs: 0,
+      fats: 0,
     },
   });
   const MealUnit = [
@@ -65,12 +68,14 @@ const FoodForm = ({
     (values: Zod.infer<typeof foodSchema>) =>
       api.put(`/food/${foodId}`, values),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        console.log(res);
         toast("Alimento editado com sucesso!");
         queryClient.invalidateQueries("foods");
         router.back();
       },
-      onError: () => {
+      onError: (err) => {
+        console.log(err);
         toast("Erro ao editar alimento!");
       },
     }
@@ -136,7 +141,7 @@ const FoodForm = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Cozida" {...field} />
+                  <Input placeholder="Cozida" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
