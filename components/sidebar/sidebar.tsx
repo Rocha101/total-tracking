@@ -22,6 +22,8 @@ import {
   TbNotification,
   TbBell,
   TbCheck,
+  TbClearAll,
+  TbBellRinging,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -37,7 +39,7 @@ import { useAuth } from "@/context/auth";
 import { ModeToggle } from "../theme-toggle";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import api from "@/app/utils/api";
 import Image from "next/image";
 import { useState } from "react";
@@ -59,6 +61,7 @@ type Notification = {
 
 const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const { logout, account } = useAuth();
+  const clientQuery = useQueryClient();
   const accountId = account?.account?.id;
   const router = useRouter();
   const path = usePathname();
@@ -93,6 +96,20 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     {
       onSuccess: (res) => {
         console.log(res);
+        clientQuery.invalidateQueries("notification");
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+
+  const deleteNotificationMutation = useMutation(
+    (id: string) => api.delete(`/notification/${id}`),
+    {
+      onSuccess: (res) => {
+        console.log(res);
+        clientQuery.invalidateQueries("notification");
       },
       onError: (err) => {
         console.log(err);
@@ -171,6 +188,12 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   }[] = isAdmin ? adminLinks : clientLinks;
 
   const isExpired = subscriptionData?.expiresAt < new Date().toISOString();
+
+  const deleteAllNotifications = async () => {
+    await notificationData.forEach((notification: any) => {
+      deleteNotificationMutation.mutate(notification.id);
+    });
+  };
 
   return (
     <div className="flex min-h-screen w-full">
@@ -277,15 +300,34 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <TbBell className="h-5 w-5" />
+                  {notificationData.length > 0 ? (
+                    <TbBellRinging className="h-5 w-5 animate-pulse" />
+                  ) : (
+                    <TbBell className="h-5 w-5" />
+                  )}
+
                   <span className="sr-only">Toggle notifications view</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className=" min-w-72">
-                <DropdownMenuLabel>Notificações</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="min-w-72">
+                <div className="w-full flex items-center justify-betweeen">
+                  <DropdownMenuLabel className="flex-1">
+                    Notificações
+                  </DropdownMenuLabel>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={deleteAllNotifications}
+                    disabled={notificationData.length === 0}
+                  >
+                    <TbClearAll className="h-4 w-4" />
+                  </Button>
+                </div>
                 <DropdownMenuSeparator />
                 {notificationData.length === 0 && (
-                  <DropdownMenuItem>Nenhuma notificação</DropdownMenuItem>
+                  <DropdownMenuItem disabled>
+                    Nenhuma notificação
+                  </DropdownMenuItem>
                 )}
                 {notificationData.map((notification: Notification) => (
                   <DropdownMenuCheckboxItem
@@ -295,7 +337,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                       readNotificationMutation.mutate(notification.id)
                     }
                   >
-                    <div>
+                    <div className="w-full flex flex-col gap-1 items-start justify-start">
                       <span className="font-semibold">
                         {notification.title}
                       </span>
@@ -319,13 +361,16 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => router.push("/admin/settings")}
-                  className="flex gap-2"
-                >
-                  <TbSettings className="h-4 w-4" />
-                  Configurações
-                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem
+                    onClick={() => router.push("/admin/settings")}
+                    className="flex gap-2"
+                  >
+                    <TbSettings className="h-4 w-4" />
+                    Configurações
+                  </DropdownMenuItem>
+                )}
+
                 <ModeToggle />
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="flex gap-2">

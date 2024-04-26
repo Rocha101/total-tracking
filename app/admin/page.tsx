@@ -1,25 +1,13 @@
 "use client";
 
 import PageHeader from "@/components/page-header";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useQuery } from "react-query";
-import api from "../utils/api";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   TbBarbell,
-  TbBasket,
-  TbBasketBolt,
   TbBasketPlus,
   TbBowl,
-  TbCirclePlus,
   TbCopy,
   TbFileAnalytics,
-  TbLoader2,
   TbMeat,
   TbPill,
   TbPlus,
@@ -32,7 +20,6 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/auth";
-import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const { account } = useAuth();
