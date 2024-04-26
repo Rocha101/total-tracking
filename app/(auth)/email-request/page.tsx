@@ -33,14 +33,9 @@ const formSchema = z.object({
       required_error: "Email obrigatório",
     })
     .email({ message: "Email inválido" }),
-  password: z
-    .string({
-      required_error: "Senha obrigatória",
-    })
-    .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
 });
 
-function SignInPage() {
+function EmailRequest() {
   const { login } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,9 +65,9 @@ function SignInPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">Recuperar senha</CardTitle>
         <CardDescription>
-          Insira suas credenciais para acessar o sistema.
+          Insira seu email para recuperar sua senha
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -94,38 +89,21 @@ function SignInPage() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-end">
-              <Link href="/email-request" passHref>
+
+            <Button type="submit" className="w-full">
+              {createSignInMutation.isLoading ? "Enviando..." : "Enviar"}
+            </Button>
+            <div className="flex justify-start">
+              <Link href="/sign-in" passHref>
                 <Button
                   type="button"
                   variant="link"
                   className="p-0 m-0 h-4 text-xs"
                 >
-                  Esqueceu a senha?
+                  Voltar
                 </Button>
               </Link>
             </div>
-            <Button type="submit" className="w-full">
-              {createSignInMutation.isLoading ? "Entrando..." : "Entrar"}
-            </Button>
-            <Link href="/sign-up" passHref className="w-full">
-              <Button type="button" className="w-full" variant="outline">
-                Criar conta
-              </Button>
-            </Link>
           </form>
         </Form>
       </CardContent>
@@ -133,4 +111,4 @@ function SignInPage() {
   );
 }
 
-export default SignInPage;
+export default EmailRequest;

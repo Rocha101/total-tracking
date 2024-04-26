@@ -260,7 +260,7 @@ const LandingHomePage = () => {
         <div className="w-full flex flex-col-reverse lg:flex-row items-center justify-center gap-12 px-4 md:px-12 py-24">
           <div className="w-full lg:w-1/2 flex items-center justify-center">
             <Image
-              src="/landing-page/mockups/mockup12.png"
+              src="/landing-page/mockups/mockup14.png"
               layout="intrinsic"
               width={500}
               height={500}

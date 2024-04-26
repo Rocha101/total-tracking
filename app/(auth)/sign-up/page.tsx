@@ -124,145 +124,134 @@ function SignUpPage() {
   }, [coachId, form]);
 
   return (
-    <main className="h-full w-full flex items-center justify-center relative">
-      <div className="-z-[5] absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black to-transparent" />
-      <Image
-        src="/landing-page/pricing-hero.png"
-        layout="fill"
-        objectFit="cover"
-        alt="Main background image"
-        className="-z-10  backdrop-blur-md"
-        quality={100}
-      />
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Criar conta</CardTitle>
-          <CardDescription>
-            Preencha os campos abaixo para criar sua conta
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <Form {...form}>
-            <form
-              className="flex flex-col gap-4"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <Input placeholder="exemplo" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="exemplo@gmail.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="accountType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de conta</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!!coachId}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="CUSTOMER">Cliente</SelectItem>
-                          <SelectItem value="COACH">Coach</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {form.watch("accountType") === "COACH" && (
-                <FormField
-                  control={form.control}
-                  name="activationKey"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Chave de ativação</FormLabel>
-
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      <Link
-                        target="_blank"
-                        href="https://wa.me/5548998280420?text=Ol%C3%A1%21+Estou+interessado+em+adquirir+uma+assinatura+do+Iron+Atlas.+Poderia+me+informar+sobre+os+planos+dispon%C3%ADveis+e+como+proceder+para+ativ%C3%A1-los%3F"
-                        className="text-xs font-medium leading-none hover:underline"
-                      >
-                        Quero adquirir uma chave de ativação
-                      </Link>
-                    </FormItem>
-                  )}
-                />
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">Criar conta</CardTitle>
+        <CardDescription>
+          Preencha os campos abaixo para criar sua conta
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <Form {...form}>
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input placeholder="exemplo" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              {form.watch("accountType") === "CUSTOMER" && !coachId && (
-                <FormField
-                  control={form.control}
-                  name="coachId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Código do coach</FormLabel>
-
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="exemplo@gmail.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              <Button type="submit" className="w-full">
-                {createSignUpMutation.isLoading ? "Salvando..." : "Salvar"}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de conta</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={!!coachId}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="CUSTOMER">Cliente</SelectItem>
+                        <SelectItem value="COACH">Coach</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {form.watch("accountType") === "COACH" && (
+              <FormField
+                control={form.control}
+                name="activationKey"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Chave de ativação</FormLabel>
+
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    <Link
+                      target="_blank"
+                      href="https://wa.me/5548998280420?text=Ol%C3%A1%21+Estou+interessado+em+adquirir+uma+assinatura+do+Iron+Atlas.+Poderia+me+informar+sobre+os+planos+dispon%C3%ADveis+e+como+proceder+para+ativ%C3%A1-los%3F"
+                      className="text-xs font-medium leading-none hover:underline"
+                    >
+                      Quero adquirir uma chave de ativação
+                    </Link>
+                  </FormItem>
+                )}
+              />
+            )}
+            {form.watch("accountType") === "CUSTOMER" && !coachId && (
+              <FormField
+                control={form.control}
+                name="coachId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Código do coach</FormLabel>
+
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            <Button type="submit" className="w-full">
+              {createSignUpMutation.isLoading ? "Salvando..." : "Salvar"}
+            </Button>
+            <Link href="/sign-in" passHref className="w-full">
+              <Button type="button" className="w-full" variant="outline">
+                Já tem uma conta? Faça login
               </Button>
-              <Link href="/sign-in" passHref className="w-full">
-                <Button type="button" className="w-full" variant="outline">
-                  Já tem uma conta? Faça login
-                </Button>
-              </Link>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </main>
+            </Link>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
 
