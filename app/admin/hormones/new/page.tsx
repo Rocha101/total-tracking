@@ -112,7 +112,10 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enantato de testosterona" {...field} />
+                  <Input
+                    placeholder="Ex.: Enantato de testosterona"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -125,7 +128,7 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="Ex.: Intramuscular" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,7 +155,7 @@ const NewExtraCompound = () => {
                       <SelectItem value="TESTOSTERONE">Testosterona</SelectItem>
                       <SelectItem value="PEPTIDE">Peptídeo</SelectItem>
                       <SelectItem value="INSULIN">Insulina</SelectItem>
-                      <SelectItem value="TIREOID">Tireoide</SelectItem>
+                      <SelectItem value="TIREOID">Tireoidiano</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -171,7 +174,7 @@ const NewExtraCompound = () => {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="10"
+                      placeholder="Ex.: 10"
                       {...field}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -221,7 +224,7 @@ const NewExtraCompound = () => {
                     <FormLabel>Concentração</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="10"
+                        placeholder="Ex.: 200"
                         type="number"
                         {...field}
                         onChange={(e) => {

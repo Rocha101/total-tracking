@@ -146,21 +146,25 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
 
   useEffect(() => {
     if (meal) {
-      form.reset({
-        name: meal?.name || "",
-        description: meal?.description || "",
-        foods: meal?.foods.map((food) => food.id),
-        mealType: meal?.mealType as unknown as
-          | "BREAKFAST"
-          | "MORNING_SNACK"
-          | "LUNCH"
-          | "AFTERNOON_SNACK"
-          | "DINNER",
-        totalCalories: meal?.totalCalories || 0,
-        totalProteins: meal?.totalProteins || 0,
-        totalCarbs: meal?.totalCarbs || 0,
-        totalFats: meal?.totalFats || 0,
-      });
+      if (meal.name) form.setValue("name", meal.name);
+      if (meal.description) form.setValue("description", meal.description);
+      if (meal.mealType)
+        form.setValue(
+          "mealType",
+          meal.mealType as unknown as
+            | "BREAKFAST"
+            | "MORNING_SNACK"
+            | "LUNCH"
+            | "AFTERNOON_SNACK"
+            | "DINNER"
+        );
+      if (meal.totalCalories)
+        form.setValue("totalCalories", meal.totalCalories);
+      if (meal.totalProteins)
+        form.setValue("totalProteins", meal.totalProteins);
+      if (meal.totalCarbs) form.setValue("totalCarbs", meal.totalCarbs);
+      if (meal.totalFats) form.setValue("totalFats", meal.totalFats);
+      if (meal.foods) form.setValue("foods", meal.foods);
     }
   }, [meal, form]);
 
@@ -178,7 +182,7 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ref 1" {...field} />
+                  <Input placeholder="Nome da refeição" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -191,7 +195,7 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Café" {...field} />
+                  <Input placeholder="Ex.: Pré treino" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -114,7 +114,7 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Emagrecimento" {...field} />
+                  <Input placeholder="Nome da dieta" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -127,7 +127,7 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cutting" {...field} />
+                  <Input placeholder="Ex.: Cutting" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

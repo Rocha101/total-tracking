@@ -92,7 +92,10 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="Batata" {...field} />
+                <Input
+                  placeholder="Nome do alimento Ex.: Batata Doce"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,7 +108,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Input placeholder="Cozida" {...field} />
+                <Input placeholder="Ex.: Cozida" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,6 +124,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
                 <FormControl>
                   <Input
                     type="number"
+                    placeholder="Ex.: 100"
                     {...field}
                     onChange={(e) => {
                       const value = e.target.value;

@@ -190,7 +190,10 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="Peito" {...field} />
+                <Input
+                  placeholder="Nome do exercício Ex.: Supino reto"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -203,7 +206,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
             <FormItem>
               <FormLabel>Descrição</FormLabel>
               <FormControl>
-                <Input placeholder="Parte superior" {...field} />
+                <Input placeholder="Ex.: Segurando na excêntrica" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -263,7 +266,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
               <FormItem className="w-full">
                 <FormLabel>Equipamento</FormLabel>
                 <FormControl>
-                  <Input placeholder="Barra fixa" {...field} />
+                  <Input placeholder="Ex.: Barra fixa" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -335,7 +338,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
               {sets.map((set, index) => (
                 <div key={index} className="w-full flex gap-2 items-end">
                   <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
-                    <Label>Tipo</Label>
+                    <Label>Intensidade</Label>
                     <Select
                       value={set.setType}
                       onValueChange={(value: SetType) =>
@@ -354,11 +357,12 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
                           >
                             {
                               {
-                                [SetType.WARM_UP]: "Aquecimento",
-                                [SetType.WORKING]: "Trabalho",
-                                [SetType.FEEDER]: "Feeder",
-                                [SetType.TOP]: "Top",
-                                [SetType.BACK_OFF]: "Back off",
+                                [SetType.WARM_UP]: "Aquecimento (Warm up)",
+                                [SetType.FEEDER]:
+                                  "Preparação/Reconhecimento (Feeder)",
+                                [SetType.WORKING]: "Trabalho (Working)",
+                                [SetType.TOP]: "Pico (Top)",
+                                [SetType.BACK_OFF]: "Retorno (Back-off)",
                               }[type]
                             }
                           </SelectItem>
@@ -367,7 +371,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
                     </Select>
                   </div>
                   <div className="w-full flex flex-col gap-2">
-                    <Label>Reps</Label>
+                    <Label>Nº Repetições</Label>
                     <Input
                       type="number"
                       placeholder="10"
@@ -379,7 +383,7 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
                     />
                   </div>
                   <div className="w-full flex flex-col gap-2">
-                    <Label>Peso</Label>
+                    <Label>Peso (Kg)</Label>
                     <Input
                       type="number"
                       placeholder="3"

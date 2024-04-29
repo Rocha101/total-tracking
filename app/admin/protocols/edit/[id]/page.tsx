@@ -16,27 +16,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { object, string, number, enum as enumValidator, infer } from "zod";
+import { object, string } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { TbLoader2, TbPlus, TbTrashFilled } from "react-icons/tb";
+import { TbPlus } from "react-icons/tb";
 import { useAuth } from "@/context/auth";
 import { Protocol } from "../../columns";
 import Diet from "@/app/admin/diets/diets";
@@ -44,16 +34,7 @@ import { Train } from "@/app/admin/trains/train";
 import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protocols";
 import MultipleSelect from "@/components/multiple-select";
 import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
-
-enum WeekDay {
-  MONDAY = "MONDAY",
-  TUESDAY = "TUESDAY",
-  WEDNESDAY = "WEDNESDAY",
-  THURSDAY = "THURSDAY",
-  FRIDAY = "FRIDAY",
-  SATURDAY = "SATURDAY",
-  SUNDAY = "SUNDAY",
-}
+import { Account } from "@/app/admin/exercises/exercise";
 
 const protocolSchema = object({
   name: string(),
@@ -65,19 +46,17 @@ const protocolSchema = object({
   extraCompound: string().optional(),
 });
 
-const NewProtocolPage = ({ params }: { params: { id: string } }) => {
+const EditProtocolPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const { account } = useAuth();
-  const clientId = account?.account.id;
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId");
   const protocolId = params.id;
   const form = useForm<Zod.infer<typeof protocolSchema>>({
     resolver: zodResolver(protocolSchema),
     defaultValues: {},
   });
-  const [loading, setLoading] = useState(true);
   const [openTrainSelect, setOpenTrainSelect] = useState(false);
   const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
-  const [openClientsSelect, setOpenClientsSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) =>
@@ -104,7 +83,7 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
     createProtocolMutation.mutate(protocol);
   };
 
-  const { data: protocolData } = useQuery({
+  const { data: protocol } = useQuery({
     queryKey: ["protocol", { protocolId }],
     queryFn: async () => {
       const response = await api.get<Protocol>(`/protocol/${protocolId}`);
@@ -112,8 +91,6 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
     },
     enabled: !!protocolId,
   });
-
-  const protocol = protocolData;
 
   const { data: diets = [] } = useQuery({
     queryKey: ["diets"],
@@ -145,6 +122,11 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
       const response = await api.get<ExtraCompounds[]>(`/extraCompound`);
       return response.data;
     },
+  });
+
+  const { data: clientsData = [] } = useQuery("clients", async () => {
+    const res = await api.get<Account[]>("/account/clients");
+    return res.data;
   });
 
   const [trainsSelected, setTrainsSelected] = useState<Train[]>([]);
@@ -186,71 +168,49 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
     } else setExtraCompoundsSelected((prev) => [...prev, extraCompound]);
   };
 
-  const updateFormValues = async ({
+  useEffect(() => {
+    if (protocol) {
+      console.log(protocol);
+      if (protocol.name) form.setValue("name", protocol.name);
+      if (protocol.description)
+        form.setValue("description", protocol.description);
+      if (protocol.diets) form.setValue("diet", protocol.diets[0]?.id);
+      if (protocol.hormonalProtocols)
+        form.setValue("hormonalProtocol", protocol.hormonalProtocols[0]?.id);
+      if (protocol.clientId) form.setValue("clientId", protocol.clientId);
+
+      if (protocol.trains.length > 0) {
+        const trainIds = protocol.trains.map((train) => train.id);
+        const trainsSelected = trains.filter((train) =>
+          trainIds.includes(train.id)
+        );
+        setTrainsSelected(trainsSelected);
+      }
+
+      if (protocol.extraCompounds.length > 0) {
+        const extraCompoundIds = protocol.extraCompounds.map(
+          (extraCompound) => extraCompound.id
+        );
+        const extraCompoundsSelected = extraCompounds.filter((extraCompound) =>
+          extraCompoundIds.includes(extraCompound.id)
+        );
+        setExtraCompoundsSelected(extraCompoundsSelected);
+      }
+    }
+  }, [
     protocol,
     form,
     trains,
     setTrainsSelected,
-  }: {
-    protocol: Protocol | undefined;
-    form: any;
-    trains: Train[];
-    setTrainsSelected: any;
-  }) => {
-    if (protocol) {
-      console.log(protocol);
-
-      form.reset({
-        name: protocol.name,
-        description: protocol.description,
-        diet: protocol.diets[0]?.id,
-        hormonalProtocol: protocol.hormonalProtocols[0]?.id,
-        clientId: protocol.clientId,
-      });
-
-      const trainIds = protocol.trains.map((train) => train.id);
-      const trainsSelected = trains.filter((train) =>
-        trainIds.includes(train.id)
-      );
-      setTrainsSelected(trainsSelected);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await updateFormValues({ protocol, form, trains, setTrainsSelected });
-    };
-
-    setTimeout(() => {
-      fetchData();
-    }, 1000);
-  }, [protocol, form, trains, setTrainsSelected]);
+    setExtraCompoundsSelected,
+    extraCompounds,
+  ]);
 
   useEffect(() => {
     if (clientId) {
       form.setValue("clientId", clientId);
     }
   }, [clientId, form]);
-
-  const weekDays = [
-    WeekDay.MONDAY,
-    WeekDay.TUESDAY,
-    WeekDay.WEDNESDAY,
-    WeekDay.THURSDAY,
-    WeekDay.FRIDAY,
-    WeekDay.SATURDAY,
-    WeekDay.SUNDAY,
-  ];
-
-  if (loading) {
-    return (
-      <div className="w-full h-96 bg-card flex items-center justify-center">
-        <TbLoader2 className="animate-spin h-10 w-10" />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -286,6 +246,32 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
               </FormItem>
             )}
           />
+          {!clientId && (
+            <FormField
+              control={form.control}
+              name="clientId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cliente</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um cliente" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {clientsData.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <FormField
             control={form.control}
             name="diet"
@@ -413,4 +399,4 @@ const NewProtocolPage = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default NewProtocolPage;
+export default EditProtocolPage;

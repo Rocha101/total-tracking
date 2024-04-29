@@ -67,7 +67,6 @@ const NewProtocolPage = () => {
   });
   const [openTrainSelect, setOpenTrainSelect] = useState(false);
   const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
-  const [openClientsSelect, setOpenClientsSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
@@ -128,6 +127,11 @@ const NewProtocolPage = () => {
     },
   });
 
+  const { data: clientsData = [] } = useQuery("clients", async () => {
+    const res = await api.get<Account[]>("/account/clients");
+    return res.data;
+  });
+
   useEffect(() => {
     if (clientId) {
       form.setValue("clientId", clientId);
@@ -173,11 +177,6 @@ const NewProtocolPage = () => {
     } else setExtraCompoundsSelected((prev) => [...prev, extraCompound]);
   };
 
-  const { data: clientsData = [] } = useQuery("clients", async () => {
-    const res = await api.get<Account[]>("/account/clients");
-    return res.data;
-  });
-
   return (
     <div>
       <PageHeader title="Novo Protocolo" backlink />
@@ -219,10 +218,7 @@ const NewProtocolPage = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione um cliente" />

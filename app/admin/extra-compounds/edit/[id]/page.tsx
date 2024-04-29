@@ -136,8 +136,13 @@ const EditHormonePage = ({
       if (extraCompound.quantity)
         form.setValue("quantity", extraCompound.quantity);
       if (extraCompound.unit) form.setValue("unit", extraCompound.unit);
-      if (extraCompound.concentration)
-        form.setValue("concentration", extraCompound.concentration);
+
+      if (extraCompound.concentration) {
+        form.setValue("concentrationUnit", extraCompound.concentrationUnit);
+        setTimeout(() => {
+          form.setValue("concentration", extraCompound.concentration);
+        }, 100);
+      }
     }
   }, [extraCompound, form]);
 
@@ -156,7 +161,7 @@ const EditHormonePage = ({
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enantato de testosterona" {...field} />
+                  <Input placeholder="Ex.: Vitamina K2" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,7 +174,7 @@ const EditHormonePage = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="Ex.: Pela Manhã em Jejum" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -186,7 +191,7 @@ const EditHormonePage = ({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="10"
+                      placeholder="Ex.: 10"
                       {...field}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -236,7 +241,7 @@ const EditHormonePage = ({
                     <FormLabel>Concentração</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="10"
+                        placeholder="Ex.: 100"
                         type="number"
                         {...field}
                         onChange={(e) => {

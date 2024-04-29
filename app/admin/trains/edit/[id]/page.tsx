@@ -217,7 +217,10 @@ const EditTrainPage = ({
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Hipertrofia" {...field} />
+                  <Input
+                    placeholder="Nome do treino Ex.: Hipertrofia"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -230,7 +233,7 @@ const EditTrainPage = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Semana 1" {...field} />
+                  <Input placeholder="Ex.: Semana 1" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

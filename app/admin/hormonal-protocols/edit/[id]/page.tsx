@@ -158,7 +158,10 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Protocolo Hormonal" {...field} />
+                  <Input
+                    placeholder="Nome do protocolo Ex.: Bulking"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -172,7 +175,7 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Semana 1" {...field} />
+                  <Input placeholder="Ex.: Semana 1-3" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

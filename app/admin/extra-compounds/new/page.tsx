@@ -117,7 +117,7 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Vitamina K2" {...field} />
+                  <Input placeholder="Ex.: Vitamina K2" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,7 +130,7 @@ const NewExtraCompound = () => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="Ex.: Pela Manhã em Jejum" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -146,7 +146,7 @@ const NewExtraCompound = () => {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="10"
+                      placeholder="Ex.: 10"
                       {...field}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -197,7 +197,7 @@ const NewExtraCompound = () => {
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="10"
+                        placeholder="Ex.: 100"
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value;

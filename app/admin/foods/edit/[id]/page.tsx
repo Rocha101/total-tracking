@@ -98,18 +98,19 @@ const FoodForm = ({
 
   useEffect(() => {
     if (foodData) {
-      form.reset({
-        name: foodData?.name || "",
-        description: foodData?.description || "",
-        quantity: foodData?.quantity || 0,
-        unit:
-          (foodData?.unit as unknown as "GR" | "ML" | "UNIT" | undefined) ||
-          "GR",
-        calories: foodData?.calories || 0,
-        proteins: foodData?.proteins || 0,
-        carbs: foodData?.carbs || 0,
-        fats: foodData?.fats || 0,
-      });
+      if (foodData.name) form.setValue("name", foodData.name);
+      if (foodData.description)
+        form.setValue("description", foodData.description);
+      if (foodData.quantity) form.setValue("quantity", foodData.quantity);
+      if (foodData.unit)
+        form.setValue(
+          "unit",
+          foodData.unit as unknown as "GR" | "ML" | "UNIT" | undefined
+        );
+      if (foodData.calories) form.setValue("calories", foodData.calories);
+      if (foodData.proteins) form.setValue("proteins", foodData.proteins);
+      if (foodData.carbs) form.setValue("carbs", foodData.carbs);
+      if (foodData.fats) form.setValue("fats", foodData.fats);
     }
   }, [foodData, form]);
 
@@ -128,7 +129,10 @@ const FoodForm = ({
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Batata" {...field} />
+                  <Input
+                    placeholder="Nome do alimento Ex.: Batata Doce"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -141,7 +145,7 @@ const FoodForm = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cozida" {...field} />
+                  <Input placeholder="Ex.: Cozida" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -157,6 +161,7 @@ const FoodForm = ({
                   <FormControl>
                     <Input
                       type="number"
+                      placeholder="Ex.: 100"
                       {...field}
                       onChange={(e) => {
                         const value = e.target.value;

@@ -48,8 +48,6 @@ const hormoneScheme = object({
     "INSULIN",
     "TIREOID",
   ]),
-  protocolId: string().optional(),
-  accountId: string().optional(),
 });
 
 const EditHormonePage = ({
@@ -132,20 +130,20 @@ const EditHormonePage = ({
 
   useEffect(() => {
     if (hormone) {
-      (
-        [
-          "name",
-          "description",
-          "quantity",
-          "unit",
-          "concentration",
-          "concentrationUnit",
-          "hormoneType",
-        ] as Array<keyof Hormone>
-      ).forEach((key) => {
-        if (hormone[key] !== undefined || hormone[key] !== null)
-          form.setValue(key as any, hormone[key]);
-      });
+      if (hormone.name) form.setValue("name", hormone.name);
+      if (hormone.description)
+        form.setValue("description", hormone.description);
+      if (hormone.quantity) form.setValue("quantity", hormone.quantity);
+      if (hormone.unit) form.setValue("unit", hormone.unit);
+      if (hormone.hormoneType)
+        form.setValue("hormoneType", hormone.hormoneType);
+
+      if (hormone.concentration) {
+        form.setValue("concentrationUnit", hormone.concentrationUnit);
+        setTimeout(() => {
+          form.setValue("concentration", hormone.concentration);
+        }, 100);
+      }
     }
   }, [hormone, form]);
 
@@ -164,7 +162,10 @@ const EditHormonePage = ({
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enantato de testosterona" {...field} />
+                  <Input
+                    placeholder="Ex.: Enantato de testosterona"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -177,7 +178,7 @@ const EditHormonePage = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input placeholder="Ex.: Intramuscular" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -204,7 +205,7 @@ const EditHormonePage = ({
                       <SelectItem value="TESTOSTERONE">Testosterona</SelectItem>
                       <SelectItem value="PEPTIDE">Peptídeo</SelectItem>
                       <SelectItem value="INSULIN">Insulina</SelectItem>
-                      <SelectItem value="TIREOID">Tireoide</SelectItem>
+                      <SelectItem value="TIREOID">Tireoidiano</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -223,7 +224,7 @@ const EditHormonePage = ({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="10"
+                      placeholder="Ex.: 10"
                       {...field}
                       onChange={(e) => {
                         const value = e.target.value;
@@ -273,7 +274,7 @@ const EditHormonePage = ({
                     <FormLabel>Concentração</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="10"
+                        placeholder="Ex.: 200"
                         type="number"
                         {...field}
                         onChange={(e) => {

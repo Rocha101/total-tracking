@@ -121,11 +121,13 @@ const EditDietPage = ({
 
   useEffect(() => {
     if (diet) {
-      form.reset({
-        name: diet.name || undefined,
-        description: diet.description || undefined,
-        meals: diet.meals.map((meal) => meal.id) || undefined,
-      });
+      if (diet.name) form.setValue("name", diet.name);
+      if (diet.description) form.setValue("description", diet.description);
+      if (diet.meals)
+        form.setValue(
+          "meals",
+          diet.meals.map((meal) => meal.id)
+        );
     }
   }, [diet, form]);
 
@@ -153,7 +155,7 @@ const EditDietPage = ({
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Emagrecimento" {...field} />
+                  <Input placeholder="Nome da dieta" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -166,7 +168,7 @@ const EditDietPage = ({
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cutting" {...field} />
+                  <Input placeholder="Ex.:  Cutting" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
