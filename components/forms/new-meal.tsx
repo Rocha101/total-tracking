@@ -25,15 +25,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { object, string, number, enum as enumValidator, z } from "zod";
+import { object, string, number, enum as enumValidator } from "zod";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import NewFoodDialog from "../dialogs/new-food";
 import FoodCard from "../food-card";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { TbSearch } from "react-icons/tb";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Meal } from "@/app/admin/meals/meals";
 import { cn } from "@/lib/utils";
 
 const mealSchema = object({
@@ -88,22 +87,25 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
   const foods = data || [];
 
   const createMealMutation = useMutation(
-    (values) => api.post("/meal", values),
+    (values: Zod.infer<typeof mealSchema>) => api.post("/meal", values),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        console.log(res);
         toast("Refeição criada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
         queryClient.invalidateQueries("meals");
       },
-      onError: () => {
+      onError: (err) => {
+        console.error(err);
         toast("Erro ao criar refeição!");
       },
     }
   );
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: Zod.infer<typeof mealSchema>) => {
+    console.log(values);
     createMealMutation.mutate(values);
   };
 
@@ -141,7 +143,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ref 1" {...field} />
+                  <Input placeholder="Nome da refeição" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -154,7 +156,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input placeholder="Café" {...field} />
+                  <Input placeholder="Ex.: Pré treino" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

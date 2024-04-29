@@ -93,20 +93,23 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
   const updateMealMutation = useMutation(
     (values) => api.put(`/meal/${editId}`, values),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        console.log(res);
         toast("Refeição atualizada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
         queryClient.invalidateQueries("meals");
       },
-      onError: () => {
+      onError: (err) => {
+        console.log(err);
         toast("Erro ao atualizar refeição!");
       },
     }
   );
 
   const onSubmit = (values: any) => {
+    console.log(values);
     updateMealMutation.mutate(values);
   };
 
@@ -144,20 +147,19 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
   useEffect(() => {
     if (meal) {
       form.reset({
-        name: meal?.name || undefined,
-        description: meal?.description || undefined,
-        foods: meal?.foods.map((food) => food.id) || undefined,
+        name: meal?.name || "",
+        description: meal?.description || "",
+        foods: meal?.foods.map((food) => food.id),
         mealType: meal?.mealType as unknown as
           | "BREAKFAST"
           | "MORNING_SNACK"
           | "LUNCH"
           | "AFTERNOON_SNACK"
-          | "DINNER"
-          | undefined,
-        totalCalories: meal?.totalCalories || undefined,
-        totalProteins: meal?.totalProteins || undefined,
-        totalCarbs: meal?.totalCarbs || undefined,
-        totalFats: meal?.totalFats || undefined,
+          | "DINNER",
+        totalCalories: meal?.totalCalories || 0,
+        totalProteins: meal?.totalProteins || 0,
+        totalCarbs: meal?.totalCarbs || 0,
+        totalFats: meal?.totalFats || 0,
       });
     }
   }, [meal, form]);

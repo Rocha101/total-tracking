@@ -10,20 +10,12 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
-import { TbChevronLeft } from "react-icons/tb";
+import { TbArrowLeft } from "react-icons/tb";
 
 function EmailSent() {
   return (
     <Card className="w-full max-w-sm">
-      <div className="w-full flex justify-start px-6">
-        <Link href="/sign-in">
-          <Button variant="link" className="mt-4 p-0">
-            <TbChevronLeft className="mr-2" />
-            Voltar
-          </Button>
-        </Link>
-      </div>
-      <CardHeader className="pt-2">
+      <CardHeader>
         <CardTitle className="text-2xl">Email enviado!</CardTitle>
         <CardDescription>Verifique sua caixa de entrada</CardDescription>
       </CardHeader>
@@ -34,6 +26,14 @@ function EmailSent() {
           height={200}
           alt="Email enviado"
         />
+        <div className="w-full flex justify-start mt-2">
+          <Link href="/sign-in">
+            <Button variant="link" className="p-0 m-0 h-4 text-xs">
+              <TbArrowLeft className="mr-2" />
+              Voltar
+            </Button>
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

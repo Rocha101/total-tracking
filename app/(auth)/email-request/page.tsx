@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useMutation } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbArrowLeft } from "react-icons/tb";
 
 const formSchema = z.object({
   email: z
@@ -100,6 +101,7 @@ function EmailRequest() {
                   variant="link"
                   className="p-0 m-0 h-4 text-xs"
                 >
+                  <TbArrowLeft className="mr-2" />
                   Voltar
                 </Button>
               </Link>
