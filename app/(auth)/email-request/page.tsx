@@ -23,9 +23,8 @@ import { z } from "zod";
 import api from "../../utils/api";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useAuth } from "@/context/auth";
 import { useMutation } from "react-query";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z
@@ -36,30 +35,31 @@ const formSchema = z.object({
 });
 
 function EmailRequest() {
-  const { login } = useAuth();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
 
-  const createSignInMutation = useMutation(
-    (values: z.infer<typeof formSchema>) => api.post("/auth/sign-in", values),
+  const sendEmailMutation = useMutation(
+    (values: z.infer<typeof formSchema>) =>
+      api.post("/recover-password", values),
     {
       onSuccess: (res) => {
         console.log(res.data);
-        login(res.data);
-        toast("Login realizado com sucesso");
+        toast("Email enviado com sucesso");
+        router.push("/email-sent");
       },
       onError: (err) => {
         console.log(err);
-        toast("Credenciais inválidas");
+        toast("Email não encontrado");
       },
     }
   );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log(values);
-    createSignInMutation.mutate(values);
+    sendEmailMutation.mutate(values);
   };
 
   return (
@@ -91,7 +91,7 @@ function EmailRequest() {
             />
 
             <Button type="submit" className="w-full">
-              {createSignInMutation.isLoading ? "Enviando..." : "Enviar"}
+              {sendEmailMutation.isLoading ? "Enviando..." : "Enviar"}
             </Button>
             <div className="flex justify-start">
               <Link href="/sign-in" passHref>

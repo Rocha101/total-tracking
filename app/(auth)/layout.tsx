@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import Image from "next/image";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
@@ -13,6 +14,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         quality={100}
       />
       {children}
+      <Toaster />
     </main>
   );
 };
