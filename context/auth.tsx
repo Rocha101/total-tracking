@@ -34,7 +34,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const router = useRouter();
-  const path = usePathname();
   const [account, setAccount] = useState<Account | null>(null);
   const accountCookie = Cookies.get("account")
     ? JSON.parse(Cookies.get("account") || "{}")
@@ -91,21 +90,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     if (account === null && accountCookie) {
       setAccount(accountCookie);
     }
-    if (
-      account &&
-      path === "/sign-in" &&
-      account.account.accountType === "COACH"
-    ) {
-      router.push("/admin");
-    }
-    if (
-      account &&
-      path === "/sign-in" &&
-      account.account.accountType === "CUSTOMER"
-    ) {
-      router.push("/app");
-    }
-  }, [account, accountCookie, path, router]);
+  }, [account, accountCookie]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
