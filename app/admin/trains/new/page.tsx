@@ -80,7 +80,9 @@ enum MuscleGroup {
 }
 
 const trainSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   exercises: string().array(),
 });
@@ -293,40 +295,40 @@ const NewTrainPage = () => {
                         <CardHeader className="w-full flex flex-row justify-between items-start">
                           <CardTitle>{exercise.name}</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                          <CardDescription className="flex flex-col gap-2">
-                            <span>
-                              Grupo Muscular:{" "}
+                        <CardContent className="flex flex-col gap-2">
+                          <CardDescription>
+                            Grupo Muscular:{" "}
+                            {
                               {
-                                {
-                                  [MuscleGroup.CHEST]: "Peito",
-                                  [MuscleGroup.BACK]: "Costas",
-                                  [MuscleGroup.SHOULDERS]: "Ombros",
-                                  [MuscleGroup.BICEPS]: "Biceps",
-                                  [MuscleGroup.TRICEPS]: "Triceps",
-                                  [MuscleGroup.FOREARMS]: "Antebraço",
-                                  [MuscleGroup.CALVES]: "Panturrilha",
-                                  [MuscleGroup.ABS]: "Abdomen",
-                                  [MuscleGroup.QUADS]: "Quadriceps",
-                                  [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-                                  [MuscleGroup.GLUTES]: "Gluteos",
-                                  [MuscleGroup.ADDUCTORS]: "Adutores",
-                                  [MuscleGroup.ABDUCTORS]: "Abdutores",
-                                  [MuscleGroup.TRAPS]: "Trapezio",
-                                  [MuscleGroup.LATS]: "Latissimo do dorso",
-                                  [MuscleGroup.LOWER_BACK]: "Lombar",
-                                  [MuscleGroup.OBLIQUES]: "Oblíquos",
-                                  [MuscleGroup.NECK]: "Pescoço",
-                                }[exercise.muscleGroup]
-                              }
-                            </span>
-                            <span>Equipamento: {exercise.equipment}</span>
-                            {reps.map((rep, index) => (
-                              <span key={index}>
-                                {index + 1}ª Série: {rep.join(" ")}
-                              </span>
-                            ))}
+                                [MuscleGroup.CHEST]: "Peito",
+                                [MuscleGroup.BACK]: "Costas",
+                                [MuscleGroup.SHOULDERS]: "Ombros",
+                                [MuscleGroup.BICEPS]: "Biceps",
+                                [MuscleGroup.TRICEPS]: "Triceps",
+                                [MuscleGroup.FOREARMS]: "Antebraço",
+                                [MuscleGroup.CALVES]: "Panturrilha",
+                                [MuscleGroup.ABS]: "Abdomen",
+                                [MuscleGroup.QUADS]: "Quadriceps",
+                                [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
+                                [MuscleGroup.GLUTES]: "Gluteos",
+                                [MuscleGroup.ADDUCTORS]: "Adutores",
+                                [MuscleGroup.ABDUCTORS]: "Abdutores",
+                                [MuscleGroup.TRAPS]: "Trapezio",
+                                [MuscleGroup.LATS]: "Latissimo do dorso",
+                                [MuscleGroup.LOWER_BACK]: "Lombar",
+                                [MuscleGroup.OBLIQUES]: "Oblíquos",
+                                [MuscleGroup.NECK]: "Pescoço",
+                              }[exercise.muscleGroup]
+                            }
                           </CardDescription>
+                          <CardDescription>
+                            Equipamento: {exercise.equipment}
+                          </CardDescription>
+                          {reps.map((rep, index) => (
+                            <CardDescription key={index}>
+                              {index + 1}ª Série: {rep.join(" ")}
+                            </CardDescription>
+                          ))}
                         </CardContent>
 
                         <Button
@@ -342,9 +344,9 @@ const NewTrainPage = () => {
                 </div>
               ) : (
                 <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
-                  <span className="text-lg text-muted-foreground">
+                  <p className="text-lg text-muted-foreground">
                     Nenhum exercício selecionado
-                  </span>
+                  </p>
                 </div>
               )}
             </ScrollArea>

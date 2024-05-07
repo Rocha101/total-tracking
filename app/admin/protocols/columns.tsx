@@ -16,10 +16,15 @@ import { Train } from "../trains/train";
 import ExtraCompounds from "../extra-compounds/extra-compounds";
 import { useMutation, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
 
 const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteProtocol = (id: string) => {
     return api.delete(`/protocol/${id}`);
@@ -28,11 +33,14 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
   const deleteMutation = useMutation(deleteProtocol, {
     onSuccess: () => {
       toast("Protocolo excluído com sucesso!");
-      queryClient.invalidateQueries("meals"); // Refresh meals data after deletion
+      queryClient.invalidateQueries("meals");
     },
     onError: (error) => {
       console.error(error);
       toast("Erro ao excluir protocolo");
+    },
+    onSettled: () => {
+      setOpen(false);
     },
   });
 
@@ -41,29 +49,39 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir protocolo
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
-        >
-          Editar protocolo
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/protocols/view/${protocolId}`)}
-        >
-          Ver protocolo
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir protocolo
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
+          >
+            Editar protocolo
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/protocols/view/${protocolId}`)}
+          >
+            Ver protocolo
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir protocolo"
+        content="Tem certeza que deseja excluir este protocolo ?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
@@ -88,10 +106,14 @@ export const columns: ColumnDef<Protocol>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Descrição",
-    accessorKey: "description",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Data de Criação",

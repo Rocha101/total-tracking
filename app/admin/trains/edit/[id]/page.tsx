@@ -82,7 +82,9 @@ enum MuscleGroup {
 }
 
 const trainSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
 });
 

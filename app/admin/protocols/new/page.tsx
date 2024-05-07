@@ -48,7 +48,9 @@ enum WeekDay {
 }
 
 const protocolSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   diet: string().optional(),
   train: string().array().optional(),

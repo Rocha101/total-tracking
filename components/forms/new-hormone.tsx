@@ -29,7 +29,9 @@ import Link from "next/link";
 import { useQueryClient } from "react-query";
 
 const hormoneScheme = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   quantity: number(),
   concentration: number(),

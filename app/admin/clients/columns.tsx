@@ -19,8 +19,10 @@ import ProtocolPage from "../protocols/page";
 import { Fragment, useState } from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { Protocol, columns as protocolColumns } from "../protocols/columns";
+import ConfirmationDialog from "@/components/confirmation-dialog";
 
 const ClientRowActions = ({ clientId }: { clientId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -32,23 +34,20 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
   const deleteMutation = useMutation(deleteClient, {
     onSuccess: () => {
       toast("Cliente excluído com sucesso!");
-      queryClient.invalidateQueries("diets");
+      queryClient.invalidateQueries("clients");
     },
     onError: (error) => {
-      console.error(error);
+      console.log(error);
       toast("Erro ao excluir cliente");
+    },
+    onSettled: () => {
+      setOpen(false);
     },
   });
 
   const handleDelete = () => {
     deleteMutation.mutate(clientId);
   };
-
-  const { isLoading, data } = useQuery("protocols", async () => {
-    const res = await api.get<Protocol[]>("/protocol");
-    return res.data;
-  });
-  const rows = data || [];
 
   return (
     <Fragment>
@@ -60,7 +59,7 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={handleDelete}>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             Excluir cliente
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -76,6 +75,14 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir cliente"
+        content="Tem certeza que deseja excluir este cliente?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
     </Fragment>
   );
 };

@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HormonalProtocol } from "./hormonal-protocols";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,14 +12,19 @@ import api from "@/app/utils/api";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
 
 const HormoneActionRows = ({
   hormonalProtocolId,
 }: {
   hormonalProtocolId: string;
 }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteHormone = (id: string) => {
     return api.delete(`/hormoneProtocol/${id}`);
@@ -35,6 +39,9 @@ const HormoneActionRows = ({
       console.error(error);
       toast("Erro ao excluir protocolo");
     },
+    onSettled: () => {
+      setOpen(false);
+    },
   });
 
   const handleDelete = () => {
@@ -42,33 +49,47 @@ const HormoneActionRows = ({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir protocolo
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() =>
-            router.push(`/admin/hormonal-protocols/edit/${hormonalProtocolId}`)
-          }
-        >
-          Editar protocolo
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() =>
-            router.push(`/admin/hormonal-protocols/view/${hormonalProtocolId}`)
-          }
-        >
-          Ver protocolo
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir protocolo
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(
+                `/admin/hormonal-protocols/edit/${hormonalProtocolId}`
+              )
+            }
+          >
+            Editar protocolo
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() =>
+              router.push(
+                `/admin/hormonal-protocols/view/${hormonalProtocolId}`
+              )
+            }
+          >
+            Ver protocolo
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir protocolo"
+        content="Tem certeza que deseja excluir este protocolo?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
@@ -76,10 +97,14 @@ export const columns: ColumnDef<HormonalProtocol>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Descrição",
-    accessorKey: "description",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Data de Criação",

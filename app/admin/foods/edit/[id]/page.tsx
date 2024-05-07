@@ -28,7 +28,9 @@ import { useEffect } from "react";
 import PageHeader from "@/components/page-header";
 
 const foodSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   quantity: number().optional(),
   unit: enumValidator(["GR", "ML", "UNIT"]).optional(),

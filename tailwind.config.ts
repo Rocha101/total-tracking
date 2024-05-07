@@ -18,6 +18,11 @@ const config = {
       },
     },
     extend: {
+      width: {
+        "radix-popover-trigger-width": "var(--radix-popover-trigger-width)",
+        "radix-popover-content-available-height":
+          "var(--radix-popover-content-available-height)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

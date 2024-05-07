@@ -1,61 +1,40 @@
-import { Meal } from "@/app/admin/meals/meals";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "./ui/checkbox";
-import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { TbTrashFilled } from "react-icons/tb";
 
 interface FoodCardProps {
-  item: Meal;
-  itemsCheckbox: string[];
-  handleSelect: (mealId: string) => void;
-  isDialog?: boolean;
+  item: Food;
+  handleRemove: (foodId: string) => void;
 }
 
-const FoodCard = ({
-  item,
-  itemsCheckbox,
-  handleSelect,
-  isDialog,
-}: FoodCardProps) => {
+const FoodCard = ({ item, handleRemove }: FoodCardProps) => {
   return (
     <label
       key={item.id}
       className="flex items-center h-38 w-full select-none"
       htmlFor={item.id}
     >
-      <Card
-        key={item.id}
-        className={cn(
-          "h-full w-full hover:border hover:border-primary hover:cursor-pointer ",
-          itemsCheckbox.includes(item.id) ? "border-primary" : ""
-        )}
-      >
+      <Card key={item.id} className="h-full relative w-full">
         <CardHeader className="relative">
           <CardTitle>{item.name}</CardTitle>
-          <Checkbox
-            className="absolute right-5 top-4"
-            id={item.id}
-            key={item.id}
-            checked={itemsCheckbox.includes(item.id) ? true : false}
-            onCheckedChange={() => handleSelect(item.id)}
-          />
         </CardHeader>
         <CardContent className="h-24 px-0 relative">
           <div className="px-6 flex flex-col gap-0.5 relative text-xs text-muted-foreground">
             <div className="capitalize">{item.description}</div>
-            <div>{item.totalCalories} Cal</div>
+            <div>{item.calories} Cal</div>
             <div>
               {item.quantity}
               {item.unit}
             </div>
           </div>
         </CardContent>
+        <Button
+          variant="destructive"
+          className="absolute top-0 bottom-0 my-auto right-6"
+          onClick={() => handleRemove(item.id)}
+        >
+          <TbTrashFilled />
+        </Button>
       </Card>
     </label>
   );

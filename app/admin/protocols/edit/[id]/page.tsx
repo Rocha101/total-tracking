@@ -27,7 +27,6 @@ import PageHeader from "@/components/page-header";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { TbPlus } from "react-icons/tb";
-import { useAuth } from "@/context/auth";
 import { Protocol } from "../../columns";
 import Diet from "@/app/admin/diets/diets";
 import { Train } from "@/app/admin/trains/train";
@@ -37,7 +36,9 @@ import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
 import { Account } from "@/app/admin/exercises/exercise";
 
 const protocolSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   diet: string().optional(),
   train: string().array().optional(),
@@ -169,42 +170,39 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
   };
 
   useEffect(() => {
-    if (protocol) {
-      console.log(protocol);
-      if (protocol.name) form.setValue("name", protocol.name);
-      if (protocol.description)
-        form.setValue("description", protocol.description);
-      if (protocol.diets) form.setValue("diet", protocol.diets[0]?.id);
-      if (protocol.hormonalProtocols)
-        form.setValue("hormonalProtocol", protocol.hormonalProtocols[0]?.id);
-      if (protocol.clientId) form.setValue("clientId", protocol.clientId);
+    const fetchEditData = async () => {
+      if (protocol) {
+        console.log(protocol);
+        if (protocol.name) form.setValue("name", protocol.name);
+        if (protocol.description)
+          form.setValue("description", protocol.description);
+        if (protocol.diets) form.setValue("diet", protocol.diets[0]?.id);
+        if (protocol.hormonalProtocols)
+          form.setValue("hormonalProtocol", protocol.hormonalProtocols[0]?.id);
+        if (protocol.clientId) form.setValue("clientId", protocol.clientId);
 
-      if (protocol.trains.length > 0) {
-        const trainIds = protocol.trains.map((train) => train.id);
-        const trainsSelected = trains.filter((train) =>
-          trainIds.includes(train.id)
-        );
-        setTrainsSelected(trainsSelected);
-      }
+        if (protocol.trains.length > 0) {
+          const trainIds = protocol.trains.map((train) => train.id);
+          const trainsSelected = trains.filter((train) =>
+            trainIds.includes(train.id)
+          );
+          setTrainsSelected(trainsSelected);
+        }
 
-      if (protocol.extraCompounds.length > 0) {
-        const extraCompoundIds = protocol.extraCompounds.map(
-          (extraCompound) => extraCompound.id
-        );
-        const extraCompoundsSelected = extraCompounds.filter((extraCompound) =>
-          extraCompoundIds.includes(extraCompound.id)
-        );
-        setExtraCompoundsSelected(extraCompoundsSelected);
+        if (protocol.extraCompounds.length > 0) {
+          const extraCompoundIds = protocol.extraCompounds.map(
+            (extraCompound) => extraCompound.id
+          );
+          const extraCompoundsSelected = extraCompounds.filter(
+            (extraCompound) => extraCompoundIds.includes(extraCompound.id)
+          );
+          setExtraCompoundsSelected(extraCompoundsSelected);
+        }
       }
-    }
-  }, [
-    protocol,
-    form,
-    trains,
-    setTrainsSelected,
-    setExtraCompoundsSelected,
-    extraCompounds,
-  ]);
+    };
+
+    fetchEditData();
+  }, [protocol, form, trains, extraCompounds]);
 
   useEffect(() => {
     if (clientId) {

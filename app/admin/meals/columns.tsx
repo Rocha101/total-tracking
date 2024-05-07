@@ -13,10 +13,15 @@ import { TbDots } from "react-icons/tb";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useMutation, useQueryClient } from "react-query";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
 
 const MealRowActions = ({ mealId }: { mealId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteMeal = (id: string) => {
     return api.delete(`/meal/${id}`);
@@ -25,11 +30,14 @@ const MealRowActions = ({ mealId }: { mealId: string }) => {
   const deleteMutation = useMutation(deleteMeal, {
     onSuccess: () => {
       toast("Refeição excluída com sucesso!");
-      queryClient.invalidateQueries("meals"); // Refresh meals data after deletion
+      queryClient.invalidateQueries("meals");
     },
     onError: (error) => {
       console.error(error);
       toast("Erro ao excluir refeição");
+    },
+    onSettled: () => {
+      setOpen(false);
     },
   });
 
@@ -38,29 +46,39 @@ const MealRowActions = ({ mealId }: { mealId: string }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir refeição
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
-        >
-          Editar refeição
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/meals/view/${mealId}`)}
-        >
-          Ver refeição
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir refeição
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
+          >
+            Editar refeição
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/meals/view/${mealId}`)}
+          >
+            Ver refeição
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir refeição"
+        content="Tem certeza que deseja excluir esta refeição?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
@@ -68,6 +86,14 @@ export const columns: ColumnDef<Meal>[] = [
   {
     header: "Nome",
     accessorKey: "name",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Tipo",

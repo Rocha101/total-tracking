@@ -27,6 +27,8 @@ import { useReactToPrint } from "react-to-print";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import TrainingDay from "./train-day";
 import { Skeleton } from "./ui/skeleton";
+import HormoneViewCard from "./hormone-view-card";
+import ExtraCompoundViewCard from "./extraCompound-view-card";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -157,7 +159,7 @@ const ProtocolCards = ({
     content: () => protocolRef.current,
   });
 
-  if (loading) {
+  if (loading && !protocol) {
     return (
       <div className="w-full grid grid-cols-5 gap-3 mt-12">
         <Skeleton className="h-36 w-full col-span-5 row-span-1"></Skeleton>
@@ -282,29 +284,7 @@ const ProtocolCards = ({
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
                 {hormonalProtocol?.hormones.map((hormone) => (
-                  <Card
-                    key={hormone.id}
-                    className="flex shadow-none border-l-4 border-l-primary"
-                  >
-                    <CardHeader className="w-full">
-                      <CardTitle>{hormone.name}</CardTitle>
-                      <CardDescription>{hormone.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="w-full space-y-1.5 flex flex-col items-end justify-end pt-6">
-                      <p className="text-sm text-muted-foreground">
-                        {hormone.quantity}{" "}
-                        <span className="text-xs">{hormone.unit}</span>
-                      </p>
-                      {hormone.concentration !== 0 && (
-                        <p className="text-sm text-muted-foreground">
-                          {hormone.concentration}{" "}
-                          <span className="text-xs">
-                            {hormone.concentrationUnit?.replace("_", "/")}
-                          </span>
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <HormoneViewCard key={hormone.id} hormone={hormone} />
                 ))}
               </CardContent>
             </Card>
@@ -328,31 +308,10 @@ const ProtocolCards = ({
             <CardContent>
               {extraCompounds.length > 0 ? (
                 extraCompounds.map((extraCompound) => (
-                  <Card
-                    className="w-full flex shadow-none border-l-4 border-l-primary"
+                  <ExtraCompoundViewCard
                     key={extraCompound.id}
-                  >
-                    <CardHeader className="w-full">
-                      <CardTitle>{extraCompound.name}</CardTitle>
-                      <CardDescription>
-                        {extraCompound.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-6 h-full w-full space-y-1.5 flex flex-col items-end justify-center">
-                      <p>
-                        {extraCompound.quantity}{" "}
-                        <span className="text-xs">{extraCompound.unit}</span>
-                      </p>
-                      {extraCompound.concentration !== 0 && (
-                        <p className="text-sm text-muted-foreground">
-                          {extraCompound.concentration}{" "}
-                          <span className="text-xs">
-                            {extraCompound.concentrationUnit?.replace("_", "/")}
-                          </span>
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
+                    compound={extraCompound}
+                  />
                 ))
               ) : (
                 <p className="text-muted-foreground">

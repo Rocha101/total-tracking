@@ -8,9 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
 import { toast } from "sonner";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import api from "@/app/utils/api";
+import { useMutation, useQueryClient } from "react-query";
+import { useRouter } from "next/navigation";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
 
 enum SetType {
   WARM_UP = "WARM_UP",
@@ -20,12 +23,12 @@ enum SetType {
   BACK_OFF = "BACK_OFF",
 }
 
-import { useMutation, useQueryClient } from "react-query";
-import { useRouter } from "next/navigation";
-
 const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteExercise = (id: string) => {
     return api.delete(`/exercise/${id}`);
@@ -40,6 +43,9 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
       console.error(error);
       toast("Erro ao excluir exercício");
     },
+    onSettled: () => {
+      setOpen(false);
+    },
   });
 
   const handleDelete = () => {
@@ -47,24 +53,34 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir exercício
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
-        >
-          Editar exercício
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir exercício
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
+          >
+            Editar exercício
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir exercício"
+        content="Tem certeza que deseja excluir este exercício ?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
@@ -72,10 +88,14 @@ export const columns: ColumnDef<Exercise>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Descrição",
-    accessorKey: "description",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Séries",

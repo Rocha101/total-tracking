@@ -80,10 +80,14 @@ export const columns: ColumnDef<Food>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Descrição",
-    accessorKey: "description",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Quantidade",

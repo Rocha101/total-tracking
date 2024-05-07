@@ -39,8 +39,6 @@ const extraCompoundSchema = object({
   concentration: number().optional(),
   unit: enumValidator(["MG", "ML", "UI", "UNIT"]),
   concentrationUnit: enumValidator(["MG_ML", "MG"]).optional(),
-  protocolId: string().optional(),
-  accountId: string().optional(),
 });
 
 const NewExtraCompound = () => {

@@ -24,6 +24,7 @@ import {
   TbCheck,
   TbClearAll,
   TbBellRinging,
+  TbLoader2,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -66,6 +67,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const router = useRouter();
   const path = usePathname();
   const [enabledLinks, setEnabledLinks] = useState(true);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const { data: subscriptionData } = useQuery(
     ["subscription", accountId],
@@ -196,7 +198,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full print:hidden">
       <div className="hidden  bg-card lg:block w-72">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6">
@@ -240,7 +242,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
       </div>
       <div className="w-full flex flex-col">
         <header className="flex h-14 items-center gap-4 bg-card px-4 lg:h-[60px] lg:px-6">
-          <Sheet>
+          <Sheet open={openMenu} onOpenChange={setOpenMenu}>
             <SheetTrigger asChild>
               <Button
                 variant="outline"
@@ -254,17 +256,27 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </SheetTrigger>
             <SheetContent
               side="left"
-              className="flex flex-col h-full overflow-y-auto"
+              className="flex flex-col h-full overflow-y-auto py-12"
             >
               <nav className="grid gap-2 text-lg font-medium">
                 {links.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary"
-                  >
-                    <link.icon className="h-6 w-6" />
-                    <span>{link.name}</span>
+                  <Link key={link.name} href={link.href} passHref>
+                    <Button
+                      disabled={!enabledLinks}
+                      variant="ghost"
+                      className={cn(
+                        "w-full flex items-center justify-start gap-3 rounded-md px-3 py-2 hover:bg-muted transition-all duration-300 ease-in-out",
+                        {
+                          "bg-muted":
+                            (!link.key && path.includes(link.href)) ||
+                            link.href === path,
+                        }
+                      )}
+                      onClick={() => setOpenMenu(false)}
+                    >
+                      <link.icon className="h-6 w-6" />
+                      <span>{link.name}</span>
+                    </Button>
                   </Link>
                 ))}
               </nav>
@@ -320,7 +332,11 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                     onClick={deleteAllNotifications}
                     disabled={notificationData.length === 0}
                   >
-                    <TbClearAll className="h-4 w-4" />
+                    {deleteNotificationMutation.isLoading ? (
+                      <TbLoader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <TbClearAll className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
                 <DropdownMenuSeparator />

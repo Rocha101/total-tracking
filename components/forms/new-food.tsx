@@ -26,7 +26,9 @@ import api from "@/app/utils/api";
 import { useMutation, useQueryClient } from "react-query";
 
 const foodSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   quantity: number().optional(),
   unit: enumValidator(["GR", "ML", "UNIT"]).optional(),

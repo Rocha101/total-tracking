@@ -17,10 +17,17 @@ import { toast } from "sonner";
 
 import { useMutation, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
+import getUnit from "@/app/utils/getUnit";
+import getConcentrationUnit from "@/app/utils/getConcentrationUnit";
 
 const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteHormone = (id: string) => {
     return api.delete(`/hormone/${id}`);
@@ -35,6 +42,9 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
       console.error(error);
       toast("Erro ao excluir hormônio");
     },
+    onSettled: () => {
+      setOpen(false);
+    },
   });
 
   const handleDelete = () => {
@@ -42,24 +52,34 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir hormônio
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/hormones/edit/${hormoneId}`)}
-        >
-          Editar hormônio
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir hormônio
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/hormones/edit/${hormoneId}`)}
+          >
+            Editar hormônio
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir hormônio"
+        content="Tem certeza que deseja excluir este hormônio?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
@@ -67,25 +87,30 @@ export const columns: ColumnDef<Hormone>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Descrição",
-    accessorKey: "description",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Quantidade",
     accessorKey: "quantity",
-    cell: ({ row }) => `${row.original.quantity} ${row.original.unit}`,
+    cell: ({ row }) =>
+      `${row.original.quantity} ${getUnit(row.original.unit)}${
+        row.original.quantity > 1 ? "s" : ""
+      }`,
   },
   {
     header: "Concentração",
     accessorKey: "concentration",
     cell: ({ row }) =>
-      `${row.original.concentration || ""} ${
+      `${row.original.concentration || ""} ${getConcentrationUnit(
         row.original.concentrationUnit
-          ? row.original.concentrationUnit?.split("_")?.join("/")
-          : ""
-      }`,
+      )}`,
   },
   {
     header: "Tipo",

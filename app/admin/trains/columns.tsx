@@ -30,10 +30,15 @@ enum WeekDay {
 import { useMutation, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
 import TrainWeekDays from "@/components/train-week-days";
+import ConfirmationDialog from "@/components/confirmation-dialog";
+import { useState } from "react";
 
 const TrainActionRows = ({ trainId }: { trainId: string }) => {
+  "use client";
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const [open, setOpen] = useState(false);
 
   const deleteTrain = (id: string) => {
     return api.delete(`/train/${id}`);
@@ -48,6 +53,9 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
       console.error(error);
       toast("Erro ao excluir treino");
     },
+    onSettled: () => {
+      setOpen(false);
+    },
   });
 
   const handleDelete = () => {
@@ -55,38 +63,55 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <TbDots className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={handleDelete}>
-          Excluir treino
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
-        >
-          Editar treino
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push(`/admin/trains/view/${trainId}`)}
-        >
-          Visualizar treino
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <TbDots className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            Excluir treino
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
+          >
+            Editar treino
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push(`/admin/trains/view/${trainId}`)}
+          >
+            Visualizar treino
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmationDialog
+        title="Excluir treino"
+        content="Tem certeza que deseja excluir este treino?"
+        onConfirm={handleDelete}
+        open={open}
+        onOpenChange={() => setOpen(false)}
+        loading={deleteMutation.isLoading}
+      />
+    </>
   );
 };
 
 export const columns: ColumnDef<Train>[] = [
   {
-    accessorKey: "name",
     header: "Nome",
+    accessorKey: "name",
+    cell: ({ row }) => (
+      <div className="flex flex-col items-start">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-400">
+          {row.original.description}
+        </span>
+      </div>
+    ),
   },
-  { accessorKey: "description", header: "Descrição" },
   {
     accessorKey: "weekDay",
     header: "Dias da Semana",

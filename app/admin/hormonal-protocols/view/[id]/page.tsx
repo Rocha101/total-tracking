@@ -15,6 +15,8 @@ import { HormonalProtocol } from "../../hormonal-protocols";
 import { TbEdit, TbLoader2 } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import getConcentrationUnit from "@/app/utils/getConcentrationUnit";
+import getUnit from "@/app/utils/getUnit";
 const ViewHormonalProtocol = ({
   params,
 }: {
@@ -76,12 +78,12 @@ const ViewHormonalProtocol = ({
               <CardContent className="w-full space-y-1.5 flex flex-col items-end justify-end pt-6">
                 <p className="text-sm text-muted-foreground">
                   {hormone.quantity}{" "}
-                  <span className="text-xs">{hormone.unit}</span>
+                  <span className="text-xs">{getUnit(hormone.unit)}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
                   {hormone.concentration}{" "}
                   <span className="text-xs">
-                    {hormone.concentrationUnit?.replace("_", "/")}
+                    {getConcentrationUnit(hormone.concentrationUnit)}
                   </span>
                 </p>
               </CardContent>

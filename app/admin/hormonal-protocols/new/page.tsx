@@ -18,20 +18,14 @@ import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { TbPlus, TbTrashFilled } from "react-icons/tb";
+import { TbPlus } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Hormone from "../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
 import { useMutation, useQuery } from "react-query";
 import MultipleSelect from "@/components/multiple-select";
 import { Label } from "@/components/ui/label";
+import HormoneCard from "@/components/hormone-card";
 
 const hormonalProtocolSchema = object({
   name: string({
@@ -183,37 +177,11 @@ const NewHormonalProtocolPage = () => {
               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">
                 {protocolHormones.map((hormone: Hormone) => {
                   return (
-                    <Card key={hormone.id} className="relative">
-                      <CardHeader className="w-full flex flex-row justify-between items-start">
-                        <CardTitle>{hormone.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <CardDescription className="flex flex-col gap-2">
-                          <span>{hormone.description}</span>
-                          <span>{`${hormone.quantity} ${hormone.unit}`}</span>
-                          <span>
-                            {`${hormone.concentration || ""}${
-                              hormone.concentrationUnit
-                                ? hormone.concentrationUnit
-                                    ?.split("_")
-                                    ?.join("/")
-                                : ""
-                            }
-                            `}
-                          </span>
-                        </CardDescription>
-                      </CardContent>
-
-                      <Button
-                        type="button"
-                        onClick={() => removeProtocolHormone(hormone.id)}
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1/2 transform -translate-y-1/2 right-8"
-                      >
-                        <TbTrashFilled />
-                      </Button>
-                    </Card>
+                    <HormoneCard
+                      key={hormone.id}
+                      hormone={hormone}
+                      handleRemove={removeProtocolHormone}
+                    />
                   );
                 })}
               </div>

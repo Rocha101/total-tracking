@@ -112,7 +112,8 @@ const NewExerciseForm = ({ onSubmitOk }: NewExerciseFormProps) => {
   const createExerciseMutation = useMutation(
     (values: Zod.infer<typeof exerciseSchema>) => api.post("/exercise", values),
     {
-      onSuccess: () => {
+      onSuccess: (res) => {
+        console.log(res.data);
         toast("Exercicio criado com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();

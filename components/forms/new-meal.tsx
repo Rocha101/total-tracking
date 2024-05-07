@@ -31,20 +31,22 @@ import api from "@/app/utils/api";
 import NewFoodDialog from "../dialogs/new-food";
 import FoodCard from "../food-card";
 import { Fragment, useState } from "react";
-import { TbSearch } from "react-icons/tb";
+import { TbPlus, TbSearch } from "react-icons/tb";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { cn } from "@/lib/utils";
+import MultipleSelect from "../multiple-select";
 
 const mealSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
-  mealType: enumValidator([
-    "BREAKFAST",
-    "MORNING_SNACK",
-    "LUNCH",
-    "AFTERNOON_SNACK",
-    "DINNER",
-  ]),
+  mealType: enumValidator(
+    ["BREAKFAST", "MORNING_SNACK", "LUNCH", "AFTERNOON_SNACK", "DINNER"],
+    {
+      required_error: "Tipo de refeição é obrigatório",
+    }
+  ),
   totalCalories: number().optional(),
   totalProteins: number().optional(),
   totalCarbs: number().optional(),
@@ -71,7 +73,8 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     },
   });
   const [openNewFood, setOpenNewFood] = useState(false);
-  const [foodSearchQuery, setFoodSearchQuery] = useState("");
+  const [openSelectFood, setOpenSelectFood] = useState(false);
+  const [selectedFoods, setSelectedFoods] = useState<Food[]>([]);
   const MealType = [
     { value: "BREAKFAST", label: "Café da manhã" },
     { value: "MORNING_SNACK", label: "Lanche da manhã" },
@@ -105,7 +108,8 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
   );
 
   const onSubmit = (values: Zod.infer<typeof mealSchema>) => {
-    console.log(values);
+    const foods = selectedFoods.map((food) => food.id);
+    values.foods = foods;
     createMealMutation.mutate(values);
   };
 
@@ -114,20 +118,26 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     fetchFoods();
   };
 
-  const handleSelect = (foodId: string) => {
-    const foods = form.getValues("foods");
-    if (!foods) return;
-    if (foods.includes(foodId)) {
-      form.setValue(
-        "foods",
-        foods.filter((id) => id !== foodId)
-      );
+  const handleSelectFood = (foodId: string) => {
+    const food = foods.find((item: Food) => item.id === foodId);
+    const alreadyExistsIndex = selectedFoods.findIndex(
+      (item) => item.id === foodId
+    );
+
+    if (!food) return;
+    if (alreadyExistsIndex !== -1) {
+      setSelectedFoods((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
     } else {
-      form.setValue("foods", [...foods, foodId]);
+      setSelectedFoods((prev) => [...prev, food]);
     }
   };
 
-  const foodsCheckbox = form.watch("foods") || [];
+  const handleRemove = (foodId: string) => {
+    setSelectedFoods((prev) => prev.filter((item) => item.id !== foodId));
+  };
 
   return (
     <Fragment>
@@ -191,15 +201,22 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
             Selecione os alimentos que compõem a refeição
           </div>
           <div className="relative flex">
-            <Button disabled variant="secondary" size="icon">
-              <TbSearch className="text-gray-400" />
-            </Button>
-            <Input
-              type="search"
-              placeholder="Busque um alimento"
-              value={foodSearchQuery}
-              onChange={(e) => setFoodSearchQuery(e.target.value)}
+            <MultipleSelect
+              options={foods}
+              selectedOptions={selectedFoods}
+              open={openSelectFood}
+              onOpenChange={setOpenSelectFood}
+              handleSelect={handleSelectFood}
+              add
             />
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-tl-none rounded-bl-none border-l-0"
+              onClick={() => setOpenNewFood(true)}
+            >
+              <TbPlus className="h-4 w-4" />
+            </Button>
           </div>
           <div
             className={
@@ -208,38 +225,9 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
                 : "h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3"
             }
           >
-            <Card
-              className={cn(
-                "hover:border hover:border-primary hover:cursor-pointer",
-                isDialog ? "h-32 w-full" : "h-38 w-full"
-              )}
-              onClick={() => setOpenNewFood(true)}
-            >
-              <CardHeader>
-                <CardTitle>Adicionar Alimento</CardTitle>
-                <CardDescription>
-                  Clique para adicionar um novo alimento ao sistema
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            {!isFoodsLoading
-              ? foods
-                  ?.filter((item: any) =>
-                    item.name
-                      .toLowerCase()
-                      .includes(foodSearchQuery.toLowerCase())
-                  )
-                  .map((item: any) => (
-                    <FoodCard
-                      key={item.id}
-                      item={item}
-                      itemsCheckbox={foodsCheckbox}
-                      handleSelect={handleSelect}
-                      isDialog={isDialog}
-                    />
-                  ))
-              : null}
+            {selectedFoods.map((item: any) => (
+              <FoodCard key={item.id} item={item} handleRemove={handleRemove} />
+            ))}
           </div>
           <Button type="submit" className="w-full">
             {createMealMutation.isLoading ? "Criando..." : "Criar"}

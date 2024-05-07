@@ -17,21 +17,18 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useState } from "react";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useState } from "react";
 import NewMealDialog from "@/components/dialogs/new-meal";
-import MealCard from "@/components/meal-card";
-import { TbSearch } from "react-icons/tb";
+import MealCard from "@/components/cards/meal-card";
+import { TbPlus, TbSearch } from "react-icons/tb";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Meal } from "../../meals/meals";
+import MultipleSelect from "@/components/multiple-select";
 
 const dietSchema = object({
-  name: string(),
+  name: string({
+    required_error: "Nome é obrigatório",
+  }),
   description: string().optional(),
   protocolId: string().optional(),
   meals: string().array().optional(),
@@ -47,7 +44,8 @@ const NewProtocolPage = () => {
     },
   });
   const [openNewMeal, setOpenNewMeal] = useState(false);
-  const [foodSearchQuery, setFoodSearchQuery] = useState("");
+  const [openSelectMeal, setOpenSelectMeal] = useState(false);
+  const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
 
   const createDietMutation = useMutation(
     (values: Zod.infer<typeof dietSchema>) => api.post("/diet", values),
@@ -65,32 +63,40 @@ const NewProtocolPage = () => {
   );
 
   const onSubmit = (values: Zod.infer<typeof dietSchema>) => {
+    const meals = selectedMeals.map((meal) => meal.id);
+    values.meals = meals;
+
     createDietMutation.mutate(values);
   };
 
-  const { isLoading: isLoadingMeals, data: mealsData } = useQuery(
+  const { isLoading: isLoadingMeals, data: meals = [] } = useQuery(
     "meals",
     async () => {
       const res = await api.get<Meal[]>("/meal");
       return res.data;
     }
   );
-  const meals = mealsData || [];
 
   const handleSelectMeal = (mealId: string) => {
-    const meals = form.getValues("meals");
-    if (!meals) return;
-    if (meals.includes(mealId)) {
-      form.setValue(
-        "meals",
-        meals.filter((id) => id !== mealId)
-      );
+    const meal = meals.find((item: Meal) => item.id === mealId);
+    const alreadyExistsIndex = selectedMeals.findIndex(
+      (item) => item.id === mealId
+    );
+
+    if (!meal) return;
+    if (alreadyExistsIndex !== -1) {
+      setSelectedMeals((prev) => [
+        ...prev.slice(0, alreadyExistsIndex),
+        ...prev.slice(alreadyExistsIndex + 1),
+      ]);
     } else {
-      form.setValue("meals", [...meals, mealId]);
+      setSelectedMeals((prev) => [...prev, meal]);
     }
   };
 
-  const mealsCheckbox = form.watch("meals") || [];
+  const handleRemove = (mealId: string) => {
+    setSelectedMeals((prev) => prev.filter((item) => item.id !== mealId));
+  };
 
   const handleOpenChangeNewMeal = () => {
     if (openNewMeal) {
@@ -138,39 +144,40 @@ const NewProtocolPage = () => {
             Selecione as refeições que compõem a dieta
           </div>
           <div className="relative flex">
-            <Button disabled variant="secondary" size="icon">
-              <TbSearch className="text-gray-400" />
-            </Button>
-            <Input
-              type="search"
-              placeholder="Busque uma refeição"
-              value={foodSearchQuery}
-              onChange={(e) => setFoodSearchQuery(e.target.value)}
+            <MultipleSelect
+              options={meals}
+              selectedOptions={selectedMeals}
+              open={openSelectMeal}
+              onOpenChange={setOpenSelectMeal}
+              handleSelect={handleSelectMeal}
+              add
             />
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-tl-none rounded-bl-none border-l-0"
+              onClick={() => setOpenNewMeal(true)}
+            >
+              <TbPlus className="h-4 w-4" />
+            </Button>
           </div>
-          <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-            <Card className="h-48 w-full" onClick={() => setOpenNewMeal(true)}>
-              <CardHeader>
-                <CardTitle>Adicionar Refeição</CardTitle>
-                <CardDescription>
-                  Clique para adicionar uma nova refeição ao sistema
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            {meals
-              .filter((item: any) =>
-                item.name.toLowerCase().includes(foodSearchQuery.toLowerCase())
-              )
-              .map((meal: any) => (
+          {selectedMeals.length > 0 ? (
+            <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              {selectedMeals.map((meal: any) => (
                 <MealCard
                   key={meal.id}
                   meal={meal}
-                  mealsCheckbox={mealsCheckbox}
-                  handleSelectMeal={handleSelectMeal}
+                  handleRemove={handleRemove}
                 />
               ))}
-          </div>
+            </div>
+          ) : (
+            <div className="h-[200px] border border-dashed rounded-md flex flex-col items-center justify-center">
+              <p className="text-lg text-muted-foreground">
+                Nenhuma refeição selecionada
+              </p>
+            </div>
+          )}
 
           <Button type="submit" className="w-full">
             {createDietMutation.isLoading ? "Criando..." : "Criar"}
