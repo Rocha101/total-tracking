@@ -25,6 +25,7 @@ import {
   TbClearAll,
   TbBellRinging,
   TbLoader2,
+  TbInbox,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -339,7 +340,11 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                 </div>
                 <DropdownMenuSeparator />
                 {notificationData.length === 0 && (
-                  <DropdownMenuItem disabled>
+                  <DropdownMenuItem
+                    disabled
+                    className="h-64 flex flex-col gap-3 items-center justify-center"
+                  >
+                    <TbInbox className="h-12 w-12 " />
                     Nenhuma notificação
                   </DropdownMenuItem>
                 )}
