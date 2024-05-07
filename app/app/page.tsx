@@ -31,13 +31,11 @@ const ClientProtocol = () => {
     () => WeekDay.MONDAY
   );
 
-  console.log(clientId);
-
   const { isLoading: protocolLoading, data: protocolData } = useQuery({
     queryKey: ["protocol", { clientId }],
     queryFn: async () => {
       const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
-      console.log(response);
+
       return response.data;
     },
     enabled: !!clientId,

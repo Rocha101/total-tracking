@@ -72,7 +72,6 @@ const EditHormonePage = ({
       api.put(`/hormone/${hormoneId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Hormônio atualizado com sucesso!");
         router.back();
       },
@@ -119,7 +118,6 @@ const EditHormonePage = ({
   const unit = form.watch("unit");
 
   useEffect(() => {
-    console.log(unit);
     if (unit === "UNIT") {
       form.setValue("concentration", 0);
     }

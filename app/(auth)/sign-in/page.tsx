@@ -51,7 +51,6 @@ function SignInPage() {
     (values: z.infer<typeof formSchema>) => api.post("/auth/sign-in", values),
     {
       onSuccess: (res) => {
-        console.log(res.data);
         login(res.data);
         toast.success("Login realizado com sucesso");
       },
@@ -65,7 +64,6 @@ function SignInPage() {
   );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     createSignInMutation.mutate(values);
   };
 

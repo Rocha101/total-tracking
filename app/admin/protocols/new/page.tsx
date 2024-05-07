@@ -73,7 +73,6 @@ const NewProtocolPage = () => {
     (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Protocolo criado com sucesso!");
         router.back();
       },

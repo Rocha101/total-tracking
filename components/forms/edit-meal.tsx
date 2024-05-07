@@ -96,7 +96,6 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
     (values) => api.put(`/meal/${editId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Refeição atualizada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
@@ -111,7 +110,6 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
   );
 
   const onSubmit = (values: any) => {
-    console.log(values);
     updateMealMutation.mutate(values);
   };
 
@@ -271,7 +269,7 @@ const EditMealForm = ({ onSubmitOk, isDialog, editId }: MealFormProps) => {
       </Form>
       <NewFoodDialog
         open={openNewFood}
-        onOpenChange={handleOpenChangeNewFood}
+        onOpenChange={(open) => setOpenNewFood(open)}
       />
     </Fragment>
   );

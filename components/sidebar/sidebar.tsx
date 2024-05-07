@@ -73,7 +73,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     ["subscription", accountId],
     async () => {
       const res = await api.get(`/subscription/verify/${accountId}`);
-      console.log(res);
+
       if (res.data.expiresAt < new Date().toISOString()) {
         setEnabledLinks(false);
       }
@@ -86,7 +86,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
 
   const { data: notificationData = [] } = useQuery("notification", async () => {
     const res = await api.get(`/notification`);
-    console.log(res);
+
     return res.data;
   });
 
@@ -97,7 +97,6 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
       }),
     {
       onSuccess: (res) => {
-        console.log(res);
         clientQuery.invalidateQueries("notification");
       },
       onError: (err) => {
@@ -110,7 +109,6 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     (id: string) => api.delete(`/notification/${id}`),
     {
       onSuccess: (res) => {
-        console.log(res);
         clientQuery.invalidateQueries("notification");
       },
       onError: (err) => {

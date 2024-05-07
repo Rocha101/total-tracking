@@ -73,21 +73,18 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
-            
             <TbTrash className="h-4 w-4 mr-2" />
             Excluir treino
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
           >
-            
             <TbEdit className="h-4 w-4 mr-2" />
             Editar treino
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/view/${trainId}`)}
           >
-            
             <TbEye className="h-4 w-4 mr-2" />
             Ver treino
           </DropdownMenuItem>
@@ -98,7 +95,7 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
         content="Tem certeza que deseja excluir este treino?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

@@ -78,7 +78,7 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
         content="Tem certeza que deseja excluir esta dieta?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

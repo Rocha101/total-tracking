@@ -79,7 +79,7 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
         content="Tem certeza que deseja excluir este exercício ?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

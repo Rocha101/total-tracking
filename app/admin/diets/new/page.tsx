@@ -182,7 +182,7 @@ const NewProtocolPage = () => {
       </Form>
       <NewMealDialog
         open={openNewMeal}
-        onOpenChange={handleOpenChangeNewMeal}
+        onOpenChange={(open) => setOpenNewMeal(open)}
       />
     </div>
   );

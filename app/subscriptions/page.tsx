@@ -72,7 +72,7 @@ const SubscriptionsPage = () => {
 
   const { data: plansData } = useQuery("plans", async () => {
     const res = await api.get("/plan");
-    console.log(res);
+
     return res.data;
   });
 
@@ -80,7 +80,7 @@ const SubscriptionsPage = () => {
 
   const { data: subscriptionData } = useQuery("subscriptions", async () => {
     const res = await api.get("/subscription");
-    console.log(res);
+
     return res.data;
   });
 
@@ -91,7 +91,6 @@ const SubscriptionsPage = () => {
       api.post("/subscription", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Assinatura criada com sucesso!");
         clientQuery.invalidateQueries("subscriptions");
       },
@@ -106,7 +105,6 @@ const SubscriptionsPage = () => {
     (values: Zod.infer<typeof planSchema>) => api.post("/plan", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Plano criado com sucesso!");
         clientQuery.invalidateQueries("plans");
       },
@@ -121,7 +119,6 @@ const SubscriptionsPage = () => {
     (id: string) => api.delete(`/plan/${id}`),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Plano deletado com sucesso!");
         clientQuery.invalidateQueries("plans");
       },
@@ -136,7 +133,6 @@ const SubscriptionsPage = () => {
     (id: string) => api.delete(`/subscription/${id}`),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Assinatura deletada com sucesso!");
         clientQuery.invalidateQueries("subscriptions");
       },
@@ -156,11 +152,6 @@ const SubscriptionsPage = () => {
   ) => {
     createSubscriptionMutation.mutate(values);
   };
-
-  console.log({
-    plans,
-    subscriptions,
-  });
 
   const copyId = (id: string) => {
     navigator.clipboard.writeText(id).then(() => {

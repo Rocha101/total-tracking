@@ -67,7 +67,6 @@ const EditHormonePage = ({
       api.put(`/extraCompound/${extraCompoundId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Composto atualizado com sucesso!");
         router.back();
       },
@@ -83,8 +82,6 @@ const EditHormonePage = ({
       ...values,
       concentrationUnit: getConcentrationUnit(),
     };
-
-    console.log(hormone);
 
     updateHormoneMutation.mutate(hormone);
   };
@@ -108,7 +105,7 @@ const EditHormonePage = ({
       const res = await api.get<ExtraCompounds>(
         `/extraCompound/${extraCompoundId}`
       );
-      console.log(res.data);
+
       return res.data;
     },
     {
@@ -119,7 +116,6 @@ const EditHormonePage = ({
   const unit = form.watch("unit");
 
   useEffect(() => {
-    console.log(unit);
     if (unit === "UNIT") {
       form.setValue("concentration", 0);
     }

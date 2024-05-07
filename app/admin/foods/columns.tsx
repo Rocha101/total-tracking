@@ -54,12 +54,16 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}> <TbTrash className="h-4 w-4 mr-2" />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            {" "}
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir alimento
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/foods/edit/${foodId}`)}
-          > <TbEdit className="h-4 w-4 mr-2" />
+          >
+            {" "}
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar alimento
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -69,7 +73,7 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
         content="Tem certeza que deseja excluir este alimento?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

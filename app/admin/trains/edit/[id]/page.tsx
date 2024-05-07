@@ -101,10 +101,10 @@ const EditTrainPage = ({
     resolver: zodResolver(trainSchema),
     defaultValues: {},
   });
-  const [openNewExercise, setOpenNewExercise] = useState(false);
+  const [openNewExercise, setOpenNewExercise] = useState<boolean>(false);
 
-  const handleOpenChangeNewExercise = () => {
-    setOpenNewExercise(false);
+  const handleOpenChangeNewExercise = (open: boolean) => {
+    setOpenNewExercise(open);
   };
 
   const updateTrainMutation = useMutation(
@@ -112,7 +112,6 @@ const EditTrainPage = ({
       api.put(`/train/${trainId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Treino atualizado com sucesso!");
         router.back();
       },
@@ -175,7 +174,6 @@ const EditTrainPage = ({
   ]);
 
   const handleWeekDayChange = (weekDay: WeekDay[]) => {
-    console.log(weekDay);
     setSelectedWeekDays(weekDay);
   };
 
@@ -183,7 +181,7 @@ const EditTrainPage = ({
     ["train", trainId],
     async () => {
       const res = await api.get<Train>(`/train/${trainId}`);
-      console.log(res.data);
+
       return res.data;
     },
     {
@@ -384,7 +382,7 @@ const EditTrainPage = ({
       </Form>
       <NewExerciseDialog
         open={openNewExercise}
-        onOpenChange={handleOpenChangeNewExercise}
+        onOpenChange={(open) => setOpenNewExercise(open)}
       />
     </div>
   );

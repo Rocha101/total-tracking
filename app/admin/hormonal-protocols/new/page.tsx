@@ -56,7 +56,6 @@ const NewHormonalProtocolPage = () => {
       api.post("/hormoneProtocol", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Protocolo criado com sucesso!");
         router.back();
       },
@@ -109,8 +108,6 @@ const NewHormonalProtocolPage = () => {
       protocolHormones.filter((item) => item.id !== hormoneId)
     );
   };
-
-  console.log(hormones);
 
   return (
     <div>
@@ -195,7 +192,7 @@ const NewHormonalProtocolPage = () => {
       </Form>
       <NewHormoneDialog
         open={openNewHormone}
-        onOpenChange={handleOpenChangeNewHormone}
+        onOpenChange={(open) => setOpenNewHormone(open)}
       />
     </div>
   );

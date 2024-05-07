@@ -61,7 +61,7 @@ const ViewDietPage = ({
     ["diets", dietId],
     async () => {
       const res = await api.get<Diet>(`/diet/${dietId}`);
-      console.log(res.data);
+
       return res.data;
     },
     {

@@ -86,7 +86,6 @@ function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const coachId = searchParams.get("referral");
-  console.log(coachId);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -95,7 +94,6 @@ function SignUpPage() {
     (values: z.infer<typeof formSchema>) => api.post("/auth/sign-up", values),
     {
       onSuccess: (res) => {
-        console.log(res.data);
         toast.success("Registro realizado com sucesso");
         router.push("/sign-in");
       },
@@ -107,7 +105,6 @@ function SignUpPage() {
   );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     createSignUpMutation.mutate(values);
   };
 

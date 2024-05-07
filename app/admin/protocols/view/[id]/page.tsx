@@ -57,7 +57,7 @@ const ViewMoreProtocol = ({
         const response = await api.get<ExtraCompounds[]>(
           `/extraCompound/protocol/${protocolId}`
         );
-        console.log(response.data);
+
         return response.data;
       },
       enabled: !!protocolId,
@@ -73,7 +73,6 @@ const ViewMoreProtocol = ({
         const response = await api.get<HormonalProtocol[]>(
           `/hormoneProtocol/protocol/${protocolId}`
         );
-        console.log(response.data[0]);
         return response.data[0];
       },
       enabled: !!protocolId,

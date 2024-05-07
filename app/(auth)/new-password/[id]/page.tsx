@@ -49,7 +49,6 @@ function NewPassword({ params }: { params: { id: string } }) {
       api.put(`/recover-password/new-password/${token}`, values),
     {
       onSuccess: (res) => {
-        console.log(res.data);
         toast.success("Senha atualizada com sucesso");
         router.push("/sign-in");
       },
@@ -61,7 +60,6 @@ function NewPassword({ params }: { params: { id: string } }) {
   );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     sendNewPasswordMutation.mutate(values);
   };
 

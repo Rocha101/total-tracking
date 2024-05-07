@@ -72,7 +72,7 @@ const ViewTrainPage = ({
     ["train", trainId],
     async () => {
       const res = await api.get<Train>(`/train/${trainId}`);
-      console.log(res.data);
+
       return res.data;
     },
     {

@@ -60,7 +60,7 @@ const ViewMealPage = ({
     ["meals", mealId],
     async () => {
       const res = await api.get<Meal>(`/meal/${mealId}`);
-      console.log(res.data);
+
       return res.data;
     },
     {

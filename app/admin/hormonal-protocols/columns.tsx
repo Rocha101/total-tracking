@@ -89,7 +89,7 @@ const HormoneActionRows = ({
         content="Tem certeza que deseja excluir este protocolo?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

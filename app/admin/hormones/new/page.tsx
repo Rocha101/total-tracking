@@ -64,7 +64,6 @@ const NewExtraCompound = () => {
     (values: Zod.infer<typeof hormoneScheme>) => api.post("/hormone", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Hormônio criado com sucesso!");
         router.back();
       },

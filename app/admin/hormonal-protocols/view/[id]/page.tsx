@@ -32,7 +32,7 @@ const ViewHormonalProtocol = ({
         const response = await api.get<HormonalProtocol>(
           `/hormoneProtocol/${hormonalProtocolId}`
         );
-        console.log(response.data);
+
         return response.data;
       },
       enabled: !!hormonalProtocolId,

@@ -47,7 +47,6 @@ function EmailRequest() {
       api.post("/recover-password", values),
     {
       onSuccess: (res) => {
-        console.log(res.data);
         toast.success("Email enviado com sucesso");
         router.push("/email-sent");
       },
@@ -59,7 +58,6 @@ function EmailRequest() {
   );
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     sendEmailMutation.mutate(values);
   };
 

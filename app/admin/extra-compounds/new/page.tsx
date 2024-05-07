@@ -55,7 +55,6 @@ const NewExtraCompound = () => {
       api.post("/extraCompound", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Composto criado com sucesso!");
         router.back();
       },
@@ -78,7 +77,6 @@ const NewExtraCompound = () => {
   const unit = form.watch("unit");
 
   useEffect(() => {
-    console.log(unit);
     if (unit === "UNIT") {
       form.setValue("concentration", 0);
     }

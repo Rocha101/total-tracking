@@ -14,7 +14,7 @@ const ClientPage = () => {
 
   const { isLoading, data: rows = [] } = useQuery("clients", async () => {
     const res = await api.get<Account[]>("/account/clients");
-    console.log(res.data);
+
     return res.data;
   });
 

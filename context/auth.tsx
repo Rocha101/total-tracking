@@ -75,9 +75,6 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       return res.data;
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
       onError: (error) => {
         console.log(error);
         handleTokenError(error);

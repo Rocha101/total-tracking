@@ -71,7 +71,6 @@ const FoodForm = ({
       api.put(`/food/${foodId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Alimento atualizado com sucesso!");
         queryClient.invalidateQueries("foods");
         router.back();

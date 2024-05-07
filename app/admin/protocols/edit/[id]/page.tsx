@@ -63,7 +63,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
       api.put(`/protocol/${protocolId}`, values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Protocolo atualizado com sucesso!");
         router.back();
       },

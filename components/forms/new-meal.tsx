@@ -92,7 +92,6 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     (values: Zod.infer<typeof mealSchema>) => api.post("/meal", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Refeição criada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
@@ -233,7 +232,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
       </Form>
       <NewFoodDialog
         open={openNewFood}
-        onOpenChange={handleOpenChangeNewFood}
+        onOpenChange={(open) => setOpenNewFood(open)}
       />
     </Fragment>
   );

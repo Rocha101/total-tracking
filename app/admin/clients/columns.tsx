@@ -80,7 +80,7 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
         content="Tem certeza que deseja excluir este cliente?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </Fragment>

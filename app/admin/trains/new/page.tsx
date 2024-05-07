@@ -95,17 +95,16 @@ const NewTrainPage = () => {
       exercises: [],
     },
   });
-  const [openNewExercise, setOpenNewExercise] = useState(false);
+  const [openNewExercise, setOpenNewExercise] = useState<boolean>(false);
 
-  const handleOpenChangeNewExercise = () => {
-    setOpenNewExercise(false);
+  const handleOpenChangeNewExercise = (open: boolean) => {
+    setOpenNewExercise(open);
   };
 
   const createTrainMutation = useMutation(
     (values: Zod.infer<typeof trainSchema>) => api.post("/train", values),
     {
       onSuccess: (res) => {
-        console.log(res);
         toast.success("Treino criado com sucesso!");
         router.back();
       },
@@ -171,7 +170,6 @@ const NewTrainPage = () => {
   ]);
 
   const handleWeekDayChange = (weekDay: WeekDay[]) => {
-    console.log(weekDay);
     setSelectedWeekDays(weekDay);
   };
 
@@ -356,7 +354,7 @@ const NewTrainPage = () => {
       </Form>
       <NewExerciseDialog
         open={openNewExercise}
-        onOpenChange={handleOpenChangeNewExercise}
+        onOpenChange={(open) => setOpenNewExercise(open)}
       />
     </div>
   );

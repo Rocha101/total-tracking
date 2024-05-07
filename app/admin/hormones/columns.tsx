@@ -78,7 +78,7 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
         content="Tem certeza que deseja excluir este hormônio?"
         onConfirm={handleDelete}
         open={open}
-        onOpenChange={() => setOpen(false)}
+        onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
     </>

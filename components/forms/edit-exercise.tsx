@@ -135,7 +135,6 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
   );
 
   const onSubmit = (values: Zod.infer<typeof exerciseSchema>) => {
-    console.log(values);
     if (reps.length === 0) {
       toast.warning("Adicione pelo menos uma série");
       setSetError("Adicione pelo menos uma série");
@@ -146,8 +145,6 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
       ...values,
       sets: reps,
     };
-
-    console.log(exercise);
 
     updateExerciseMutation.mutate(exercise);
   };

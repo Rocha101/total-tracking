@@ -65,18 +65,14 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
   });
 
   const onSubmit = (values: Zod.infer<typeof hormoneScheme>) => {
-    console.log(values);
-
     const hormone = {
       ...values,
       concentrationUnit: getConcentrationUnit(),
     };
 
-    console.log(hormone);
     api
       .post("/hormone", hormone)
       .then((res) => {
-        console.log(res);
         toast.success("Hormônio criado com sucesso!");
         clientQuery.invalidateQueries("hormones");
         if (onSubmitOk) onSubmitOk();
@@ -90,7 +86,6 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
   const unitWatch = form.watch("unit");
 
   useEffect(() => {
-    console.log(unitWatch);
     if (unitWatch === "UNIT") {
       form.setValue("concentration", 0);
     }

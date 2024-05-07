@@ -29,7 +29,6 @@ const Dashboard = () => {
   const referralLink = `iron-atlas.app/sign-up?referral=${account?.account?.id}`;
 
   const handleCopy = () => {
-    console.log("copying");
     setLoadingCopy(true);
     copy(referralLink)
       .then(() => {
