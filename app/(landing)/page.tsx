@@ -16,8 +16,13 @@ import {
   TbToolsKitchen3,
   TbVaccine,
 } from "react-icons/tb";
-import FaqItem from "@/components/landing-page/faq-item";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const LandingHomePage = () => {
   return (
@@ -298,39 +303,45 @@ const LandingHomePage = () => {
           </div>
           <div className="w-full flex items-center justify-center">
             <div className="w-full max-w-5xl flex flex-col gap-6">
-              {[
-                {
-                  id: 1,
-                  question: "Como posso adquirir o Iron Atlas?",
-                  answer:
-                    "Para adquirir o Iron Atlas, entre em contato conosco através do WhatsApp ou do e-mail disponíveis no rodapé da página",
-                },
-                {
-                  id: 2,
-                  question: "Quais são os planos disponíveis?",
-                  answer:
-                    "Atualmente, oferecemos dois planos: o plano mensal, com acesso completo à plataforma por 30 dias, e o plano personalizado, que pode ser adaptado de acordo com as necessidades de cada usuário",
-                },
-                {
-                  id: 3,
-                  question: "O Iron Atlas é responsivo?",
-                  answer:
-                    "Sim, o Iron Atlas é totalmente responsivo, o que significa que você pode acessar a plataforma de forma fluida a partir de qualquer dispositivo, seja um smartphone, tablet ou computador",
-                },
-                {
-                  id: 4,
-                  question: "Como adicionar meus clientes na plataforma?",
-                  answer:
-                    "Para adicionar seus clientes na plataforma, basta compartilhar o link de cadastro com eles. Assim que se cadastrarem, você poderá gerenciar suas informações de forma prática e eficiente",
-                },
-              ].map((faq) => (
-                <FaqItem
-                  key={faq.id}
-                  id={faq.id}
-                  question={faq.question}
-                  answer={faq.answer}
-                />
-              ))}
+              <Accordion type="single" collapsible>
+                {[
+                  {
+                    id: "1",
+                    question: "Como posso adquirir o Iron Atlas?",
+                    answer:
+                      "Para adquirir o Iron Atlas, entre em contato conosco através do WhatsApp ou do e-mail disponíveis no rodapé da página",
+                  },
+                  {
+                    id: "2",
+                    question: "Quais são os planos disponíveis?",
+                    answer:
+                      "Atualmente, oferecemos dois planos: o plano mensal, com acesso completo à plataforma por 30 dias, e o plano personalizado, que pode ser adaptado de acordo com as necessidades de cada usuário",
+                  },
+                  {
+                    id: "3",
+                    question: "O Iron Atlas é responsivo?",
+                    answer:
+                      "Sim, o Iron Atlas é totalmente responsivo, o que significa que você pode acessar a plataforma de forma fluida a partir de qualquer dispositivo, seja um smartphone, tablet ou computador",
+                  },
+                  {
+                    id: "4",
+                    question: "Como adicionar meus clientes na plataforma?",
+                    answer:
+                      "Para adicionar seus clientes na plataforma, basta compartilhar o link de cadastro com eles. Assim que se cadastrarem, você poderá gerenciar suas informações de forma prática e eficiente",
+                  },
+                ].map((faq) => (
+                  <AccordionItem
+                    key={faq.id}
+                    value={faq.id}
+                    className="rounded-xl shadow-md my-2 border p-3 px-6"
+                  >
+                    <AccordionTrigger className="text-lg font-bold">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent>{faq.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </div>

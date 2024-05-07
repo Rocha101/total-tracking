@@ -3,11 +3,11 @@ import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ExtraCompounds from "./extra-compounds";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const ExtraCompoundsPage = () => {
   const router = useRouter();
@@ -28,13 +28,13 @@ const ExtraCompoundsPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link
-            className="w-full md:w-32"
-            href="/admin/extra-compounds/new"
-            passHref
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/extra-compounds/new")}
           >
-            <Button className="w-full">Novo Composto</Button>
-          </Link>
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Novo Composto
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) =>

@@ -3,12 +3,12 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/page-header";
 import Diet from "./diets";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const DietPage = () => {
   const router = useRouter();
@@ -23,9 +23,13 @@ const DietPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link className="w-full md:w-32" href="/admin/diets/new" passHref>
-            <Button className="w-full">Nova Dieta</Button>
-          </Link>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/diets/new")}
+          >
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Nova Dieta
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) => {

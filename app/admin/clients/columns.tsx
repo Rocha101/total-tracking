@@ -1,25 +1,21 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Account } from "../exercises/exercise";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbMail } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import ProtocolPage from "../protocols/page";
 import { Fragment, useState } from "react";
-import { DataTable } from "@/components/data-table/data-table";
-import { Protocol, columns as protocolColumns } from "../protocols/columns";
 import ConfirmationDialog from "@/components/confirmation-dialog";
+import Link from "next/link";
 
 const ClientRowActions = ({ clientId }: { clientId: string }) => {
   "use client";
@@ -95,6 +91,17 @@ export const columns: ColumnDef<Account>[] = [
   {
     header: "Email",
     accessorKey: "email",
+    cell: ({ row }) => (
+      <Link href={`mailto:${row.original.email}`} passHref>
+        <Button
+          variant="link"
+          className="p-0 text-black dark:text-white text-xs"
+        >
+          <TbMail className="h-4 w-4 mr-2" />
+          {row.original.email}
+        </Button>
+      </Link>
+    ),
   },
   {
     header: "Data de Criação",

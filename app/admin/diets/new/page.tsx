@@ -19,7 +19,7 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useState } from "react";
 import NewMealDialog from "@/components/dialogs/new-meal";
-import MealCard from "@/components/cards/meal-card";
+import MealCard from "@/components/meal-card";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Meal } from "../../meals/meals";
@@ -51,8 +51,7 @@ const NewProtocolPage = () => {
     (values: Zod.infer<typeof dietSchema>) => api.post("/diet", values),
     {
       onSuccess: () => {
-        toast("Alimento criada com sucesso!");
-        toast("Dieta criado com sucesso!");
+        toast("Dieta criada com sucesso!");
         router.back();
       },
       onError: (err) => {

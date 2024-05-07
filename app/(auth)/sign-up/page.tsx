@@ -35,6 +35,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useMutation } from "react-query";
 import Image from "next/image";
+import { PasswordInput } from "@/components/password-input";
 
 const formSchema = z
   .object({
@@ -170,7 +171,7 @@ function SignUpPage() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,5 +1,5 @@
 import Sidebar from "@/components/sidebar/sidebar";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

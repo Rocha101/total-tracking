@@ -65,7 +65,7 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
     (values: Zod.infer<typeof foodSchema>) => api.post("/food", values),
     {
       onSuccess: () => {
-        toast("Alimento criada com sucesso!");
+        toast("Alimento criado com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }

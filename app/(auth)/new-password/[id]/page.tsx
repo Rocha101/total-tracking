@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useMutation } from "react-query";
 import api from "@/app/utils/api";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/password-input";
 
 const formSchema = z.object({
   password: z
@@ -85,7 +86,7 @@ function NewPassword({ params }: { params: { id: string } }) {
                 <FormItem>
                   <FormLabel>Nova Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

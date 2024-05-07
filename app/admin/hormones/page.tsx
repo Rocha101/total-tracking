@@ -5,10 +5,10 @@ import { columns } from "./columns";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import Hormone from "./hormones";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const HormonesPage = () => {
   const router = useRouter();
@@ -23,9 +23,13 @@ const HormonesPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link className="w-full md:w-32" href="/admin/hormones/new" passHref>
-            <Button className="w-full md:w-32">Novo Hormônio</Button>
-          </Link>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/hormones/new")}
+          >
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Novo Hormônio
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) => router.push(`/admin/hormones/edit/${row.id}`)}

@@ -5,10 +5,10 @@ import { columns } from "./columns";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Exercise } from "./exercise";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const ExercisePage = () => {
   const router = useRouter();
@@ -23,9 +23,13 @@ const ExercisePage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link className="w-full md:w-32" href="/admin/exercises/new" passHref>
-            <Button className="w-full">Novo Exercício</Button>
-          </Link>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/exercises/new")}
+          >
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Novo Exercício
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) => router.push(`/admin/exercises/edit/${row.id}`)}

@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useAuth } from "@/context/auth";
 import { useMutation } from "react-query";
-import Image from "next/image";
+import { PasswordInput } from "@/components/password-input";
 
 const formSchema = z.object({
   email: z
@@ -55,9 +55,11 @@ function SignInPage() {
         login(res.data);
         toast("Login realizado com sucesso");
       },
-      onError: (err) => {
+      onError: (err: any) => {
         console.log(err);
-        toast("Credenciais inválidas");
+        toast(
+          JSON.parse(err.request.response).error || "Erro ao realizar login"
+        );
       },
     }
   );
@@ -101,7 +103,7 @@ function SignInPage() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

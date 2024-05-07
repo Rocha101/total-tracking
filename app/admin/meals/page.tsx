@@ -4,11 +4,11 @@ import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import PageHeader from "@/components/page-header";
 import { Meal } from "./meals";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const MealPage = () => {
   const router = useRouter();
@@ -24,9 +24,13 @@ const MealPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link className="w-full md:w-32" href="/admin/meals/new" passHref>
-            <Button className="w-full md:w-32">Nova Refeição</Button>
-          </Link>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/meals/new")}
+          >
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Nova Refeição
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) => router.push(`/admin/meals/view/${row.id}`)}

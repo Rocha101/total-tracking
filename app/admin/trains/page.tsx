@@ -4,11 +4,11 @@ import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./columns";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Train } from "./train";
 import { useQuery } from "react-query";
 import { useRouter } from "next/navigation";
+import { TbCirclePlus } from "react-icons/tb";
 
 const TrainPage = () => {
   const router = useRouter();
@@ -24,9 +24,13 @@ const TrainPage = () => {
         columns={columns}
         data={rows}
         actions={
-          <Link className="w-full md:w-32" href="/admin/trains/new" passHref>
-            <Button className="w-full md:w-32">Novo Treino</Button>
-          </Link>
+          <Button
+            className="w-full md:w-auto"
+            onClick={() => router.push("/admin/trains/new")}
+          >
+            <TbCirclePlus className="h-4 w-4 mr-2" />
+            Novo Treino
+          </Button>
         }
         isLoading={isLoading}
         onDoubleClick={(row) => router.push(`/admin/trains/view/${row.id}`)}
