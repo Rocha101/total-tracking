@@ -3,6 +3,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
@@ -54,17 +55,16 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            {" "}
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir alimento
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/foods/edit/${foodId}`)}
           >
-            {" "}
             <TbEdit className="h-4 w-4 mr-2" />
             Editar alimento
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir alimento
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

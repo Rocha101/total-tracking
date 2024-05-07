@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots, TbEdit, TbEye, TbTrash, TbTrashFilled } from "react-icons/tb";
@@ -58,10 +59,6 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir protocolo
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
           >
@@ -73,6 +70,11 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
           >
             <TbEye className="h-4 w-4 mr-2" />
             Ver protocolo
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir protocolo
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

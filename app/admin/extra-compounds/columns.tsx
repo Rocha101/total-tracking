@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
@@ -61,10 +62,6 @@ const ExtraCompoundRowActions = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir composto
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
               router.push(`/admin/extra-compounds/edit/${extraCompoundId}`)
@@ -72,6 +69,11 @@ const ExtraCompoundRowActions = ({
           >
             <TbEdit className="h-4 w-4 mr-2" />
             Editar composto
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir composto
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

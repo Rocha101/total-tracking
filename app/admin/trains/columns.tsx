@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots } from "react-icons/tb";
@@ -72,10 +73,6 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir treino
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
           >
@@ -87,6 +84,11 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
           >
             <TbEye className="h-4 w-4 mr-2" />
             Ver treino
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir treino
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

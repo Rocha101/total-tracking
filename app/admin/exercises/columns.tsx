@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
 import { toast } from "sonner";
@@ -62,15 +63,16 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir exercício
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
             Editar exercício
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir exercício
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

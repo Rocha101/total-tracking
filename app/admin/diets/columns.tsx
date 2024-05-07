@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TbDots, TbEdit, TbEye, TbTrash } from "react-icons/tb";
@@ -55,10 +56,6 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir dieta
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/diets/edit/${dietId}`)}
           >
@@ -70,6 +67,11 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
           >
             <TbEye className="h-4 w-4 mr-2" />
             Ver dieta
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir dieta
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -61,15 +61,16 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <TbTrash className="h-4 w-4 mr-2" />
-            Excluir hormônio
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/hormones/edit/${hormoneId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
             Editar hormônio
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
+            Excluir hormônio
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
