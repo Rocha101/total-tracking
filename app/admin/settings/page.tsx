@@ -70,11 +70,11 @@ const SettingsPage = () => {
     (value) => api.post("/subscription/change", value),
     {
       onSuccess: (res) => {
-        toast("Assinatura alterada com sucesso");
+        toast.success("Assinatura alterada com sucesso");
       },
       onError: (err: any) => {
         console.log(err);
-        toast("Erro ao realizar mudança de assinatura");
+        toast.error("Erro ao realizar mudança de assinatura");
       },
     }
   );
@@ -83,11 +83,11 @@ const SettingsPage = () => {
     (value) => api.put(`/account/${accountId}`, value),
     {
       onSuccess: (res) => {
-        toast("Conta atualizada com sucesso");
+        toast.success("Conta atualizada com sucesso");
       },
       onError: (err: any) => {
         console.log(err);
-        toast("Erro ao atualizar conta");
+        toast.error("Erro ao atualizar conta");
       },
     }
   );

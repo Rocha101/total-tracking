@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import api from "@/app/utils/api";
@@ -36,12 +36,12 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
 
   const deleteMutation = useMutation(deleteExercise, {
     onSuccess: () => {
-      toast("Exercício excluído com sucesso!");
+      toast.success("Exercício excluído com sucesso!");
       queryClient.invalidateQueries("exercises");
     },
     onError: (error) => {
-      console.error(error);
-      toast("Erro ao excluir exercício");
+      console.log(error);
+      toast.error("Erro ao excluir exercício");
     },
     onSettled: () => {
       setOpen(false);
@@ -63,11 +63,13 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir exercício
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar exercício
           </DropdownMenuItem>
         </DropdownMenuContent>

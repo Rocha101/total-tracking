@@ -56,12 +56,12 @@ const NewExtraCompound = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Composto criado com sucesso!");
+        toast.success("Composto criado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Composto!");
+        toast.error("Erro ao criar Composto!");
       },
     }
   );

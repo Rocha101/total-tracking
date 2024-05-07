@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbEye, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import Diet from "./diets";
@@ -29,12 +29,12 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
 
   const deleteMutation = useMutation(deleteDiet, {
     onSuccess: () => {
-      toast("Dieta excluída com sucesso!");
+      toast.success("Dieta excluída com sucesso!");
       queryClient.invalidateQueries("diets");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir dieta");
+      toast.error("Erro ao excluir dieta");
     },
     onSettled: () => {
       setOpen(false);
@@ -56,16 +56,19 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir dieta
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/diets/edit/${dietId}`)}
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar dieta
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/diets/view/${dietId}`)}
           >
+            <TbEye className="h-4 w-4 mr-2" />
             Ver dieta
           </DropdownMenuItem>
         </DropdownMenuContent>

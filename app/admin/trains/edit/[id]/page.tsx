@@ -102,7 +102,6 @@ const EditTrainPage = ({
     defaultValues: {},
   });
   const [openNewExercise, setOpenNewExercise] = useState(false);
-  const [openNewExerciseSelect, setOpenNewExerciseSelect] = useState(false);
 
   const handleOpenChangeNewExercise = () => {
     setOpenNewExercise(false);
@@ -114,12 +113,12 @@ const EditTrainPage = ({
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Treino editado com sucesso!");
+        toast.success("Treino atualizado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao editar Treino!");
+        toast.error("Erro ao editar Treino!");
       },
     }
   );
@@ -283,8 +282,6 @@ const EditTrainPage = ({
                 options={exercises}
                 selectedOptions={trainsSelected}
                 handleSelect={addTrainSelected}
-                open={openNewExerciseSelect}
-                onOpenChange={setOpenNewExerciseSelect}
                 add
               />
               <Button

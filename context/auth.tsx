@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       error.request.response.includes("Token inválido") ||
       error.request.response.includes("Token não encontrado")
     ) {
-      toast("Faça login para acessar a página");
+      toast.error("Faça login para acessar a página");
       logout();
     }
   };

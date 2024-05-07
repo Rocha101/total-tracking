@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -28,12 +28,12 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
 
   const deleteMutation = useMutation(deleteFood, {
     onSuccess: () => {
-      toast("Alimento excluído com sucesso!");
+      toast.success("Alimento excluído com sucesso!");
       queryClient.invalidateQueries("foods");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir alimento");
+      toast.error("Erro ao excluir alimento");
     },
     onSettled: () => {
       setOpen(false);
@@ -54,12 +54,12 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem onClick={() => setOpen(true)}> <TbTrash className="h-4 w-4 mr-2" />
             Excluir alimento
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/foods/edit/${foodId}`)}
-          >
+          > <TbEdit className="h-4 w-4 mr-2" />
             Editar alimento
           </DropdownMenuItem>
         </DropdownMenuContent>

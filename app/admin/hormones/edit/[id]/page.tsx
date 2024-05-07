@@ -73,12 +73,12 @@ const EditHormonePage = ({
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Hormônio editado com sucesso!");
+        toast.success("Hormônio atualizado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao editar Hormônio!");
+        toast.error("Erro ao editar Hormônio!");
       },
     }
   );

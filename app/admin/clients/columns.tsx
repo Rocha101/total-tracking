@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots, TbMail } from "react-icons/tb";
+import { TbDots, TbEdit, TbEye, TbMail, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const ClientRowActions = ({ clientId }: { clientId: string }) => {
   "use client";
@@ -29,12 +30,12 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
 
   const deleteMutation = useMutation(deleteClient, {
     onSuccess: () => {
-      toast("Cliente excluído com sucesso!");
+      toast.success("Cliente excluído com sucesso!");
       queryClient.invalidateQueries("clients");
     },
     onError: (error) => {
       console.log(error);
-      toast("Erro ao excluir cliente");
+      toast.error("Erro ao excluir cliente");
     },
     onSettled: () => {
       setOpen(false);
@@ -56,17 +57,20 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir cliente
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar cliente
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={() => router.push(`/admin/clients/protocol/${clientId}`)}
           >
+            <TbEye className="h-4 w-4 mr-2" />
             Ver protocolo
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -87,22 +91,29 @@ export const columns: ColumnDef<Account>[] = [
   {
     header: "Nome",
     accessorKey: "name",
-  },
-  {
-    header: "Email",
-    accessorKey: "email",
     cell: ({ row }) => (
-      <Link href={`mailto:${row.original.email}`} passHref>
-        <Button
-          variant="link"
-          className="p-0 text-black dark:text-white text-xs"
-        >
-          <TbMail className="h-4 w-4 mr-2" />
-          {row.original.email}
-        </Button>
-      </Link>
+      <div className="flex items-center">
+        <Avatar>
+          <AvatarFallback>
+            {row.original.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="h-full flex flex-col items-start justify-center p-2 mt-2 ml-2">
+          <span>{row.original.name}</span>
+          <Link href={`mailto:${row.original.email}`} passHref>
+            <Button
+              variant="link"
+              className="p-0 text-black dark:text-white text-xs"
+            >
+              <TbMail className="h-4 w-4 mr-2" />
+              {row.original.email}
+            </Button>
+          </Link>
+        </div>
+      </div>
     ),
   },
+
   {
     header: "Data de Criação",
     accessorKey: "createdAt",

@@ -34,6 +34,7 @@ import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protoc
 import MultipleSelect from "@/components/multiple-select";
 import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
 import { Account } from "@/app/admin/exercises/exercise";
+import SingleSelect from "@/components/single-select";
 
 const protocolSchema = object({
   name: string({
@@ -56,8 +57,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
     resolver: zodResolver(protocolSchema),
     defaultValues: {},
   });
-  const [openTrainSelect, setOpenTrainSelect] = useState(false);
-  const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) =>
@@ -65,12 +64,12 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Protocolo atualizado com sucesso!");
+        toast.success("Protocolo atualizado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao atualizar Protocolo!");
+        toast.error("Erro ao atualizar Protocolo!");
       },
     }
   );
@@ -251,25 +250,21 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione um cliente" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {clientsData.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={clientsData}
+                    selectedOption={
+                      clientsData?.find(
+                        (client) => client.id === field.value
+                      ) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
           )}
+
           <FormField
             control={form.control}
             name="diet"
@@ -277,20 +272,14 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
               <FormItem>
                 <FormLabel>Dieta</FormLabel>
                 <div className="flex">
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-tr-none rounded-br-none">
-                        <SelectValue placeholder="Selecione um item" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {diets.map((diet) => (
-                        <SelectItem key={diet.id} value={diet.id}>
-                          {diet.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={diets}
+                    selectedOption={
+                      diets.find((diet) => diet.id === field.value) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                    add
+                  />
                   <Button
                     type="button"
                     variant="outline"
@@ -304,7 +293,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="hormonalProtocol"
@@ -312,23 +300,17 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
               <FormItem>
                 <FormLabel>Protocolo Hormonal</FormLabel>
                 <div className="flex">
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-tr-none rounded-br-none">
-                        <SelectValue placeholder="Selecione um item" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {hormonalProtocols.map((hormonalProtocol) => (
-                        <SelectItem
-                          key={hormonalProtocol.id}
-                          value={hormonalProtocol.id}
-                        >
-                          {hormonalProtocol.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={hormonalProtocols}
+                    selectedOption={
+                      hormonalProtocols.find(
+                        (hormonalProtocol) =>
+                          hormonalProtocol.id === field.value
+                      ) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                    add
+                  />
                   <Button
                     type="button"
                     variant="outline"
@@ -350,8 +332,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
                 options={trains}
                 selectedOptions={trainsSelected}
                 handleSelect={addTrainSelected}
-                open={openTrainSelect}
-                onOpenChange={setOpenTrainSelect}
                 add
               />
 
@@ -372,8 +352,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
                 options={extraCompounds}
                 selectedOptions={extraCompoundsSelected}
                 handleSelect={addExtraCompoundSelected}
-                open={openExtraCompoundSelect}
-                onOpenChange={setOpenExtraCompoundSelect}
                 add
               />
 

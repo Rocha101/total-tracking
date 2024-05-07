@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbEye, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "react-query";
@@ -32,12 +32,12 @@ const HormoneActionRows = ({
 
   const deleteMutation = useMutation(deleteHormone, {
     onSuccess: () => {
-      toast("Protocolo excluído com sucesso!");
+      toast.success("Protocolo excluído com sucesso!");
       queryClient.invalidateQueries("hormonalProtocols");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir protocolo");
+      toast.error("Erro ao excluir protocolo");
     },
     onSettled: () => {
       setOpen(false);
@@ -59,6 +59,7 @@ const HormoneActionRows = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir protocolo
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -68,6 +69,7 @@ const HormoneActionRows = ({
               )
             }
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar protocolo
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -77,6 +79,7 @@ const HormoneActionRows = ({
               )
             }
           >
+            <TbEye className="h-4 w-4 mr-2" />
             Ver protocolo
           </DropdownMenuItem>
         </DropdownMenuContent>

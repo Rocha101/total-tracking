@@ -19,7 +19,7 @@ export const AppWrapper = ({ children }: { children: ReactNode }) => {
         disableTransitionOnChange
       >
         <AuthProvider>{children}</AuthProvider>
-        <Toaster />
+        <Toaster richColors />
         <SpeedInsights />
       </ThemeProvider>
     </QueryClientProvider>

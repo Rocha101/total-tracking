@@ -96,7 +96,6 @@ const NewTrainPage = () => {
     },
   });
   const [openNewExercise, setOpenNewExercise] = useState(false);
-  const [openNewExerciseSelect, setOpenNewExerciseSelect] = useState(false);
 
   const handleOpenChangeNewExercise = () => {
     setOpenNewExercise(false);
@@ -107,12 +106,12 @@ const NewTrainPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Treino criado com sucesso!");
+        toast.success("Treino criado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Treino!");
+        toast.error("Erro ao criar Treino!");
       },
     }
   );
@@ -255,8 +254,6 @@ const NewTrainPage = () => {
                 options={exercises}
                 selectedOptions={trainsSelected}
                 handleSelect={addTrainSelected}
-                open={openNewExerciseSelect}
-                onOpenChange={setOpenNewExerciseSelect}
                 add
               />
               <Button

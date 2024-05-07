@@ -36,6 +36,7 @@ import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import ExtraCompounds from "../../extra-compounds/extra-compounds";
 import MultipleSelect from "@/components/multiple-select";
 import { Account } from "../../exercises/exercise";
+import SingleSelect from "@/components/single-select";
 
 enum WeekDay {
   MONDAY = "MONDAY",
@@ -67,20 +68,18 @@ const NewProtocolPage = () => {
     resolver: zodResolver(protocolSchema),
     defaultValues: {},
   });
-  const [openTrainSelect, setOpenTrainSelect] = useState(false);
-  const [openExtraCompoundSelect, setOpenExtraCompoundSelect] = useState(false);
 
   const createProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) => api.post("/protocol", values),
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Protocolo criado com sucesso!");
+        toast.success("Protocolo criado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Protocolo!");
+        toast.error("Erro ao criar Protocolo!");
       },
     }
   );
@@ -220,20 +219,15 @@ const NewProtocolPage = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cliente</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione um cliente" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {clientsData.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {client.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={clientsData}
+                    selectedOption={
+                      clientsData?.find(
+                        (client) => client.id === field.value
+                      ) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -247,20 +241,14 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Dieta</FormLabel>
                 <div className="flex">
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-tr-none rounded-br-none">
-                        <SelectValue placeholder="Selecione um item" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {diets.map((diet) => (
-                        <SelectItem key={diet.id} value={diet.id}>
-                          {diet.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={diets}
+                    selectedOption={
+                      diets.find((diet) => diet.id === field.value) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                    add
+                  />
                   <Button
                     type="button"
                     variant="outline"
@@ -281,23 +269,17 @@ const NewProtocolPage = () => {
               <FormItem>
                 <FormLabel>Protocolo Hormonal</FormLabel>
                 <div className="flex">
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="rounded-tr-none rounded-br-none">
-                        <SelectValue placeholder="Selecione um item" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {hormonalProtocols.map((hormonalProtocol) => (
-                        <SelectItem
-                          key={hormonalProtocol.id}
-                          value={hormonalProtocol.id}
-                        >
-                          {hormonalProtocol.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <SingleSelect
+                    options={hormonalProtocols}
+                    selectedOption={
+                      hormonalProtocols.find(
+                        (hormonalProtocol) =>
+                          hormonalProtocol.id === field.value
+                      ) || undefined
+                    }
+                    handleSelect={(itemId) => field.onChange(itemId)}
+                    add
+                  />
                   <Button
                     type="button"
                     variant="outline"
@@ -318,8 +300,6 @@ const NewProtocolPage = () => {
                 options={trains}
                 selectedOptions={trainsSelected}
                 handleSelect={addTrainSelected}
-                open={openTrainSelect}
-                onOpenChange={setOpenTrainSelect}
                 add
               />
 
@@ -340,8 +320,6 @@ const NewProtocolPage = () => {
                 options={extraCompounds}
                 selectedOptions={extraCompoundsSelected}
                 handleSelect={addExtraCompoundSelected}
-                open={openExtraCompoundSelect}
-                onOpenChange={setOpenExtraCompoundSelect}
                 add
               />
 

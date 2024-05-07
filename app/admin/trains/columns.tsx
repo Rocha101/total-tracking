@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { TbCaretUpDown } from "react-icons/tb";
+import { TbCaretUpDown, TbEdit, TbEye, TbTrash } from "react-icons/tb";
 import { Train } from "./train";
 import {
   DropdownMenu,
@@ -46,12 +46,12 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
 
   const deleteMutation = useMutation(deleteTrain, {
     onSuccess: () => {
-      toast("Treino excluído com sucesso!");
+      toast.success("Treino excluído com sucesso!");
       queryClient.invalidateQueries("trains");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir treino");
+      toast.error("Erro ao excluir treino");
     },
     onSettled: () => {
       setOpen(false);
@@ -73,17 +73,23 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir treino
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
           >
+            
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar treino
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/view/${trainId}`)}
           >
-            Visualizar treino
+            
+            <TbEye className="h-4 w-4 mr-2" />
+            Ver treino
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

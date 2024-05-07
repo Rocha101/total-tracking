@@ -68,12 +68,12 @@ const EditHormonePage = ({
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Composto editado com sucesso!");
+        toast.success("Composto atualizado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao editar Composto!");
+        toast.error("Erro ao editar Composto!");
       },
     }
   );

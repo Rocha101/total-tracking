@@ -19,7 +19,7 @@ import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useEffect, useState } from "react";
 import NewMealDialog from "@/components/dialogs/new-meal";
-import MealCard from "@/components/cards/meal-card";
+import MealCard from "@/components/meal-card";
 import { TbLoader2, TbPlus, TbSearch } from "react-icons/tb";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Diet from "../../diets";
@@ -52,7 +52,6 @@ const EditDietPage = ({
     },
   });
   const [openNewMeal, setOpenNewMeal] = useState(false);
-  const [openSelectMeal, setOpenSelectMeal] = useState(false);
   const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
 
   const updateDietMutation = useMutation(
@@ -60,13 +59,12 @@ const EditDietPage = ({
       api.put(`/diet/${dietId}`, values),
     {
       onSuccess: () => {
-        toast("Alimento criada com sucesso!");
-        toast("Dieta criado com sucesso!");
+        toast.success("Dieta atualizada com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Dieta!");
+        toast.error("Erro ao criar Dieta!");
       },
     }
   );
@@ -184,8 +182,6 @@ const EditDietPage = ({
             <MultipleSelect
               options={meals}
               selectedOptions={selectedMeals}
-              open={openSelectMeal}
-              onOpenChange={setOpenSelectMeal}
               handleSelect={handleSelectMeal}
               add
             />

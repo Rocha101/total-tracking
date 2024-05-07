@@ -44,19 +44,18 @@ const NewProtocolPage = () => {
     },
   });
   const [openNewMeal, setOpenNewMeal] = useState(false);
-  const [openSelectMeal, setOpenSelectMeal] = useState(false);
   const [selectedMeals, setSelectedMeals] = useState<Meal[]>([]);
 
   const createDietMutation = useMutation(
     (values: Zod.infer<typeof dietSchema>) => api.post("/diet", values),
     {
       onSuccess: () => {
-        toast("Dieta criada com sucesso!");
+        toast.success("Dieta criada com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Dieta!");
+        toast.error("Erro ao criar Dieta!");
       },
     }
   );
@@ -146,8 +145,6 @@ const NewProtocolPage = () => {
             <MultipleSelect
               options={meals}
               selectedOptions={selectedMeals}
-              open={openSelectMeal}
-              onOpenChange={setOpenSelectMeal}
               handleSelect={handleSelectMeal}
               add
             />

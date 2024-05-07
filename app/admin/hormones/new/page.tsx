@@ -65,12 +65,12 @@ const NewExtraCompound = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Hormônio criado com sucesso!");
+        toast.success("Hormônio criado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Hormônio!");
+        toast.error("Erro ao criar Hormônio!");
       },
     }
   );

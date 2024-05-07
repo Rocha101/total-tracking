@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbEye, TbTrash, TbTrashFilled } from "react-icons/tb";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import { HormonalProtocol } from "../hormonal-protocols/hormonal-protocols";
@@ -32,12 +32,12 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
 
   const deleteMutation = useMutation(deleteProtocol, {
     onSuccess: () => {
-      toast("Protocolo excluído com sucesso!");
+      toast.success("Protocolo excluído com sucesso!");
       queryClient.invalidateQueries("meals");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir protocolo");
+      toast.error("Erro ao excluir protocolo");
     },
     onSettled: () => {
       setOpen(false);
@@ -59,16 +59,19 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir protocolo
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar protocolo
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/protocols/view/${protocolId}`)}
           >
+            <TbEye className="h-4 w-4 mr-2" />
             Ver protocolo
           </DropdownMenuItem>
         </DropdownMenuContent>

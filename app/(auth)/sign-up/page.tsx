@@ -96,12 +96,12 @@ function SignUpPage() {
     {
       onSuccess: (res) => {
         console.log(res.data);
-        toast("Registro realizado com sucesso");
+        toast.success("Registro realizado com sucesso");
         router.push("/sign-in");
       },
       onError: (err) => {
         console.log(err);
-        toast("Credenciais inválidas");
+        toast.error("Credenciais inválidas");
       },
     }
   );

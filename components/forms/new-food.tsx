@@ -65,14 +65,14 @@ const FoodForm = ({ onSubmitOk }: FoodFormProps) => {
     (values: Zod.infer<typeof foodSchema>) => api.post("/food", values),
     {
       onSuccess: () => {
-        toast("Alimento criado com sucesso!");
+        toast.success("Alimento criado com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
         queryClient.invalidateQueries("foods");
       },
       onError: () => {
-        toast("Erro ao criar alimento!");
+        toast.error("Erro ao criar alimento!");
       },
     }
   );

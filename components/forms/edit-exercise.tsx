@@ -29,6 +29,7 @@ import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Exercise } from "@/app/admin/exercises/exercise";
+import SingleSelect from "../single-select";
 
 enum MuscleGroup {
   CHEST = "CHEST",
@@ -118,7 +119,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
       api.put(`/exercise/${exerciseId}`, values),
     {
       onSuccess: () => {
-        toast("Exercicio editado com sucesso!");
+        toast.success("Exercicio atualizado com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         } else {
@@ -128,7 +129,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao editar Exercicio!");
+        toast.error("Erro ao editar Exercicio!");
       },
     }
   );
@@ -136,7 +137,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
   const onSubmit = (values: Zod.infer<typeof exerciseSchema>) => {
     console.log(values);
     if (reps.length === 0) {
-      toast("Adicione pelo menos uma série");
+      toast.warning("Adicione pelo menos uma série");
       setSetError("Adicione pelo menos uma série");
       return;
     }
@@ -222,6 +223,33 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
     }
   }, [exercise, form]);
 
+  const targetMuscleOptions: {
+    id: string;
+    name: string;
+  }[] = Object.values(MuscleGroup).map((group) => ({
+    id: group,
+    name: {
+      [MuscleGroup.CHEST]: "Peito",
+      [MuscleGroup.BACK]: "Costas",
+      [MuscleGroup.SHOULDERS]: "Ombros",
+      [MuscleGroup.BICEPS]: "Biceps",
+      [MuscleGroup.TRICEPS]: "Triceps",
+      [MuscleGroup.FOREARMS]: "Antebraço",
+      [MuscleGroup.CALVES]: "Panturrilha",
+      [MuscleGroup.ABS]: "Abdomen",
+      [MuscleGroup.QUADS]: "Quadriceps",
+      [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
+      [MuscleGroup.GLUTES]: "Gluteos",
+      [MuscleGroup.ADDUCTORS]: "Adutores",
+      [MuscleGroup.ABDUCTORS]: "Abdutores",
+      [MuscleGroup.TRAPS]: "Trapezio",
+      [MuscleGroup.LATS]: "Latissimo do dorso",
+      [MuscleGroup.LOWER_BACK]: "Lombar",
+      [MuscleGroup.OBLIQUES]: "Oblíquos",
+      [MuscleGroup.NECK]: "Pescoço",
+    }[group],
+  }));
+
   return (
     <Form {...form}>
       <form
@@ -265,41 +293,16 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Músculo Alvo</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um item" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.values(MuscleGroup).map((group) => (
-                      <SelectItem key={group} value={group}>
-                        {
-                          {
-                            [MuscleGroup.CHEST]: "Peito",
-                            [MuscleGroup.BACK]: "Costas",
-                            [MuscleGroup.SHOULDERS]: "Ombros",
-                            [MuscleGroup.BICEPS]: "Biceps",
-                            [MuscleGroup.TRICEPS]: "Triceps",
-                            [MuscleGroup.FOREARMS]: "Antebraço",
-                            [MuscleGroup.CALVES]: "Panturrilha",
-                            [MuscleGroup.ABS]: "Abdomen",
-                            [MuscleGroup.QUADS]: "Quadriceps",
-                            [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-                            [MuscleGroup.GLUTES]: "Gluteos",
-                            [MuscleGroup.ADDUCTORS]: "Adutores",
-                            [MuscleGroup.ABDUCTORS]: "Abdutores",
-                            [MuscleGroup.TRAPS]: "Trapezio",
-                            [MuscleGroup.LATS]: "Latissimo do dorso",
-                            [MuscleGroup.LOWER_BACK]: "Lombar",
-                            [MuscleGroup.OBLIQUES]: "Oblíquos",
-                            [MuscleGroup.NECK]: "Pescoço",
-                          }[group]
-                        }
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SingleSelect
+                  options={targetMuscleOptions}
+                  selectedOption={
+                    targetMuscleOptions.find(
+                      (group) => group.id === field.value
+                    ) || undefined
+                  }
+                  handleSelect={(itemId) => field.onChange(itemId)}
+                  add
+                />
                 <FormMessage />
               </FormItem>
             )}

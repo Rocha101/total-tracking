@@ -50,12 +50,12 @@ function NewPassword({ params }: { params: { id: string } }) {
     {
       onSuccess: (res) => {
         console.log(res.data);
-        toast("Senha atualizada com sucesso");
+        toast.success("Senha atualizada com sucesso");
         router.push("/sign-in");
       },
       onError: (err) => {
         console.log(err);
-        toast("Token inválido");
+        toast.error("Token inválido");
       },
     }
   );

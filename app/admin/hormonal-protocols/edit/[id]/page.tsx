@@ -48,7 +48,6 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
     },
   });
   const [openNewHormone, setOpenNewHormone] = useState(false);
-  const [openSelectHormone, setOpenSelectHormone] = useState(false);
 
   const handleOpenChangeNewHormone = () => {
     setOpenNewHormone(false);
@@ -60,12 +59,12 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Protocolo criado com sucesso!");
+        toast.success("Protocolo criado com sucesso!");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Protocolo!");
+        toast.error("Erro ao criar Protocolo!");
       },
     }
   );
@@ -180,8 +179,6 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
           <div className="h-full flex flex-col gap-3">
             <div className="flex">
               <MultipleSelect
-                open={openSelectHormone}
-                onOpenChange={setOpenSelectHormone}
                 options={hormones}
                 selectedOptions={protocolHormones}
                 handleSelect={addHormone}

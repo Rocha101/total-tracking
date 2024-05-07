@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots } from "react-icons/tb";
+import { TbDots, TbEdit, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
@@ -35,12 +35,12 @@ const ExtraCompoundRowActions = ({
 
   const deleteMutation = useMutation(deleteExtraCompound, {
     onSuccess: () => {
-      toast("Composto excluído com sucesso!");
+      toast.success("Composto excluído com sucesso!");
       queryClient.invalidateQueries("extraCompounds");
     },
     onError: (error) => {
       console.error(error);
-      toast("Erro ao excluir composto");
+      toast.error("Erro ao excluir composto");
     },
     onSettled: () => {
       setOpen(false);
@@ -62,6 +62,7 @@ const ExtraCompoundRowActions = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <TbTrash className="h-4 w-4 mr-2" />
             Excluir composto
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -69,6 +70,7 @@ const ExtraCompoundRowActions = ({
               router.push(`/admin/extra-compounds/edit/${extraCompoundId}`)
             }
           >
+            <TbEdit className="h-4 w-4 mr-2" />
             Editar composto
           </DropdownMenuItem>
         </DropdownMenuContent>

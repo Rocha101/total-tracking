@@ -77,13 +77,13 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
       .post("/hormone", hormone)
       .then((res) => {
         console.log(res);
-        toast("Hormônio criado com sucesso!");
+        toast.success("Hormônio criado com sucesso!");
         clientQuery.invalidateQueries("hormones");
         if (onSubmitOk) onSubmitOk();
       })
       .catch((err) => {
         console.log(err);
-        toast("Erro ao criar Hormônio!");
+        toast.error("Erro ao criar Hormônio!");
       });
   };
 

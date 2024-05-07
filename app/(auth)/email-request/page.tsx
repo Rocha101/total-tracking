@@ -48,12 +48,12 @@ function EmailRequest() {
     {
       onSuccess: (res) => {
         console.log(res.data);
-        toast("Email enviado com sucesso");
+        toast.success("Email enviado com sucesso");
         router.push("/email-sent");
       },
       onError: (err) => {
         console.log(err);
-        toast("Email não encontrado");
+        toast.error("Email não encontrado");
       },
     }
   );

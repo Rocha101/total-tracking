@@ -17,11 +17,11 @@ const ReferralLink = () => {
     setLoadingCopy(true);
     copy(text)
       .then(() => {
-        toast("Link copiado com sucesso!");
+        toast.success("Link copiado com sucesso!");
       })
       .catch((error) => {
         console.error("Failed to copy!", error);
-        toast("Erro ao copiar link!");
+        toast.error("Erro ao copiar link!");
       })
       .finally(() => {
         setLoadingCopy(false);

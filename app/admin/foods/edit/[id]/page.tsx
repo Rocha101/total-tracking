@@ -72,13 +72,13 @@ const FoodForm = ({
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Alimento editado com sucesso!");
+        toast.success("Alimento atualizado com sucesso!");
         queryClient.invalidateQueries("foods");
         router.back();
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao editar alimento!");
+        toast.error("Erro ao editar alimento!");
       },
     }
   );

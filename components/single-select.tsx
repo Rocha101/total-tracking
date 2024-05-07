@@ -22,16 +22,16 @@ interface Item {
   name: string;
 }
 
-interface MultipleSelectProps {
+interface SingleSelectProps {
   options: Item[];
   handleSelect: (id: string) => void;
-  selectedOptions: Item[];
+  selectedOption: Item | undefined;
   add?: boolean;
 }
 
-const MultipleSelect: React.FC<MultipleSelectProps> = ({
+const SingleSelect: React.FC<SingleSelectProps> = ({
   options,
-  selectedOptions,
+  selectedOption,
   handleSelect,
   add,
 }) => {
@@ -49,9 +49,7 @@ const MultipleSelect: React.FC<MultipleSelectProps> = ({
             add && "rounded-tr-none rounded-br-none"
           )}
         >
-          {selectedOptions.length > 0
-            ? selectedOptions.map((item) => item.name).join(", ")
-            : "Selecione um item ou mais"}
+          {selectedOption?.name || "Selecione um item..."}
           <CaretSortIcon className="h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -71,7 +69,7 @@ const MultipleSelect: React.FC<MultipleSelectProps> = ({
                     <CheckIcon
                       className={
                         "h-4 w-4 mr-2 " +
-                        (selectedOptions.find((option) => item.id === option.id)
+                        (selectedOption?.id === item.id
                           ? "opacity-100"
                           : "opacity-0")
                       }
@@ -87,4 +85,4 @@ const MultipleSelect: React.FC<MultipleSelectProps> = ({
   );
 };
 
-export default MultipleSelect;
+export default SingleSelect;

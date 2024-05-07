@@ -53,11 +53,11 @@ function SignInPage() {
       onSuccess: (res) => {
         console.log(res.data);
         login(res.data);
-        toast("Login realizado com sucesso");
+        toast.success("Login realizado com sucesso");
       },
       onError: (err: any) => {
         console.log(err);
-        toast(
+        toast.error(
           JSON.parse(err.request.response).error || "Erro ao realizar login"
         );
       },

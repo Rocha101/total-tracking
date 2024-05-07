@@ -73,7 +73,6 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     },
   });
   const [openNewFood, setOpenNewFood] = useState(false);
-  const [openSelectFood, setOpenSelectFood] = useState(false);
   const [selectedFoods, setSelectedFoods] = useState<Food[]>([]);
   const MealType = [
     { value: "BREAKFAST", label: "Café da manhã" },
@@ -94,7 +93,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Refeição criada com sucesso!");
+        toast.success("Refeição criada com sucesso!");
         if (onSubmitOk) {
           onSubmitOk();
         }
@@ -102,7 +101,7 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
       },
       onError: (err) => {
         console.error(err);
-        toast("Erro ao criar refeição!");
+        toast.error("Erro ao criar refeição!");
       },
     }
   );
@@ -204,8 +203,6 @@ const MealForm = ({ onSubmitOk, isDialog }: MealFormProps) => {
             <MultipleSelect
               options={foods}
               selectedOptions={selectedFoods}
-              open={openSelectFood}
-              onOpenChange={setOpenSelectFood}
               handleSelect={handleSelectFood}
               add
             />

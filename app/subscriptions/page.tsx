@@ -92,12 +92,12 @@ const SubscriptionsPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Assinatura criada com sucesso!");
+        toast.success("Assinatura criada com sucesso!");
         clientQuery.invalidateQueries("subscriptions");
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Assinatura!");
+        toast.error("Erro ao criar Assinatura!");
       },
     }
   );
@@ -107,12 +107,12 @@ const SubscriptionsPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Plano criado com sucesso!");
+        toast.success("Plano criado com sucesso!");
         clientQuery.invalidateQueries("plans");
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao criar Plano!");
+        toast.error("Erro ao criar Plano!");
       },
     }
   );
@@ -122,12 +122,12 @@ const SubscriptionsPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Plano deletado com sucesso!");
+        toast.success("Plano deletado com sucesso!");
         clientQuery.invalidateQueries("plans");
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao deletar Plano!");
+        toast.error("Erro ao deletar Plano!");
       },
     }
   );
@@ -137,12 +137,12 @@ const SubscriptionsPage = () => {
     {
       onSuccess: (res) => {
         console.log(res);
-        toast("Assinatura deletada com sucesso!");
+        toast.success("Assinatura deletada com sucesso!");
         clientQuery.invalidateQueries("subscriptions");
       },
       onError: (err) => {
         console.log(err);
-        toast("Erro ao deletar Assinatura!");
+        toast.error("Erro ao deletar Assinatura!");
       },
     }
   );
@@ -164,7 +164,7 @@ const SubscriptionsPage = () => {
 
   const copyId = (id: string) => {
     navigator.clipboard.writeText(id).then(() => {
-      toast("ID copiado para a área de transferência");
+      toast.info("ID copiado para a área de transferência");
     });
   };
 

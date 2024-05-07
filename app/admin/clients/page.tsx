@@ -8,7 +8,6 @@ import { Account } from "../exercises/exercise";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 import ReferralLink from "@/components/referral-link";
-import { Label } from "@/components/ui/label";
 
 const ClientPage = () => {
   const router = useRouter();
