@@ -49,7 +49,7 @@ const NewHormoneDialog = ({ open, onOpenChange }: NewHormoneDialogProps) => {
             Preencha os campos abaixo para adicionar um novo hormônio.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="max-h-[30rem] overflow-auto  pt-0 p-4">
+        <div className="max-h-[80vh] overflow-auto  pt-0 p-4">
           <NewHormoneForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>

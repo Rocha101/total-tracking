@@ -49,7 +49,7 @@ const NewFoodDialog = ({ open, onOpenChange }: NewFoodDialogProps) => {
             Preencha os campos abaixo para adicionar um novo alimento.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="max-h-[30rem] overflow-auto  pt-0 p-4">
+        <div className="max-h-[80vh] overflow-auto  pt-0 p-4">
           <FoodForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>

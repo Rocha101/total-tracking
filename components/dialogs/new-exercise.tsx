@@ -49,7 +49,7 @@ const NewExerciseDialog = ({ open, onOpenChange }: NewExerciseDialogProps) => {
             Preencha os campos abaixo para adicionar um novo exercício.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="max-h-[30rem] overflow-auto pt-0 p-4">
+        <div className="max-h-[80vh] overflow-auto pt-0 p-4">
           <NewExerciseForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>

@@ -49,7 +49,7 @@ const NewMealDialog = ({ open, onOpenChange }: NewMealDialogProps) => {
             Preencha os campos abaixo para adicionar uma nova refeição.
           </DrawerDescription>
         </DrawerHeader>
-        <div className="max-h-[30rem] overflow-auto pt-0 p-4">
+        <div className="max-h-[80vh] overflow-auto pt-0 p-4">
           <MealForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>

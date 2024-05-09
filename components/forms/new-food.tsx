@@ -206,7 +206,7 @@ const FoodForm = ({ onSubmitOk, isDialog }: FoodFormProps) => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="w-full flex items-end gap-1">
+            <div className="w-full flex items-end gap-1 truncate">
               <FormField
                 control={form.control}
                 name="proteins"
