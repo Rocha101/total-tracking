@@ -63,7 +63,7 @@ interface NewHormoneProps {
   onSubmitOk?: () => void;
 }
 
-const NewHormone = ({ isDialog, onSubmitOk }: NewHormoneProps) => {
+const NewHormoneForm = ({ isDialog, onSubmitOk }: NewHormoneProps) => {
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
@@ -311,4 +311,4 @@ const NewHormone = ({ isDialog, onSubmitOk }: NewHormoneProps) => {
   );
 };
 
-export default NewHormone;
+export default NewHormoneForm;

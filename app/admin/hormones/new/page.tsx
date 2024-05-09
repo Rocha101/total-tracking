@@ -58,7 +58,7 @@ const hormoneScheme = object({
   accountId: string().optional(),
 });
 
-const NewHormone = ({ isDialog }: { isDialog?: boolean }) => {
+const NewHormone = () => {
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
@@ -111,19 +111,17 @@ const NewHormone = ({ isDialog }: { isDialog?: boolean }) => {
           className="flex flex-col gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          {!isDialog && (
-            <div className="flex items-center gap-2">
-              <PageHeader title="Novo Hormônio" backlink />
-              <Button type="submit">
-                {createHormoneMutation.isLoading ? (
-                  <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
-                ) : (
-                  <TbDeviceFloppy className="h-4 w-4 mr-2" />
-                )}
-                {createHormoneMutation.isLoading ? "Salvando..." : "Salvar"}
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <PageHeader title="Novo Hormônio" backlink />
+            <Button type="submit">
+              {createHormoneMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+              ) : (
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
+              )}
+              {createHormoneMutation.isLoading ? "Salvando..." : "Salvar"}
+            </Button>
+          </div>
 
           <Card className="">
             <CardHeader>
@@ -282,19 +280,6 @@ const NewHormone = ({ isDialog }: { isDialog?: boolean }) => {
               )}
             </CardContent>
           </Card>
-
-          {isDialog && (
-            <Button type="submit" className="w-full">
-              {createHormoneMutation.isLoading ? (
-                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
-              ) : (
-                <TbDeviceFloppy className="h-4 w-4 mr-2" />
-              )}
-              {createHormoneMutation.isLoading
-                ? "Salvando..."
-                : "Salvar Hormônio"}
-            </Button>
-          )}
         </form>
       </Form>
     </div>

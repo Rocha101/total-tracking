@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import NewHormone from "../forms/new-hormone";
+
 import {
   Drawer,
   DrawerContent,
@@ -14,6 +14,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import NewHormoneForm from "@/components/forms/new-hormone";
 
 interface NewHormoneDialogProps {
   open: boolean;
@@ -33,7 +34,7 @@ const NewHormoneDialog = ({ open, onOpenChange }: NewHormoneDialogProps) => {
               Preencha os campos abaixo para adicionar um novo hormônio.
             </DialogDescription>
           </DialogHeader>
-          <NewHormone onSubmitOk={() => onOpenChange(false)} isDialog />
+          <NewHormoneForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </DialogContent>
       </Dialog>
     );
@@ -49,7 +50,7 @@ const NewHormoneDialog = ({ open, onOpenChange }: NewHormoneDialogProps) => {
           </DrawerDescription>
         </DrawerHeader>
         <div className="max-h-[30rem] overflow-auto  pt-0 p-4">
-          <NewHormone onSubmitOk={() => onOpenChange(false)} isDialog />
+          <NewHormoneForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>
     </Drawer>
