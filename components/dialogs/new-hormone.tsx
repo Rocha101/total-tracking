@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import NewHormoneForm from "../forms/new-hormone";
+import NewHormone from "../forms/new-hormone";
 import {
   Drawer,
   DrawerContent,
@@ -33,7 +33,7 @@ const NewHormoneDialog = ({ open, onOpenChange }: NewHormoneDialogProps) => {
               Preencha os campos abaixo para adicionar um novo hormônio.
             </DialogDescription>
           </DialogHeader>
-          <NewHormoneForm onSubmitOk={() => onOpenChange(false)} isDialog />
+          <NewHormone onSubmitOk={() => onOpenChange(false)} isDialog />
         </DialogContent>
       </Dialog>
     );
@@ -49,7 +49,7 @@ const NewHormoneDialog = ({ open, onOpenChange }: NewHormoneDialogProps) => {
           </DrawerDescription>
         </DrawerHeader>
         <div className="max-h-[30rem] overflow-auto  pt-0 p-4">
-          <NewHormoneForm onSubmitOk={() => onOpenChange(false)} isDialog />
+          <NewHormone onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>
     </Drawer>
