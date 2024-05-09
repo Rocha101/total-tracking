@@ -61,13 +61,6 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
             Excluir cliente
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
-          >
-            <TbEdit className="h-4 w-4 mr-2" />
-            Atualizar cliente
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
             onClick={() => router.push(`/admin/clients/protocol/${clientId}`)}
           >
             <TbEye className="h-4 w-4 mr-2" />

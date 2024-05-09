@@ -171,7 +171,6 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     const fetchEditData = async () => {
       if (protocol) {
-        console.log(protocol);
         if (protocol.name) form.setValue("name", protocol.name);
         if (protocol.description)
           form.setValue("description", protocol.description);
