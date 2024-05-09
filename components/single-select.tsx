@@ -64,7 +64,10 @@ const SingleSelect: React.FC<SingleSelectProps> = ({
                   <CommandItem
                     key={item.id}
                     value={item.name}
-                    onSelect={() => handleSelect(item.id)}
+                    onSelect={() => {
+                      handleSelect(item.id);
+                      setOpen(false);
+                    }}
                   >
                     <CheckIcon
                       className={
