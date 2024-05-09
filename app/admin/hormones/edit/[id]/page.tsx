@@ -169,18 +169,14 @@ const EditHormonePage = ({
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {updateHormoneMutation.isLoading
-                ? "Salvando..."
-                : "Salvar Hormônio"}
+              {updateHormoneMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
 
           <Card className="">
             <CardHeader>
-              <CardTitle>Detalhes do protocolo hormonal</CardTitle>
-              <CardDescription>
-                Informações básicas do protocolo hormonal
-              </CardDescription>
+              <CardTitle>Detalhes do hormônio</CardTitle>
+              <CardDescription>Informações básicas do hormônio</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <FormField

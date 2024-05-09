@@ -106,7 +106,7 @@ const FoodForm = ({ onSubmitOk, isDialog }: FoodFormProps) => {
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {createFoodMutation.isLoading ? "Salvando..." : "Salvar Alimento"}
+              {createFoodMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
         )}
@@ -294,7 +294,7 @@ const FoodForm = ({ onSubmitOk, isDialog }: FoodFormProps) => {
             ) : (
               <TbDeviceFloppy className="h-4 w-4 mr-2" />
             )}
-            {createFoodMutation.isLoading ? "Salvando..." : "Salvar Alimento"}
+            {createFoodMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         )}
       </form>

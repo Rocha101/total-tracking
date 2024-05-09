@@ -231,9 +231,7 @@ const NewExerciseForm = ({ onSubmitOk, isDialog }: NewExerciseFormProps) => {
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {createExerciseMutation.isLoading
-                ? "Salvando..."
-                : "Salvar Exercício"}
+              {createExerciseMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
         )}
@@ -460,9 +458,7 @@ const NewExerciseForm = ({ onSubmitOk, isDialog }: NewExerciseFormProps) => {
             ) : (
               <TbDeviceFloppy className="h-4 w-4 mr-2" />
             )}
-            {createExerciseMutation.isLoading
-              ? "Salvando..."
-              : "Salvar Alimento"}
+            {createExerciseMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         )}
       </form>

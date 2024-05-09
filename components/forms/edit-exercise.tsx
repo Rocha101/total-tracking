@@ -274,9 +274,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
             ) : (
               <TbDeviceFloppy className="h-4 w-4 mr-2" />
             )}
-            {updateExerciseMutation.isLoading
-              ? "Salvando..."
-              : "Salvar Exercício"}
+            {updateExerciseMutation.isLoading ? "Salvando..." : "Salvar"}
           </Button>
         </div>
 

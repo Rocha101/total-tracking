@@ -162,7 +162,7 @@ const EditDietPage = ({
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {updateDietMutation.isLoading ? "Salvando..." : "Salvar Dieta"}
+              {updateDietMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
           <Card className="">

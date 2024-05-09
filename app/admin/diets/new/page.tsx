@@ -126,7 +126,7 @@ const NewProtocolPage = () => {
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {createDietMutation.isLoading ? "Salvando..." : "Salvar Dieta"}
+              {createDietMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
           <Card className="">

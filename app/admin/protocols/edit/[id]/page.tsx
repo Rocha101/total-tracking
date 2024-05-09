@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Form,
   FormControl,
   FormField,
@@ -17,6 +10,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { TbDeviceFloppy, TbLoader2 } from "react-icons/tb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { object, string } from "zod";
@@ -58,7 +59,7 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
     defaultValues: {},
   });
 
-  const createProtocolMutation = useMutation(
+  const updateProtocolMutation = useMutation(
     (values: Zod.infer<typeof protocolSchema>) =>
       api.put(`/protocol/${protocolId}`, values),
     {
@@ -79,7 +80,7 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
       train: trainsSelected.map((train) => train.id),
     };
 
-    createProtocolMutation.mutate(protocol);
+    updateProtocolMutation.mutate(protocol);
   };
 
   const { data: protocol } = useQuery({
@@ -210,164 +211,181 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
-      <PageHeader title={`Atualizar Protocolo`} backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input placeholder="Emagrecimento" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Input placeholder="Seca tudo" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {!clientId && (
-            <FormField
-              control={form.control}
-              name="clientId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cliente</FormLabel>
-                  <SingleSelect
-                    options={clientsData}
-                    selectedOption={
-                      clientsData?.find(
-                        (client) => client.id === field.value
-                      ) || undefined
-                    }
-                    handleSelect={(itemId) => field.onChange(itemId)}
-                  />
-                  <FormMessage />
-                </FormItem>
+          <div className="flex items-center gap-2">
+            <PageHeader title="Atualizar Protocolo" backlink />
+            <Button type="submit">
+              {updateProtocolMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+              ) : (
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-            />
-          )}
+              {updateProtocolMutation.isLoading ? "Salvando..." : "Salvar"}
+            </Button>
+          </div>
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Detalhes do protolo</CardTitle>
+              <CardDescription>Informações básicas do protolo</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Emagrecimento" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Seca tudo" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {!clientId && (
+                <FormField
+                  control={form.control}
+                  name="clientId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cliente</FormLabel>
+                      <SingleSelect
+                        options={clientsData}
+                        selectedOption={
+                          clientsData?.find(
+                            (client) => client.id === field.value
+                          ) || undefined
+                        }
+                        handleSelect={(itemId) => field.onChange(itemId)}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-          <FormField
-            control={form.control}
-            name="diet"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dieta</FormLabel>
+              <FormField
+                control={form.control}
+                name="diet"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dieta</FormLabel>
+                    <div className="flex">
+                      <SingleSelect
+                        options={diets}
+                        selectedOption={
+                          diets.find((diet) => diet.id === field.value) ||
+                          undefined
+                        }
+                        handleSelect={(itemId) => field.onChange(itemId)}
+                        add
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="rounded-tl-none rounded-bl-none border-l-0"
+                        onClick={() => router.push("/admin/diets/new")}
+                      >
+                        <TbPlus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="hormonalProtocol"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Protocolo Hormonal</FormLabel>
+                    <div className="flex">
+                      <SingleSelect
+                        options={hormonalProtocols}
+                        selectedOption={
+                          hormonalProtocols.find(
+                            (hormonalProtocol) =>
+                              hormonalProtocol.id === field.value
+                          ) || undefined
+                        }
+                        handleSelect={(itemId) => field.onChange(itemId)}
+                        add
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="rounded-tl-none rounded-bl-none border-l-0"
+                        onClick={() =>
+                          router.push("/admin/hormonal-protocols/new")
+                        }
+                      >
+                        <TbPlus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormItem className="flex flex-col  gap-1">
+                <FormLabel>Treinos</FormLabel>
                 <div className="flex">
-                  <SingleSelect
-                    options={diets}
-                    selectedOption={
-                      diets.find((diet) => diet.id === field.value) || undefined
-                    }
-                    handleSelect={(itemId) => field.onChange(itemId)}
+                  <MultipleSelect
+                    options={trains}
+                    selectedOptions={trainsSelected}
+                    handleSelect={addTrainSelected}
                     add
                   />
+
                   <Button
                     type="button"
                     variant="outline"
                     className="rounded-tl-none rounded-bl-none border-l-0"
-                    onClick={() => router.push("/admin/diets/new")}
+                    onClick={() => router.push("/admin/trains/new")}
                   >
                     <TbPlus className="h-4 w-4" />
                   </Button>
                 </div>
-                <FormMessage />
               </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="hormonalProtocol"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Protocolo Hormonal</FormLabel>
+              <FormItem className="flex flex-col gap-1">
+                <FormLabel>Outros Compostos</FormLabel>
                 <div className="flex">
-                  <SingleSelect
-                    options={hormonalProtocols}
-                    selectedOption={
-                      hormonalProtocols.find(
-                        (hormonalProtocol) =>
-                          hormonalProtocol.id === field.value
-                      ) || undefined
-                    }
-                    handleSelect={(itemId) => field.onChange(itemId)}
+                  <MultipleSelect
+                    options={extraCompounds}
+                    selectedOptions={extraCompoundsSelected}
+                    handleSelect={addExtraCompoundSelected}
                     add
                   />
+
                   <Button
                     type="button"
                     variant="outline"
                     className="rounded-tl-none rounded-bl-none border-l-0"
-                    onClick={() => router.push("/admin/hormonal-protocols/new")}
+                    onClick={() => router.push("/admin/extra-compounds/new")}
                   >
                     <TbPlus className="h-4 w-4" />
                   </Button>
                 </div>
-                <FormMessage />
               </FormItem>
-            )}
-          />
-
-          <FormItem className="flex flex-col  gap-1">
-            <FormLabel>Treinos</FormLabel>
-            <div className="flex">
-              <MultipleSelect
-                options={trains}
-                selectedOptions={trainsSelected}
-                handleSelect={addTrainSelected}
-                add
-              />
-
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-tl-none rounded-bl-none border-l-0"
-                onClick={() => router.push("/admin/trains/new")}
-              >
-                <TbPlus className="h-4 w-4" />
-              </Button>
-            </div>
-          </FormItem>
-          <FormItem className="flex flex-col gap-1">
-            <FormLabel>Outros Compostos</FormLabel>
-            <div className="flex">
-              <MultipleSelect
-                options={extraCompounds}
-                selectedOptions={extraCompoundsSelected}
-                handleSelect={addExtraCompoundSelected}
-                add
-              />
-
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-tl-none rounded-bl-none border-l-0"
-                onClick={() => router.push("/admin/extra-compounds/new")}
-              >
-                <TbPlus className="h-4 w-4" />
-              </Button>
-            </div>
-          </FormItem>
-
-          <Button type="submit" className="w-full">
-            {createProtocolMutation.isLoading ? "Salvando..." : "Salvar"}
-          </Button>
+            </CardContent>
+          </Card>
         </form>
       </Form>
     </div>

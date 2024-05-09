@@ -16,6 +16,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { TbDeviceFloppy, TbLoader2 } from "react-icons/tb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -100,124 +108,148 @@ const NewExtraCompound = () => {
 
   return (
     <div>
-      <PageHeader title="Novo Composto" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex.: Vitamina K2" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex.: Pela Manhã em Jejum" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex">
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Quantidade</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Ex.: 10"
-                      {...field}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(parseFloat(value));
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+          <div className="flex items-center gap-2">
+            <PageHeader title="Novo Composto" backlink />
+            <Button type="submit">
+              {createCompoundMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+              ) : (
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-            />
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unidade</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="MG">MG</SelectItem>
-                        <SelectItem value="ML">ML</SelectItem>
-                        <SelectItem value="UI">UI</SelectItem>
-                        <SelectItem value="UNIT">UNIDADE</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {createCompoundMutation.isLoading ? "Salvando..." : "Salvar"}
+            </Button>
           </div>
 
-          {concentrationUnit && (
-            <div className="flex">
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Detalhes do composto</CardTitle>
+              <CardDescription>Informações básicas do composto</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
               <FormField
                 control={form.control}
-                name="concentration"
+                name="name"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Concentração</FormLabel>
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex.: Vitamina K2" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        placeholder="Ex.: 100"
+                        placeholder="Ex.: Pela Manhã em Jejum"
                         {...field}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          field.onChange(parseFloat(value));
-                        }}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <div className="flex">
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Quantidade</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Ex.: 10"
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(parseFloat(value));
+                          }}
+                          className="rounded-tr-none rounded-br-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unidade</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => field.onChange(value)}
+                        >
+                          <SelectTrigger className="rounded-tl-none rounded-bl-none border-l-0">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="MG">MG</SelectItem>
+                            <SelectItem value="ML">ML</SelectItem>
+                            <SelectItem value="UI">UI</SelectItem>
+                            <SelectItem value="UNIT">UNIDADE</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-              <FormItem>
-                <FormLabel>Unidade</FormLabel>
-                <FormControl>
-                  <Input value={concentrationUnit} disabled />
-                </FormControl>
-              </FormItem>
-            </div>
-          )}
+              {concentrationUnit && (
+                <div className="flex">
+                  <FormField
+                    control={form.control}
+                    name="concentration"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Concentração</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Ex.: 100"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(parseFloat(value));
+                            }}
+                            className="rounded-tr-none rounded-br-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-          <Button type="submit" className="w-full">
-            {createCompoundMutation.isLoading ? "Criando..." : "Criar"}
-          </Button>
+                  <FormItem>
+                    <FormLabel>Unidade</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="rounded-tl-none rounded-bl-none border-l-0"
+                        value={concentrationUnit}
+                        disabled
+                      />
+                    </FormControl>
+                  </FormItem>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </form>
       </Form>
     </div>

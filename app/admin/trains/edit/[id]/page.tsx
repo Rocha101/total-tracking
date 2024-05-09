@@ -215,7 +215,7 @@ const EditTrainPage = ({
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {updateTrainMutation.isLoading ? "Salvando..." : "Salvar Treino"}
+              {updateTrainMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
 

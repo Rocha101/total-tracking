@@ -190,7 +190,7 @@ const EditMealForm = ({ onSubmitOk, editId }: MealFormProps) => {
               ) : (
                 <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-              {updateMealMutation.isLoading ? "Salvando..." : "Salvar Refeição"}
+              {updateMealMutation.isLoading ? "Salvando..." : "Salvar"}
             </Button>
           </div>
           <Card className="">
