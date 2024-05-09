@@ -68,7 +68,7 @@ const ExtraCompoundRowActions = ({
             }
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar composto
+            Atualizar composto
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>

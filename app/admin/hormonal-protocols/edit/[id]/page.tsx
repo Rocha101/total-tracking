@@ -9,6 +9,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { TbDeviceFloppy, TbLoader2, TbPlus } from "react-icons/tb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +26,6 @@ import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useEffect, useState } from "react";
-import { TbPlus, TbTrashFilled } from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Hormone from "../../../hormones/hormones";
 import NewHormoneDialog from "@/components/dialogs/new-hormone";
@@ -136,90 +143,113 @@ const NewHormonalProtocolPage = ({ params }: { params: { id: string } }) => {
   }, [form, hormonalProtocol]);
 
   return (
-    <div>
-      <PageHeader title="Editar Protocolo Hormonal" backlink />
+    <>
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nome do protocolo Ex.: Bulking"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex.: Semana 1-3" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Label>Selecione os hormônios que compõem o protocolo</Label>
-          <div className="h-full flex flex-col gap-3">
-            <div className="flex">
-              <MultipleSelect
-                options={hormones}
-                selectedOptions={protocolHormones}
-                handleSelect={addHormone}
-                add
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-tl-none rounded-bl-none border-l-0"
-                onClick={() => setOpenNewHormone(true)}
-              >
-                <TbPlus className="w-4 h-4" />
-              </Button>
-            </div>
-            <ScrollArea className="w-full h-full">
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">
-                {protocolHormones.map((hormone: Hormone) => {
-                  return (
-                    <HormoneCard
-                      key={hormone.id}
-                      hormone={hormone}
-                      handleRemove={removeProtocolHormone}
-                    />
-                  );
-                })}
-              </div>
-            </ScrollArea>
-          </div>
-          <div className="w-full flex justify-end">
-            <Button type="submit" className="w-full">
+          <div className="flex items-center gap-2">
+            <PageHeader title="Atualizar Protocolo Hormonal" backlink />
+            <Button type="submit">
+              {updateHormonalProtocolMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+              ) : (
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
+              )}
               {updateHormonalProtocolMutation.isLoading
                 ? "Salvando..."
                 : "Salvar"}
             </Button>
           </div>
+
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Detalhes do protocolo hormonal</CardTitle>
+              <CardDescription>
+                Informações básicas do protocolo hormonal
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nome do protocolo Ex.: Bulking"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex.: Semana 1-3" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Hormônios do protocolo</CardTitle>
+              <CardDescription>
+                Selecione os hormônios que compõem o protocolo
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex">
+                <MultipleSelect
+                  options={hormones}
+                  selectedOptions={protocolHormones}
+                  handleSelect={addHormone}
+                  add
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-tl-none rounded-bl-none border-l-0"
+                  onClick={() => setOpenNewHormone(true)}
+                >
+                  <TbPlus className="w-4 h-4" />
+                </Button>
+              </div>
+              <ScrollArea className="w-full h-full">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-1">
+                  {protocolHormones.map((hormone: Hormone) => {
+                    return (
+                      <HormoneCard
+                        key={hormone.id}
+                        hormone={hormone}
+                        handleRemove={removeProtocolHormone}
+                      />
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
         </form>
       </Form>
       <NewHormoneDialog
         open={openNewHormone}
         onOpenChange={(open) => setOpenNewHormone(open)}
       />
-    </div>
+    </>
   );
 };
 

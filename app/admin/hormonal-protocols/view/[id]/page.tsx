@@ -55,7 +55,7 @@ const ViewHormonalProtocol = ({
           <Link href={`/admin/hormonal-protocols/edit/${hormonalProtocolId}`}>
             <Button size="sm">
               <TbEdit className="mr-2" />
-              Editar
+              Atualizar
             </Button>
           </Link>
         </div>

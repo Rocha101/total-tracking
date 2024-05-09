@@ -65,7 +65,7 @@ const HormoneActionRows = ({ hormoneId }: { hormoneId: string }) => {
             onClick={() => router.push(`/admin/hormones/edit/${hormoneId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar hormônio
+            Atualizar hormônio
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>

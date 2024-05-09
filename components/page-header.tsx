@@ -13,9 +13,14 @@ interface PageHeaderProps {
 const PageHeader = ({ title, description, backlink }: PageHeaderProps) => {
   const router = useRouter();
   return (
-    <div className="w-full  flex items-center gap-2 mb-2">
+    <div className="w-full flex items-center gap-2 mb-2">
       {backlink && (
-        <Button onClick={() => router.back()} variant="ghost" size="icon">
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => router.back()}
+          size="minimal"
+        >
           <TbChevronLeft className="w-4 h-4" />
         </Button>
       )}

@@ -1,7 +1,16 @@
 import { Meal } from "@/app/admin/meals/meals";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { TbTrashFilled } from "react-icons/tb";
+import getMealUnit from "@/app/utils/getMealUnit";
+import { Badge } from "./ui/badge";
+import getMealType from "@/app/utils/getMealType";
 
 interface MealCardProps {
   meal: Meal;
@@ -10,34 +19,43 @@ interface MealCardProps {
 
 const MealCard = ({ meal, handleRemove }: MealCardProps) => {
   return (
-    <label
-      key={meal.id}
-      className="flex items-center w-full select-none"
-      htmlFor={meal.id}
-    >
-      <Card key={meal.id} className="h-full relative w-full">
-        <CardHeader className="w-full flex flex-row justify-between items-start">
-          <CardTitle>{meal.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="px-0 relative">
-          <div className="px-6 flex flex-col gap-0.5 relative text-xs text-muted-foreground">
-            <div>{meal.description}</div>
-            <div>{meal.totalCalories || "0"} Cal</div>
-            <div>
-              {meal.quantity}
-              {meal.unit}
-            </div>
+    <Card key={meal.id} className="h-full relative w-full">
+      <CardHeader className="w-full">
+        <CardTitle>{meal.name}</CardTitle>
+        <CardDescription>{meal.description}</CardDescription>
+        <div className="flex gap-2 absolute top-4 right-6">
+          <Badge>{getMealType(meal.mealType)}</Badge>
+          <Button
+            variant="destructive"
+            size={"minimal"}
+            onClick={() => handleRemove(meal.id)}
+          >
+            <TbTrashFilled />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="px-0 relative">
+        <div className="max-w-sm px-6 flex justify-between gap-0.5 relative text-xs">
+          <div>
+            <div>{meal.totalCalories || "0"} Calorias totais</div>
+            <div>{meal.totalProteins || "0"}g Proteínas</div>
+            <div>{meal.totalCarbs || "0"}g Carboidratos</div>
+            <div>{meal.totalFats || "0"}g Gorduras</div>
           </div>
-        </CardContent>
-        <Button
-          variant="destructive"
-          className="absolute top-0 bottom-0 my-auto right-6"
-          onClick={() => handleRemove(meal.id)}
-        >
-          <TbTrashFilled />
-        </Button>
-      </Card>
-    </label>
+
+          {meal.foods.length > 0 && (
+            <div>
+              {meal.foods.map((food) => (
+                <p key={food.id} className="">
+                  - {food.quantity}
+                  {getMealUnit(food.unit)} de {food.name}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

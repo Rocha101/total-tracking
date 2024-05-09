@@ -27,7 +27,7 @@ const NewMealDialog = ({ open, onOpenChange }: NewMealDialogProps) => {
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] max-w-[95vw] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[425px] md:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Nova Refeição</DialogTitle>
             <DialogDescription>
@@ -50,7 +50,7 @@ const NewMealDialog = ({ open, onOpenChange }: NewMealDialogProps) => {
           </DrawerDescription>
         </DrawerHeader>
         <div className="max-h-[30rem] overflow-auto pt-0 p-4">
-          <MealForm onSubmitOk={() => onOpenChange(false)} />
+          <MealForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>
     </Drawer>

@@ -40,8 +40,8 @@ const HormoneCard = ({ hormone, handleRemove }: HormoneCardProps) => {
         type="button"
         onClick={() => handleRemove(hormone.id)}
         variant="destructive"
-        size="icon"
-        className="absolute top-1/2 transform -translate-y-1/2 right-8"
+        size="minimal"
+        className="absolute top-6 right-6"
       >
         <TbTrashFilled />
       </Button>

@@ -72,7 +72,7 @@ const EditHormonePage = ({
       },
       onError: (err) => {
         console.log(err);
-        toast.error("Erro ao editar Composto!");
+        toast.error("Erro ao Atualizar Composto!");
       },
     }
   );
@@ -144,7 +144,7 @@ const EditHormonePage = ({
 
   return (
     <div>
-      <PageHeader title="Editar Composto" backlink />
+      <PageHeader title="Atualizar Composto" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

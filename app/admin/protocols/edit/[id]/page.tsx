@@ -210,7 +210,7 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
 
   return (
     <div>
-      <PageHeader title={`Editar Protocolo`} backlink />
+      <PageHeader title={`Atualizar Protocolo`} backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"

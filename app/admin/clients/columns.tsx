@@ -64,7 +64,7 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
             onClick={() => router.push(`/admin/clients/edit/${clientId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar cliente
+            Atualizar cliente
           </DropdownMenuItem>
 
           <DropdownMenuItem

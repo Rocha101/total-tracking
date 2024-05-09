@@ -27,14 +27,14 @@ const NewExerciseDialog = ({ open, onOpenChange }: NewExerciseDialogProps) => {
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] max-w-[95vw] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[425px] md:max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Novo Exercício</DialogTitle>
             <DialogDescription>
               Preencha os campos abaixo para adicionar um novo exercício.
             </DialogDescription>
           </DialogHeader>
-          <NewExerciseForm onSubmitOk={() => onOpenChange(false)} />
+          <NewExerciseForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </DialogContent>
       </Dialog>
     );
@@ -50,7 +50,7 @@ const NewExerciseDialog = ({ open, onOpenChange }: NewExerciseDialogProps) => {
           </DrawerDescription>
         </DrawerHeader>
         <div className="max-h-[30rem] overflow-auto pt-0 p-4">
-          <NewExerciseForm onSubmitOk={() => onOpenChange(false)} />
+          <NewExerciseForm onSubmitOk={() => onOpenChange(false)} isDialog />
         </div>
       </DrawerContent>
     </Drawer>

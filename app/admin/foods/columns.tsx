@@ -59,7 +59,7 @@ const FoodActionRows = ({ foodId }: { foodId: string }) => {
             onClick={() => router.push(`/admin/foods/edit/${foodId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar alimento
+            Atualizar alimento
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>

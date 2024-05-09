@@ -121,7 +121,7 @@ const ClientProtocol = ({
             disabled={!protocol}
           >
             <TbEdit className="mr-2" />
-            Editar
+            Atualizar
           </Button>
         }
         loading={loading}

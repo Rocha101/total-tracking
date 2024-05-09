@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
+import { TbCircleCheck } from "react-icons/tb";
 import { Toaster as Sonner } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;

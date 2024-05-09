@@ -6,12 +6,7 @@ import { useRouter } from "next/navigation";
 
 const NewMealPage = () => {
   const router = useRouter();
-  return (
-    <div>
-      <PageHeader title="Nova Refeição" backlink />
-      <MealForm onSubmitOk={() => router.push("/admin/meals")} />
-    </div>
-  );
+  return <MealForm onSubmitOk={() => router.push("/admin/meals")} />;
 };
 
 export default NewMealPage;

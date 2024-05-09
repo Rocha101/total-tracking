@@ -113,7 +113,7 @@ const ViewTrainPage = ({
           onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
         >
           <TbEdit className="mr-2" />
-          Editar
+          Atualizar
         </Button>
       </div>
       {train && (

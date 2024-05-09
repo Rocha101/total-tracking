@@ -9,12 +9,7 @@ const NewExercisePage = ({
     id: string;
   };
 }) => {
-  return (
-    <div>
-      <PageHeader title="Editar Exercício" backlink />
-      <EditExerciseForm exerciseId={params.id} />
-    </div>
-  );
+  return <EditExerciseForm exerciseId={params.id} />;
 };
 
 export default NewExercisePage;

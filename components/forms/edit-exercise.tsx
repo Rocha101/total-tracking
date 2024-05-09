@@ -16,6 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,11 +32,17 @@ import api from "@/app/utils/api";
 import { useEffect, useState } from "react";
 import z from "zod";
 import { Label } from "@/components/ui/label";
-import { TbPlus, TbTrashFilled } from "react-icons/tb";
+import {
+  TbDeviceFloppy,
+  TbLoader2,
+  TbPlus,
+  TbTrashFilled,
+} from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Exercise } from "@/app/admin/exercises/exercise";
 import SingleSelect from "../single-select";
+import PageHeader from "../page-header";
 
 enum MuscleGroup {
   CHEST = "CHEST",
@@ -129,7 +142,7 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
       },
       onError: (err) => {
         console.log(err);
-        toast.error("Erro ao editar Exercicio!");
+        toast.error("Erro ao Atualizar Exercicio!");
       },
     }
   );
@@ -253,209 +266,236 @@ const EditExerciseForm = ({ onSubmitOk, exerciseId }: NewExerciseFormProps) => {
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Nome do exercício Ex.: Supino reto"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Input placeholder="Ex.: Segurando na excêntrica" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex gap-1">
-          <FormField
-            control={form.control}
-            name="muscleGroup"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Músculo Alvo</FormLabel>
-                <SingleSelect
-                  options={targetMuscleOptions}
-                  selectedOption={
-                    targetMuscleOptions.find(
-                      (group) => group.id === field.value
-                    ) || undefined
-                  }
-                  handleSelect={(itemId) => field.onChange(itemId)}
-                  add
-                />
-                <FormMessage />
-              </FormItem>
+        <div className="flex items-center gap-2">
+          <PageHeader title="Atualizar Exercício" backlink />
+          <Button type="submit">
+            {updateExerciseMutation.isLoading ? (
+              <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+            ) : (
+              <TbDeviceFloppy className="h-4 w-4 mr-2" />
             )}
-          />
-          <FormField
-            control={form.control}
-            name="equipment"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Equipamento</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex.: Barra fixa" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Tipo</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione um item" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.values(ExerciseType).map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {
-                          {
-                            [ExerciseType.STRENGHT]: "Força",
-                            [ExerciseType.CARDIO]: "Cardio",
-                            [ExerciseType.STRETCHING]: "Alongamento",
-                          }[type]
-                        }
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="text-sm">
-          Adicione as séries e repetições do exercício
-          {setError && (
-            <p className="text-[0.8rem] font-medium text-destructive">
-              Adicione pelo menos uma série
-            </p>
-          )}
-        </div>
-
-        <ScrollArea className="w-full h-full ">
-          <Button
-            type="button"
-            onClick={() => {
-              addSet({ quantity: 0, weight: 0 });
-            }}
-            size="sm"
-            className="w-32 flex gap-2 mb-3"
-            variant="secondary"
-          >
-            <TbPlus />
-            Adicionar Série
+            {updateExerciseMutation.isLoading
+              ? "Salvando..."
+              : "Salvar Exercício"}
           </Button>
-          {reps.length === 0 ? (
-            <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
-              <span className="text-lg text-muted-foreground">
-                Nenhuma série adicionada
-              </span>
-            </div>
-          ) : (
-            <div className="w-full flex flex-col gap-4 py-1">
-              {reps.map((set, index) => (
-                <div key={index} className="w-full flex gap-2 items-end">
-                  <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
-                    <Label>Intensidade</Label>
-                    <Select
-                      value={set.setType}
-                      onValueChange={(value: SetType) =>
-                        updateType(index, value as SetType)
+        </div>
+
+        <Card className="">
+          <CardHeader>
+            <CardTitle>Detalhes do exercício</CardTitle>
+            <CardDescription>Informações básicas do exercício</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nome</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nome do exercício Ex.: Supino reto"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descrição</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex.: Segurando na excêntrica"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:gap-1">
+              <FormField
+                control={form.control}
+                name="muscleGroup"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Músculo Alvo</FormLabel>
+                    <SingleSelect
+                      options={targetMuscleOptions}
+                      selectedOption={
+                        targetMuscleOptions.find(
+                          (group) => group.id === field.value
+                        ) || undefined
                       }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
+                      handleSelect={(itemId) => field.onChange(itemId)}
+                      add
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="equipment"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Equipamento</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex.: Barra fixa" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Tipo</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um item" />
+                        </SelectTrigger>
+                      </FormControl>
                       <SelectContent>
-                        {Object.values(SetType).map((type) => (
-                          <SelectItem
-                            key={type}
-                            value={type}
-                            className="w-full truncate text-ellipsis"
-                          >
+                        {Object.values(ExerciseType).map((type) => (
+                          <SelectItem key={type} value={type}>
                             {
                               {
-                                [SetType.WARM_UP]: "Aquecimento (Warm up)",
-                                [SetType.FEEDER]:
-                                  "Preparação/Reconhecimento (Feeder)",
-                                [SetType.WORKING]: "Trabalho (Working)",
-                                [SetType.TOP]: "Pico (Top)",
-                                [SetType.BACK_OFF]: "Retorno (Back-off)",
+                                [ExerciseType.STRENGHT]: "Força",
+                                [ExerciseType.CARDIO]: "Cardio",
+                                [ExerciseType.STRETCHING]: "Alongamento",
                               }[type]
                             }
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div className="w-full flex flex-col gap-2">
-                    <Label>Nº Repetições</Label>
-                    <Input
-                      type="number"
-                      placeholder="10"
-                      className="w-full "
-                      value={set.quantity}
-                      onChange={(e) =>
-                        updateReps(index, parseFloat(e.target.value))
-                      }
-                    />
-                  </div>
-                  <div className="w-full flex flex-col gap-2">
-                    <Label>Peso (Kg)</Label>
-                    <Input
-                      type="number"
-                      placeholder="3"
-                      className="w-full "
-                      value={set.weight}
-                      onChange={(e) =>
-                        updateWeight(index, parseFloat(e.target.value))
-                      }
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    size="icon"
-                    className="w-10 min-w-10"
-                    onClick={() => removeSet(index)}
-                  >
-                    <TbTrashFilled />
-                  </Button>
-                </div>
-              ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          )}
-        </ScrollArea>
+          </CardContent>
+        </Card>
 
-        <Button type="submit" className="w-full">
-          {updateExerciseMutation.isLoading ? "Salvando..." : "Salvar"}
-        </Button>
+        <Card className="">
+          <CardHeader>
+            <CardTitle>Séries e Repetições</CardTitle>
+            <CardDescription>
+              Adicione as séries e repetições do exercício
+            </CardDescription>
+            {setError && (
+              <p className="text-[0.8rem] font-medium text-destructive">
+                Adicione pelo menos uma série
+              </p>
+            )}
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <ScrollArea className="w-full h-full ">
+              <Button
+                type="button"
+                onClick={() => {
+                  addSet({ quantity: 0, weight: 0 });
+                }}
+                size="sm"
+                className="w-32 flex gap-2 mb-3"
+                variant="secondary"
+              >
+                <TbPlus />
+                Adicionar Série
+              </Button>
+              {reps.length === 0 ? (
+                <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
+                  <span className="text-lg text-muted-foreground">
+                    Nenhuma série adicionada
+                  </span>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col gap-4 py-1">
+                  {reps.map((set, index) => (
+                    <div key={index} className="w-full flex gap-2 items-end">
+                      <div className="w-full max-w-full min-w-24 flex flex-col gap-2">
+                        <Label>Intensidade</Label>
+                        <Select
+                          value={set.setType}
+                          onValueChange={(value: SetType) =>
+                            updateType(index, value as SetType)
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.values(SetType).map((type) => (
+                              <SelectItem
+                                key={type}
+                                value={type}
+                                className="w-full truncate text-ellipsis"
+                              >
+                                {
+                                  {
+                                    [SetType.WARM_UP]: "Aquecimento (Warm up)",
+                                    [SetType.FEEDER]:
+                                      "Preparação/Reconhecimento (Feeder)",
+                                    [SetType.WORKING]: "Trabalho (Working)",
+                                    [SetType.TOP]: "Pico (Top)",
+                                    [SetType.BACK_OFF]: "Retorno (Back-off)",
+                                  }[type]
+                                }
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="w-full flex flex-col gap-2">
+                        <Label>Nº Repetições</Label>
+                        <Input
+                          type="number"
+                          placeholder="10"
+                          className="w-full "
+                          value={set.quantity}
+                          onChange={(e) =>
+                            updateReps(index, parseFloat(e.target.value))
+                          }
+                        />
+                      </div>
+                      <div className="w-full flex flex-col gap-2">
+                        <Label>Peso (Kg)</Label>
+                        <Input
+                          type="number"
+                          placeholder="3"
+                          className="w-full "
+                          value={set.weight}
+                          onChange={(e) =>
+                            updateWeight(index, parseFloat(e.target.value))
+                          }
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        size="icon"
+                        className="w-10 min-w-10"
+                        onClick={() => removeSet(index)}
+                      >
+                        <TbTrashFilled />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
       </form>
     </Form>
   );

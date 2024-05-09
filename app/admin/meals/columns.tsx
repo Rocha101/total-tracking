@@ -60,7 +60,7 @@ const MealRowActions = ({ mealId }: { mealId: string }) => {
             onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar refeição
+            Atualizar refeição
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/meals/view/${mealId}`)}

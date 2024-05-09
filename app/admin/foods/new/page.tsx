@@ -7,12 +7,7 @@ import FoodForm from "@/components/forms/new-food";
 
 const NewFoodPage = () => {
   const router = useRouter();
-  return (
-    <div>
-      <PageHeader title="Novo Alimento" backlink />
-      <FoodForm onSubmitOk={() => router.push("/admin/foods")} />
-    </div>
-  );
+  return <FoodForm onSubmitOk={() => router.push("/admin/foods")} />;
 };
 
 export default NewFoodPage;

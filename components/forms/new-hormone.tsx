@@ -8,6 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TbDeviceFloppy, TbLoader2 } from "react-icons/tb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -19,22 +27,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { object, string, number, enum as enumValidator, infer } from "zod";
+import { object, string, number, enum as enumValidator } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useQueryClient } from "react-query";
+import { useMutation } from "react-query";
+import getConcentrationUnit from "@/app/utils/getConcentrationUnit";
 
 const hormoneScheme = object({
   name: string({
     required_error: "Nome é obrigatório",
   }),
   description: string().optional(),
-  quantity: number(),
-  concentration: number(),
+  quantity: number({
+    required_error: "Quantidade é obrigatória",
+  }),
+  concentration: number().optional(),
   unit: enumValidator(["MG", "ML", "UI", "UNIT"]),
   concentrationUnit: enumValidator(["MG_ML", "MG"]).optional(),
   hormoneType: enumValidator([
@@ -49,12 +58,12 @@ const hormoneScheme = object({
   accountId: string().optional(),
 });
 
-interface NewHormoneFormProps {
-  onSubmitOk: () => void;
+interface NewHormoneProps {
+  isDialog?: boolean;
+  onSubmitOk?: () => void;
 }
 
-const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
-  const clientQuery = useQueryClient();
+const NewHormone = ({ isDialog, onSubmitOk }: NewHormoneProps) => {
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
@@ -64,38 +73,32 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
     },
   });
 
+  const createHormoneMutation = useMutation(
+    (values: Zod.infer<typeof hormoneScheme>) => api.post("/hormone", values),
+    {
+      onSuccess: (res) => {
+        toast.success("Hormônio criado com sucesso!");
+        if (onSubmitOk) onSubmitOk();
+        router.back();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast.error("Erro ao criar Hormônio!");
+      },
+    }
+  );
+
   const onSubmit = (values: Zod.infer<typeof hormoneScheme>) => {
     const hormone = {
       ...values,
-      concentrationUnit: getConcentrationUnit(),
+      concentrationUnit: getConcentrationUnitByUnit(),
     };
 
-    api
-      .post("/hormone", hormone)
-      .then((res) => {
-        toast.success("Hormônio criado com sucesso!");
-        clientQuery.invalidateQueries("hormones");
-        if (onSubmitOk) onSubmitOk();
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Erro ao criar Hormônio!");
-      });
+    createHormoneMutation.mutate(hormone);
   };
 
-  const unitWatch = form.watch("unit");
-
-  useEffect(() => {
-    if (unitWatch === "UNIT") {
-      form.setValue("concentration", 0);
-    }
-    if (unitWatch === "MG" || unitWatch === "ML") {
-      form.setValue("concentration", 0);
-    }
-  }, [form, unitWatch]);
-
-  const getConcentrationUnit = () => {
-    switch (unitWatch) {
+  const getConcentrationUnitByUnit = (): "MG" | "MG_ML" | undefined => {
+    switch (form.watch("unit")) {
       case "ML":
         return "MG_ML";
       case "UNIT":
@@ -105,159 +108,207 @@ const NewHormoneForm = ({ onSubmitOk }: NewHormoneFormProps) => {
     }
   };
 
-  const concentrationUnit = getConcentrationUnit();
+  const concentrationUnit = getConcentrationUnitByUnit();
 
   return (
-    <Form {...form}>
-      <form
-        className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Enantato de testosterona" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <div>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          {!isDialog && (
+            <div className="flex items-center gap-2">
+              <PageHeader title="Novo Hormônio" backlink />
+              <Button type="submit">
+                {createHormoneMutation.isLoading ? (
+                  <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+                ) : (
+                  <TbDeviceFloppy className="h-4 w-4 mr-2" />
+                )}
+                {createHormoneMutation.isLoading
+                  ? "Salvando..."
+                  : "Salvar Hormônio"}
+              </Button>
+            </div>
           )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Input placeholder="" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="hormoneType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => field.onChange(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NINETEEN_NOR">19-Nor</SelectItem>
-                    <SelectItem value="DHT">DHT</SelectItem>
-                    <SelectItem value="TESTOSTERONE">Testosterona</SelectItem>
-                    <SelectItem value="PEPTIDE">Peptídeo</SelectItem>
-                    <SelectItem value="INSULIN">Insulina</SelectItem>
-                    <SelectItem value="TIREOID">Tireoide</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Detalhes do protocolo hormonal</CardTitle>
+              <CardDescription>
+                Informações básicas do protocolo hormonal
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Ex.: Enantato de testosterona"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex.: Intramuscular" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <div className="flex">
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Quantidade</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="10"
-                    {...field}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      field.onChange(parseFloat(value));
-                    }}
+              <FormField
+                control={form.control}
+                name="hormoneType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NINETEEN_NOR">19-Nor</SelectItem>
+                          <SelectItem value="DHT">DHT</SelectItem>
+                          <SelectItem value="TESTOSTERONE">
+                            Testosterona
+                          </SelectItem>
+                          <SelectItem value="PEPTIDE">Peptídeo</SelectItem>
+                          <SelectItem value="INSULIN">Insulina</SelectItem>
+                          <SelectItem value="TIREOID">Tireoidiano</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex">
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Quantidade</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Ex.: 10"
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(parseFloat(value));
+                          }}
+                          className="rounded-tr-none rounded-br-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unidade</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => field.onChange(value)}
+                        >
+                          <SelectTrigger className="rounded-tl-none rounded-bl-none border-l-0">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="MG">MG</SelectItem>
+                            <SelectItem value="ML">ML</SelectItem>
+                            <SelectItem value="UI">UI</SelectItem>
+                            <SelectItem value="UNIT">UNIDADE</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {concentrationUnit && (
+                <div className="flex">
+                  <FormField
+                    control={form.control}
+                    name="concentration"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Concentração</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ex.: 200"
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(parseFloat(value));
+                            }}
+                            className="rounded-tr-none rounded-br-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="unit"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Unidade</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MG">MG</SelectItem>
-                      <SelectItem value="ML">ML</SelectItem>
-                      <SelectItem value="UI">UI</SelectItem>
-                      <SelectItem value="UNIT">UNIDADE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
-        {concentrationUnit && (
-          <div className="flex">
-            <FormField
-              control={form.control}
-              name="concentration"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Concentração</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="10"
-                      type="number"
-                      {...field}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(parseFloat(value));
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  <FormItem>
+                    <FormLabel>Unidade</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="rounded-tl-none rounded-bl-none  border-l-0"
+                        value={getConcentrationUnit(concentrationUnit)}
+                        disabled
+                      />
+                    </FormControl>
+                  </FormItem>
+                </div>
               )}
-            />
+            </CardContent>
+          </Card>
 
-            <FormItem>
-              <FormLabel>Unidade</FormLabel>
-              <FormControl>
-                <Input value={concentrationUnit} disabled />
-              </FormControl>
-            </FormItem>
-          </div>
-        )}
-
-        <Button type="submit" className="w-full">
-          Criar
-        </Button>
-      </form>
-    </Form>
+          {isDialog && (
+            <Button type="submit" className="w-full">
+              {createHormoneMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+              ) : (
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
+              )}
+              {createHormoneMutation.isLoading
+                ? "Salvando..."
+                : "Salvar Hormônio"}
+            </Button>
+          )}
+        </form>
+      </Form>
+    </div>
   );
 };
 
-export default NewHormoneForm;
+export default NewHormone;

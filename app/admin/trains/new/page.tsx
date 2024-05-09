@@ -10,12 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -26,19 +26,18 @@ import { toast } from "sonner";
 import api from "@/app/utils/api";
 import PageHeader from "@/components/page-header";
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Exercise } from "../../exercises/exercise";
-import { TbPlus, TbTrashFilled } from "react-icons/tb";
+import {
+  TbDeviceFloppy,
+  TbLoader2,
+  TbPlus,
+  TbTrashFilled,
+} from "react-icons/tb";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NewExerciseDialog from "@/components/dialogs/new-exercise";
 import { useMutation, useQuery } from "react-query";
 import MultipleSelect from "@/components/multiple-select";
+import ExerciseCard from "@/components/exercise-card";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -175,181 +174,143 @@ const NewTrainPage = () => {
 
   return (
     <div>
-      <PageHeader title="Novo Treino" backlink />
       <Form {...form}>
         <form
           className="flex flex-col gap-4"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nome do treino Ex.: Hipertrofia"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ex.: Semana 1" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormItem className="">
-            <FormLabel>Dias da semana</FormLabel>
-            <ToggleGroup
-              type="multiple"
-              variant="outline"
-              className="justify-start overflow-x-auto"
-              value={selectedWeekDays}
-              onValueChange={(value: WeekDay[]) => handleWeekDayChange(value)}
-            >
-              {Object.keys(WeekDay).map((key) => (
-                <ToggleGroupItem
-                  key={key}
-                  className="data-[state=on]:border-primary"
-                  value={key}
-                >
-                  {
-                    {
-                      MONDAY: "Segunda",
-                      TUESDAY: "Terça",
-                      WEDNESDAY: "Quarta",
-                      THURSDAY: "Quinta",
-                      FRIDAY: "Sexta",
-                      SATURDAY: "Sábado",
-                      SUNDAY: "Domingo",
-                    }[key]
-                  }
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-            <FormMessage />
-          </FormItem>
-
-          <div className="text-sm">
-            Selecione os exercícios que compõem o treino
-          </div>
-          <div className="h-full flex flex-col gap-3">
-            <div className="flex">
-              <MultipleSelect
-                options={exercises}
-                selectedOptions={trainsSelected}
-                handleSelect={addTrainSelected}
-                add
-              />
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-tl-none rounded-bl-none border-l-0"
-                onClick={() => setOpenNewExercise(true)}
-              >
-                <TbPlus className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <ScrollArea className="w-full h-full">
-              {trainsSelected.length > 0 ? (
-                <div className="w-full flex flex-col gap-4 ">
-                  {trainsSelected.map((exercise: Exercise) => {
-                    const reps = exercise.sets.map((set) => {
-                      const reps = set.reps;
-                      return reps.map((rep) => {
-                        return `${
-                          {
-                            [SetType.WARM_UP]: "Aquecimento",
-                            [SetType.WORKING]: "Trabalho",
-                            [SetType.FEEDER]: "Feeder",
-                            [SetType.TOP]: "Top",
-                            [SetType.BACK_OFF]: "Back off",
-                          }[rep.setType] || ""
-                        }${rep.setType ? " - " : ""}${rep.quantity} x ${
-                          rep.weight
-                        }Kg`;
-                      });
-                    });
-
-                    return (
-                      <Card key={exercise.id} className="relative">
-                        <CardHeader className="w-full flex flex-row justify-between items-start">
-                          <CardTitle>{exercise.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col gap-2">
-                          <CardDescription>
-                            Grupo Muscular:{" "}
-                            {
-                              {
-                                [MuscleGroup.CHEST]: "Peito",
-                                [MuscleGroup.BACK]: "Costas",
-                                [MuscleGroup.SHOULDERS]: "Ombros",
-                                [MuscleGroup.BICEPS]: "Biceps",
-                                [MuscleGroup.TRICEPS]: "Triceps",
-                                [MuscleGroup.FOREARMS]: "Antebraço",
-                                [MuscleGroup.CALVES]: "Panturrilha",
-                                [MuscleGroup.ABS]: "Abdomen",
-                                [MuscleGroup.QUADS]: "Quadriceps",
-                                [MuscleGroup.HAMSTRINGS]: "Isquiotibiais",
-                                [MuscleGroup.GLUTES]: "Gluteos",
-                                [MuscleGroup.ADDUCTORS]: "Adutores",
-                                [MuscleGroup.ABDUCTORS]: "Abdutores",
-                                [MuscleGroup.TRAPS]: "Trapezio",
-                                [MuscleGroup.LATS]: "Latissimo do dorso",
-                                [MuscleGroup.LOWER_BACK]: "Lombar",
-                                [MuscleGroup.OBLIQUES]: "Oblíquos",
-                                [MuscleGroup.NECK]: "Pescoço",
-                              }[exercise.muscleGroup]
-                            }
-                          </CardDescription>
-                          <CardDescription>
-                            Equipamento: {exercise.equipment}
-                          </CardDescription>
-                          {reps.map((rep, index) => (
-                            <CardDescription key={index}>
-                              {index + 1}ª Série: {rep.join(" ")}
-                            </CardDescription>
-                          ))}
-                        </CardContent>
-
-                        <Button
-                          variant="destructive"
-                          className="absolute top-0 bottom-0 my-auto right-12"
-                          onClick={() => removeTrainSelected(exercise.id)}
-                        >
-                          <TbTrashFilled />
-                        </Button>
-                      </Card>
-                    );
-                  })}
-                </div>
+          <div className="flex items-center gap-2">
+            <PageHeader title="Novo Treino" backlink />
+            <Button type="submit">
+              {createTrainMutation.isLoading ? (
+                <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
               ) : (
-                <div className="h-[300px] border border-dashed rounded-md flex flex-col items-center justify-center">
-                  <p className="text-lg text-muted-foreground">
-                    Nenhum exercício selecionado
-                  </p>
-                </div>
+                <TbDeviceFloppy className="h-4 w-4 mr-2" />
               )}
-            </ScrollArea>
+              {createTrainMutation.isLoading ? "Salvando..." : "Salvar Treino"}
+            </Button>
           </div>
 
-          <Button type="submit" className="w-full">
-            {createTrainMutation.isLoading ? "Criando..." : "Criar"}
-          </Button>
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Detalhes do treino</CardTitle>
+              <CardDescription>Informações básicas do treino</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nome do treino Ex.: Hipertrofia"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ex.: Semana 1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormItem className="">
+                <FormLabel>Dias da semana</FormLabel>
+                <ToggleGroup
+                  type="multiple"
+                  variant="outline"
+                  className="justify-start overflow-x-auto"
+                  value={selectedWeekDays}
+                  onValueChange={(value: WeekDay[]) =>
+                    handleWeekDayChange(value)
+                  }
+                >
+                  {Object.keys(WeekDay).map((key) => (
+                    <ToggleGroupItem
+                      key={key}
+                      className="data-[state=on]:border-primary"
+                      value={key}
+                    >
+                      {
+                        {
+                          MONDAY: "Segunda",
+                          TUESDAY: "Terça",
+                          WEDNESDAY: "Quarta",
+                          THURSDAY: "Quinta",
+                          FRIDAY: "Sexta",
+                          SATURDAY: "Sábado",
+                          SUNDAY: "Domingo",
+                        }[key]
+                      }
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+                <FormMessage />
+              </FormItem>
+            </CardContent>
+          </Card>
+
+          <Card className="">
+            <CardHeader>
+              <CardTitle>Exercícios</CardTitle>
+              <CardDescription>
+                Selecione os exercícios que deseja adicionar ao treino
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="h-full flex flex-col gap-3">
+                <div className="flex">
+                  <MultipleSelect
+                    options={exercises}
+                    selectedOptions={trainsSelected}
+                    handleSelect={addTrainSelected}
+                    add
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-tl-none rounded-bl-none border-l-0"
+                    onClick={() => setOpenNewExercise(true)}
+                  >
+                    <TbPlus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <ScrollArea className="w-full h-full">
+                  {trainsSelected.length > 0 ? (
+                    <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ">
+                      {trainsSelected.map((exercise: Exercise) => (
+                        <ExerciseCard
+                          key={exercise.id}
+                          exercise={exercise}
+                          handleRemove={removeTrainSelected}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-[200px] border border-dashed rounded-md flex flex-col items-center justify-center">
+                      <p className="text-lg text-muted-foreground">
+                        Nenhum exercício selecionado
+                      </p>
+                    </div>
+                  )}
+                </ScrollArea>
+              </div>
+            </CardContent>
+          </Card>
         </form>
       </Form>
       <NewExerciseDialog

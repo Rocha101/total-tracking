@@ -29,6 +29,8 @@ import TrainingDay from "./train-day";
 import { Skeleton } from "./ui/skeleton";
 import HormoneViewCard from "./hormone-view-card";
 import ExtraCompoundViewCard from "./extraCompound-view-card";
+import getMealType from "@/app/utils/getMealType";
+import getMealUnit from "@/app/utils/getMealUnit";
 
 const enum SetType {
   WARM_UP = "WARM_UP",
@@ -106,36 +108,6 @@ const ProtocolCards = ({
   extraActions,
   loading,
 }: ProtocolCardsProps) => {
-  const getMealType = (mealType: string) => {
-    switch (mealType) {
-      case "BREAKFAST":
-        return "Café da manhã";
-      case "MORNING_SNACK":
-        return "Lanche da manhã";
-      case "LUNCH":
-        return "Almoço";
-      case "AFTERNOON_SNACK":
-        return "Lanche da tarde";
-      case "DINNER":
-        return "Jantar";
-      default:
-        return "Tipo não identificado";
-    }
-  };
-
-  const getMealUnit = (unit: string) => {
-    switch (unit) {
-      case "GR":
-        return "gr";
-      case "ML":
-        return "ml";
-      case "UNIT":
-        return "un";
-      default:
-        return "N.I.";
-    }
-  };
-
   const orderByMealType = (meals: Meal[]) => {
     const mealTypes = [
       "BREAKFAST",

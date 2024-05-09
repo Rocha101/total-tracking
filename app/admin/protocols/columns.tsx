@@ -63,7 +63,7 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
             onClick={() => router.push(`/admin/protocols/edit/${protocolId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar protocolo
+            Atualizar protocolo
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/protocols/view/${protocolId}`)}

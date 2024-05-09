@@ -101,7 +101,7 @@ const ViewDietPage = ({
           onClick={() => router.push(`/admin/diets/edit/${dietId}`)}
         >
           <TbEdit className="mr-2" />
-          Editar
+          Atualizar
         </Button>
       </div>
       {diet && (

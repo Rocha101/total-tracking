@@ -77,7 +77,7 @@ const TrainActionRows = ({ trainId }: { trainId: string }) => {
             onClick={() => router.push(`/admin/trains/edit/${trainId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar treino
+            Atualizar treino
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/trains/view/${trainId}`)}

@@ -127,7 +127,7 @@ const ViewMoreProtocol = ({
             onClick={() => router.push(`/admin/protocols/edit/${protocol?.id}`)}
           >
             <TbEdit className="mr-2" />
-            Editar
+            Atualizar
           </Button>
         }
         loading={loading}

@@ -67,7 +67,7 @@ const ExerciseRowActions = ({ exerciseId }: { exerciseId: string }) => {
             onClick={() => router.push(`/admin/exercises/edit/${exerciseId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar exercício
+            Atualizar exercício
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setOpen(true)}>

@@ -84,7 +84,7 @@ const ViewMealPage = ({
           onClick={() => router.push(`/admin/meals/edit/${mealId}`)}
         >
           <TbEdit className="mr-2" />
-          Editar
+          Atualizar
         </Button>
       </div>
       {meal && (

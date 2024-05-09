@@ -60,7 +60,7 @@ const DietRowActions = ({ dietId }: { dietId: string }) => {
             onClick={() => router.push(`/admin/diets/edit/${dietId}`)}
           >
             <TbEdit className="h-4 w-4 mr-2" />
-            Editar dieta
+            Atualizar dieta
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/admin/diets/view/${dietId}`)}

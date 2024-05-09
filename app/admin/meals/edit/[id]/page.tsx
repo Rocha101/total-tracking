@@ -13,12 +13,7 @@ const NewMealPage = ({
   };
 }) => {
   const router = useRouter();
-  return (
-    <div>
-      <PageHeader title="Editar Refeição" backlink />
-      <EditMealForm editId={params.id} onSubmitOk={() => router.back()} />
-    </div>
-  );
+  return <EditMealForm editId={params.id} onSubmitOk={() => router.back()} />;
 };
 
 export default NewMealPage;

@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/sonner";
 import Image from "next/image";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
