@@ -58,11 +58,7 @@ const hormoneScheme = object({
   accountId: string().optional(),
 });
 
-interface NewHormoneProps {
-  isDialog?: boolean;
-}
-
-const NewHormone = ({ isDialog }: NewHormoneProps) => {
+const NewHormone = ({ isDialog }: { isDialog?: boolean }) => {
   const router = useRouter();
   const form = useForm<Zod.infer<typeof hormoneScheme>>({
     resolver: zodResolver(hormoneScheme),
