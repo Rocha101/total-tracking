@@ -65,7 +65,7 @@ const MultipleSelect: React.FC<MultipleSelectProps> = ({
                 options.map((item) => (
                   <CommandItem
                     key={item.id}
-                    value={item.name}
+                    value={item.id + item.name}
                     onSelect={() => handleSelect(item.id)}
                   >
                     <CheckIcon

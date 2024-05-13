@@ -63,7 +63,7 @@ const SingleSelect: React.FC<SingleSelectProps> = ({
                 options.map((item) => (
                   <CommandItem
                     key={item.id}
-                    value={item.name}
+                    value={item.id + item.name}
                     onSelect={() => {
                       handleSelect(item.id);
                       setOpen(false);

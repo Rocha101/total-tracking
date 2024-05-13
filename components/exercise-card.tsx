@@ -72,11 +72,12 @@ const ExerciseCard = ({ exercise, handleRemove }: ExerciseCardProps) => {
 
   return (
     <Card key={exercise.id} className="relative">
-      <CardHeader className="w-full flex flex-row justify-between items-start">
+      <CardHeader>
         <CardTitle>{exercise.name}</CardTitle>
+        <CardDescription>{exercise.description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        <CardDescription>
+      <CardContent className="flex flex-col gap-2 text-xs">
+        <p>
           Grupo Muscular:{" "}
           {
             {
@@ -100,12 +101,12 @@ const ExerciseCard = ({ exercise, handleRemove }: ExerciseCardProps) => {
               [MuscleGroup.NECK]: "Pescoço",
             }[exercise.muscleGroup]
           }
-        </CardDescription>
-        <CardDescription>Equipamento: {exercise.equipment}</CardDescription>
+        </p>
+        <p>Equipamento: {exercise.equipment}</p>
         {reps.map((rep, index) => (
-          <CardDescription key={index}>
+          <p key={index}>
             {index + 1}ª Série: {rep.join(" ")}
-          </CardDescription>
+          </p>
         ))}
       </CardContent>
 

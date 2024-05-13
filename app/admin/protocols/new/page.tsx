@@ -91,6 +91,8 @@ const NewProtocolPage = () => {
       ),
     };
 
+    console.log(protocol);
+
     createProtocolMutation.mutate(protocol);
   };
 

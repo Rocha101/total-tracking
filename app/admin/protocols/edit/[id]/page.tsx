@@ -46,7 +46,7 @@ const protocolSchema = object({
   train: string().array().optional(),
   hormonalProtocol: string().optional(),
   clientId: string().optional(),
-  extraCompound: string().optional(),
+  extraCompound: string().array().optional(),
 });
 
 const EditProtocolPage = ({ params }: { params: { id: string } }) => {
@@ -78,6 +78,9 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
     const protocol = {
       ...values,
       train: trainsSelected.map((train) => train.id),
+      extraCompound: extraCompoundsSelected.map(
+        (extraCompound) => extraCompound.id
+      ),
     };
 
     updateProtocolMutation.mutate(protocol);

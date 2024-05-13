@@ -30,7 +30,7 @@ const ExtraCompoundViewCard = ({ compound }: ExtraCompoundViewCardProps) => {
           <span className="text-xs">{getUnit(compound.unit)}</span>
         </p>
         <p className="text-sm text-muted-foreground">
-          {compound.concentration}{" "}
+          {compound.concentration || ""}{" "}
           <span className="text-xs">
             {getConcentrationUnit(compound.concentrationUnit)}
           </span>

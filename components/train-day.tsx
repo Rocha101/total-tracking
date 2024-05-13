@@ -137,7 +137,7 @@ const TrainingDay = ({ train, trainWeekDay }: TrainingDayProps) => {
 
   return (
     <div>
-      <div className="print:hidden">
+      <div className="print:hidden flex flex-col gap-3">
         {selectedTrain.exercises.map((exercise) => (
           <ExerciseCard key={exercise.id} exercise={exercise} />
         ))}
@@ -189,6 +189,7 @@ const TrainingDay = ({ train, trainWeekDay }: TrainingDayProps) => {
             return (
               <div key={item.id} className="flex flex-col gap-3">
                 <p>{item.group}</p>
+
                 {train
                   ?.find((train) => train?.weekDays?.includes(item.weekDay))
                   ?.exercises?.map((exercise) => (

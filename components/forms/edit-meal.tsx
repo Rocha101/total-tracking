@@ -111,6 +111,8 @@ const EditMealForm = ({ onSubmitOk, editId }: MealFormProps) => {
   );
 
   const onSubmit = (values: any) => {
+    const foods = selectedFoods.map((food) => food.id);
+    values.foods = foods;
     updateMealMutation.mutate(values);
   };
 

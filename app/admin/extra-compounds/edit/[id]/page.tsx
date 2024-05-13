@@ -91,6 +91,8 @@ const EditHormonePage = ({
       concentrationUnit: getConcentrationUnit(),
     };
 
+    console.log(hormone);
+
     updateCompoundMutation.mutate(hormone);
   };
 
