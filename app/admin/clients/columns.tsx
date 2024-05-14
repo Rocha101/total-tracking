@@ -11,12 +11,13 @@ import { TbDots, TbEdit, TbEye, TbMail, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Protocol } from "../protocols/columns";
 
 const ClientRowActions = ({ clientId }: { clientId: string }) => {
   "use client";
@@ -42,6 +43,16 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
     },
   });
 
+  const { isLoading: protocolLoading, data: protocolData } = useQuery({
+    queryKey: ["protocol", { clientId }],
+    queryFn: async () => {
+      const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
+      console.log(response.data);
+      return response.data;
+    },
+    enabled: !!clientId,
+  });
+
   const handleDelete = () => {
     deleteMutation.mutate(clientId);
   };
@@ -61,7 +72,14 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
             Excluir cliente
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/admin/clients/protocol/${clientId}`)}
+            onClick={() => {
+              if (!protocolData) {
+                toast.error("Cliente não possui protocolo cadastrado");
+                return;
+              } else {
+                router.push(`/admin/protocols/view/${protocolData?.id}`);
+              }
+            }}
           >
             <TbEye className="h-4 w-4 mr-2" />
             Ver protocolo

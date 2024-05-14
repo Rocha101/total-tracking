@@ -83,6 +83,8 @@ const EditProtocolPage = ({ params }: { params: { id: string } }) => {
       ),
     };
 
+    console.log(protocol);
+
     updateProtocolMutation.mutate(protocol);
   };
 

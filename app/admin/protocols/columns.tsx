@@ -15,10 +15,11 @@ import { HormonalProtocol } from "../hormonal-protocols/hormonal-protocols";
 import Diet from "../diets/diets";
 import { Train } from "../trains/train";
 import ExtraCompounds from "../extra-compounds/extra-compounds";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRouter } from "next/navigation";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { useState } from "react";
+import { Account } from "../exercises/exercise";
 
 const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
   "use client";
@@ -90,6 +91,20 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
   );
 };
 
+const ProtocolClient = ({ clientId }: { clientId: string }) => {
+  "use client";
+  const { isLoading, data: client } = useQuery(
+    ["client", clientId],
+    async () => {
+      const res = await api.get<Account>(`/account/${clientId}`);
+
+      return res.data;
+    }
+  );
+
+  return <p>{client?.name}</p>;
+};
+
 export type Protocol = {
   id: string;
   name: string;
@@ -119,6 +134,13 @@ export const columns: ColumnDef<Protocol>[] = [
         </span>
       </div>
     ),
+  },
+  {
+    header: "Cliente",
+    accessorKey: "client",
+    cell: ({ row }) => {
+      return <ProtocolClient clientId={row.original.clientId} />;
+    },
   },
   {
     header: "Data de Criação",

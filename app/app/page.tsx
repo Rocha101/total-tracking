@@ -35,7 +35,7 @@ const ClientProtocol = () => {
     queryKey: ["protocol", { clientId }],
     queryFn: async () => {
       const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
-
+      console.log(response.data);
       return response.data;
     },
     enabled: !!clientId,
@@ -64,7 +64,7 @@ const ClientProtocol = () => {
       queryKey: ["hormonalProtocol", { protocolId: protocolId }],
       queryFn: async () => {
         const response = await api.get<HormonalProtocol[]>(
-          `/hormonalProtocol/protocol/${protocolId}`
+          `/hormoneProtocol/protocol/${protocolId}`
         );
         return response.data[0];
       },

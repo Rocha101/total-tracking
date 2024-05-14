@@ -14,6 +14,7 @@ const ProtocolPage = () => {
   const router = useRouter();
   const { isLoading, data: rows = [] } = useQuery("protocols", async () => {
     const res = await api.get<Protocol[]>("/protocol");
+    console.log(res.data);
     return res.data;
   });
   return (

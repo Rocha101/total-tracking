@@ -184,28 +184,28 @@ const LandingHomePage = () => {
               {[
                 {
                   id: 1,
-                  image: "/landing-page/mockups/mockup13.png",
+                  image: "/landing-page/mockups/print-atlas1.png",
                 },
                 {
                   id: 2,
-                  image: "/landing-page/mockups/mockup2.png",
+                  image: "/landing-page/mockups/print-atlas2.png",
                 },
                 {
                   id: 3,
-                  image: "/landing-page/mockups/mockup3.png",
+                  image: "/landing-page/mockups/print-atlas5.png",
                 },
                 {
                   id: 4,
-                  image: "/landing-page/mockups/mockup4.png",
+                  image: "/landing-page/mockups/print-atlas7.png",
                 },
 
                 {
                   id: 7,
-                  image: "/landing-page/mockups/mockup7.png",
+                  image: "/landing-page/mockups/print-atlas8.png",
                 },
                 {
                   id: 8,
-                  image: "/landing-page/mockups/mockup8.png",
+                  image: "/landing-page/mockups/print-atlas13.png",
                 },
               ].map((screenshot) => (
                 <>

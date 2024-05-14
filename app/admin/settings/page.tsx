@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth";
-import { TbEdit } from "react-icons/tb";
+import { TbDeviceFloppy, TbEdit, TbLoader2 } from "react-icons/tb";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "sonner";
 import {
@@ -190,6 +190,11 @@ const SettingsPage = () => {
                     />
 
                     <Button className="flex gap-1 items-center">
+                      {accountUpdateMutation.isLoading ? (
+                        <TbLoader2 className="animate-spin h-4 w-4  mr-2" />
+                      ) : (
+                        <TbDeviceFloppy className="h-4 w-4 mr-2" />
+                      )}
                       {accountUpdateMutation.isLoading
                         ? "Salvando..."
                         : "Salvar"}

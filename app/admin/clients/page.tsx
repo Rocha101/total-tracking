@@ -24,9 +24,6 @@ const ClientPage = () => {
       <DataTable
         columns={columns}
         data={rows}
-        onDoubleClick={(row) =>
-          router.push(`/admin/clients/protocol/${row.id}`)
-        }
         isLoading={isLoading}
         actions={<ReferralLink />}
       />

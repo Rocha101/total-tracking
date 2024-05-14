@@ -356,11 +356,13 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                       readNotificationMutation.mutate(notification.id)
                     }
                   >
-                    <div className="w-full flex flex-col gap-1 items-start justify-start">
-                      <span className="font-semibold">
+                    <div className="w-full max-w-screen flex flex-col gap-1 items-start justify-start">
+                      <span className="font-semibold truncate">
                         {notification.title}
                       </span>
-                      <span className="text-sm">{notification.message}</span>
+                      <span className="text-sm truncate">
+                        {notification.message}
+                      </span>
                     </div>
                   </DropdownMenuCheckboxItem>
                 ))}
@@ -380,15 +382,20 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {isAdmin && (
-                  <DropdownMenuItem
-                    onClick={() => router.push("/admin/settings")}
-                    className="flex gap-2"
-                  >
-                    <TbSettings className="h-4 w-4" />
-                    Configurações
-                  </DropdownMenuItem>
-                )}
+
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (isAdmin) {
+                      router.push("/admin/settings");
+                    } else {
+                      router.push("/app/settings");
+                    }
+                  }}
+                  className="flex gap-2"
+                >
+                  <TbSettings className="h-4 w-4" />
+                  Configurações
+                </DropdownMenuItem>
 
                 <ModeToggle />
                 <DropdownMenuSeparator />
