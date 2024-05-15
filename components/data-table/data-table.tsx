@@ -93,7 +93,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="w-full flex items-end justify-end">{actions}</div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md shadow border">
         <Table className="bg-card">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -157,28 +157,28 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 bg-card px-3 py-2 border border-t-0">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} resultado
-          {table.getFilteredRowModel().rows.length > 1 ? "s" : ""}
+        <div className="flex items-center justify-end space-x-2 bg-card px-3 py-2 border-t">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredRowModel().rows.length} resultado
+            {table.getFilteredRowModel().rows.length > 1 ? "s" : ""}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <TbChevronLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <TbChevronRight className="w-4 h-4" />
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <TbChevronLeft className="w-4 h-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          <TbChevronRight className="w-4 h-4" />
-        </Button>
       </div>
     </div>
   );
