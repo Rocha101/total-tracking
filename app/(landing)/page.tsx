@@ -455,7 +455,7 @@ const LandingHomePage = () => {
       <div className="w-full flex items-center justify-center -mb-16">
         <div className="h-full w-full flex flex-col md:flex-row gap-6 max-w-3xl bg-gradient-to-r from-primary to-orange-500 rounded-xl items-center justify-between py-12 px-12">
           <h1 className="text-xl text-white">Entre em contato</h1>
-          <Link href="https://wa.me/5548998280420" target="_blank">
+          <Link href="https://wa.me/5548998280420">
             <Button
               size="lg"
               className="bg-gradient-to-r from-green-600 to-green-700 hover:bg-green-700 rounded-md hover:scale-105 transition-all duration-300"
@@ -531,12 +531,14 @@ const LandingHomePage = () => {
           © 2024 Rocha Soluções em Tecnologia. Todos os direitos reservados.
         </div>
       </footer>
-      <Button
-        size={`icon`}
-        className="fixed bottom-4 right-4 bg-gradient-to-r from-green-600 to-green-700 hover:bg-green-700 h-16 w-16 rounded-xl"
-      >
-        <TbBrandWhatsapp className="h-12 w-12" />
-      </Button>
+      <Link href="https://wa.me/5548998280420">
+        <Button
+          size={`icon`}
+          className="fixed bottom-4 right-4 bg-gradient-to-r from-green-600 to-green-700 hover:bg-green-700 h-16 w-16 rounded-xl"
+        >
+          <TbBrandWhatsapp className="h-12 w-12" />
+        </Button>
+      </Link>
     </div>
   );
 };
