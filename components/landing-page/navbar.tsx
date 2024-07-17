@@ -24,6 +24,10 @@ const LandingNavBar = () => {
             height={30}
             alt="Iron Atlas"
             className="h-8 w-8"
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+            }}
           />
           <p className="text-xl font-bold">Iron Atlas</p>
         </div>
@@ -32,7 +36,7 @@ const LandingNavBar = () => {
             <Button
               variant="outline"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
               aria-label="Toggle navigation menu"
             >
               <TbMenu className="h-5 w-5" />
@@ -88,7 +92,7 @@ const LandingNavBar = () => {
           </SheetContent>
         </Sheet>
 
-        <nav className="hidden md:flex items-center justify-center">
+        <nav className="hidden lg:flex items-center justify-center">
           <div className="flex gap-6">
             <Link href="/#faq" passHref>
               <Button variant={"link"} className="text-black dark:text-white">

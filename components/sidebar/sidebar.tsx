@@ -208,7 +208,10 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
                 height={30}
                 alt="Iron Atlas"
                 className="h-8 w-8"
-              />
+                style={{
+                  maxWidth: "100%",
+                  height: "auto"
+                }} />
               <span className="text-lg leading-relaxed font-bold">
                 Iron Atlas
               </span>
@@ -288,7 +291,10 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
               height={30}
               alt="Iron Atlas"
               className="h-8 w-8"
-            />
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
             <span className="text-lg leading-relaxed font-bold">
               Iron Atlas
             </span>

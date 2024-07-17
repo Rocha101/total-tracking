@@ -33,7 +33,7 @@ const PricingPlanCard = ({
 }: PricingPlanCardProps) => {
   const router = useRouter();
   return (
-    <Card className="h-full md:w-96 hover:mb-3 hover:border-primary transition-all duration-300">
+    <Card className="h-full md:w-96 hover:scale-105 hover:border-primary transition-all duration-300">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -45,7 +45,7 @@ const PricingPlanCard = ({
         </p>
         {href && (
           <Link href={href} target="_blank">
-            <Button className="w-full mt-3">Entrar em contato</Button>
+            <Button className="w-full mt-3">Quero Assinar</Button>
           </Link>
         )}
 

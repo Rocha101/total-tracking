@@ -25,7 +25,10 @@ function EmailSent() {
           width={200}
           height={200}
           alt="Email enviado"
-        />
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
         <div className="w-full flex justify-start mt-2">
           <Link href="/sign-in">
             <Button variant="link" className="p-0 m-0 h-4 text-xs">
