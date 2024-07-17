@@ -326,7 +326,7 @@ const LandingHomePage = () => {
             O Iron Atlas conta com um aplicativo web para clientes, que permite
             que atletas acessem seus protocolos de forma prática e eficiente
           </p>
-          <div className="w-full flex flex-col lg:flex-row  gap-2 mt-4">
+          <div className="w-full flex flex-col items-center justify-center lg:flex-row  gap-2 mt-4">
             <Link href="/sign-in" passHref>
               <Button className="mr-2 rounded-xl px-12 py-6 text-lg hover:scale-105 transition-all duration-300 w-full md:w-auto">
                 Quero Entrar
