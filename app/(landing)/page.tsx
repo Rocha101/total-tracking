@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Tb24Hours,
+  TbClock24,
   TbArrowDownRight,
   TbArrowRight,
   TbBarbell,
@@ -178,7 +178,7 @@ const LandingHomePage = () => {
               title: "Suporte 24 horas",
               description:
                 "Receba assistência 24 horas para atender prontamente às necessidades de atletas e treinadores, garantindo orientação e suporte contínuos.",
-              icon: Tb24Hours,
+              icon: TbClock24,
             },
             {
               id: 6,
