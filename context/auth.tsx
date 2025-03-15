@@ -1,12 +1,8 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { createContext, useState, useContext, useEffect } from "react";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
-import api from "@/app/utils/api";
-import { useQuery } from "react-query";
-import { TbLoader2 } from "react-icons/tb";
 
 interface Account {
   account: {
@@ -57,31 +53,6 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   const value = { account, login, logout };
-
-  const handleTokenError = (error: any) => {
-    if (
-      error.request.response.includes("Token inválido") ||
-      error.request.response.includes("Token não encontrado")
-    ) {
-      toast.error("Faça login para acessar a página");
-      logout();
-    }
-  };
-
-  const verifyRes = useQuery(
-    ["verifyToken", account?.token],
-    async () => {
-      const res = await api.get("/auth/verify");
-      return res.data;
-    },
-    {
-      onError: (error) => {
-        console.log(error);
-        handleTokenError(error);
-      },
-      enabled: !!account?.token,
-    }
-  );
 
   useEffect(() => {
     if (account === null && accountCookie) {

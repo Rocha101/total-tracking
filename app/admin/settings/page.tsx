@@ -100,16 +100,16 @@ const SettingsPage = () => {
     subscriptionChangeMutation.mutate(data);
   };
 
-  const { data: subscriptionData } = useQuery(
-    ["subscription", accountId],
-    async () => {
-      const res = await api.get(`/subscription/verify/${accountId}`);
-      return res.data;
-    },
-    {
-      enabled: !!accountId,
-    }
-  );
+  // const { data: subscriptionData } = useQuery(
+  //   ["subscription", accountId],
+  //   async () => {
+  //     const res = await api.get(`/subscription/verify/${accountId}`);
+  //     return res.data;
+  //   },
+  //   {
+  //     enabled: !!accountId,
+  //   }
+  // );
 
   useEffect(() => {
     if (currentAccount !== null) {
@@ -127,7 +127,7 @@ const SettingsPage = () => {
       <Tabs defaultValue="general" className="w-full">
         <TabsList className="w-[200px] grid grid-cols-2">
           <TabsTrigger value="general">Geral</TabsTrigger>
-          <TabsTrigger value="subscription">Assinatura</TabsTrigger>
+          <TabsTrigger value="subscription" disabled>Assinatura</TabsTrigger>
         </TabsList>
         <TabsContent value="general">
           <div className="flex flex-col gap-3">
@@ -217,7 +217,7 @@ const SettingsPage = () => {
             </Card>
           </div>
         </TabsContent>
-        <TabsContent value="subscription">
+        {/* <TabsContent value="subscription">
           <div className="flex flex-col gap-3">
             <Card className="flex flex-col md:flex-row items-start md:items-center justify-between">
               <CardHeader>
@@ -294,7 +294,7 @@ const SettingsPage = () => {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   );

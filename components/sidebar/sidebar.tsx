@@ -70,21 +70,6 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
   const [enabledLinks, setEnabledLinks] = useState(true);
   const [openMenu, setOpenMenu] = useState(false);
 
-  const { data: subscriptionData } = useQuery(
-    ["subscription", accountId],
-    async () => {
-      const res = await api.get(`/subscription/verify/${accountId}`);
-
-      if (res.data.expiresAt < new Date().toISOString()) {
-        setEnabledLinks(false);
-      }
-      return res.data;
-    },
-    {
-      enabled: !!accountId && isAdmin,
-    }
-  );
-
   const { data: notificationData = [] } = useQuery("notification", async () => {
     const res = await api.get(`/notification`);
 
@@ -188,13 +173,13 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
     key?: string;
   }[] = isAdmin ? adminLinks : clientLinks;
 
-  const isExpired = subscriptionData?.expiresAt < new Date().toISOString();
-
   const deleteAllNotifications = async () => {
     await notificationData.forEach((notification: any) => {
       deleteNotificationMutation.mutate(notification.id);
     });
   };
+
+  const unreadNotificationCount = notificationData.filter((item: Notification) => !item.read)
 
   return (
     <div className="flex min-h-screen w-full print:hidden">
@@ -300,24 +285,10 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </span>
           </div>
           <div className="flex gap-2 items-center  ml-auto">
-            {isAdmin && (
-              <Badge
-                variant={isExpired ? "destructive" : "outline"}
-                className="rounded-full hidden md:flex hover:cursor-pointer"
-                onClick={() => router.push("/admin/settings")}
-              >
-                {isExpired
-                  ? "Sua assinatura expirou"
-                  : `Sua assinatura expira em ${formatDate(
-                      subscriptionData?.expiresAt
-                    )}`}
-              </Badge>
-            )}
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  {notificationData.length > 0 ? (
+                  {unreadNotificationCount > 0 ? (
                     <TbBellRinging className="h-5 w-5 animate-pulse" />
                   ) : (
                     <TbBell className="h-5 w-5" />
@@ -414,17 +385,6 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
           </div>
         </header>
         <main className="h-full flex flex-col overflow-auto gap-4 p-4 lg:border-l border-t">
-          {isExpired && isAdmin && (
-            <div className="h-12 w-full md:hidden">
-              <Badge
-                variant="destructive"
-                className="w-full flex items-center justify-center hover:cursor-pointer"
-                onClick={() => router.push("/admin/settings")}
-              >
-                Sua assinatura expirou
-              </Badge>
-            </div>
-          )}
           {children}
         </main>
       </div>

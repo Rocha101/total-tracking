@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TbDots, TbEdit, TbEye, TbMail, TbTrash } from "react-icons/tb";
+import { TbCirclePlus, TbDots, TbEdit, TbEye, TbMail, TbTrash } from "react-icons/tb";
 import api from "@/app/utils/api";
 import { toast } from "sonner";
 
@@ -71,19 +71,18 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
             <TbTrash className="h-4 w-4 mr-2" />
             Excluir cliente
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              if (!protocolData) {
-                toast.error("Cliente não possui protocolo cadastrado");
-                return;
-              } else {
-                router.push(`/admin/protocols/view/${protocolData?.id}`);
-              }
-            }}
-          >
-            <TbEye className="h-4 w-4 mr-2" />
-            Ver protocolo
-          </DropdownMenuItem>
+          {!protocolData ? (
+            <DropdownMenuItem
+              onClick={() => router.push(`/admin/protocols/new?clientId=${clientId}`)}
+            >
+              <TbCirclePlus className="h-4 w-4 mr-2" />
+              Novo Protocolo
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => router.push(`/admin/protocols/view/${protocolData?.id}`)}>
+              <TbEye className="h-4 w-4 mr-2" />
+              Ver protocolo
+            </DropdownMenuItem>)}
         </DropdownMenuContent>
       </DropdownMenu>
       <ConfirmationDialog
@@ -94,7 +93,7 @@ const ClientRowActions = ({ clientId }: { clientId: string }) => {
         onOpenChange={(open) => setOpen(open)}
         loading={deleteMutation.isLoading}
       />
-    </Fragment>
+    </Fragment >
   );
 };
 

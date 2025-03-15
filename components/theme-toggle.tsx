@@ -11,33 +11,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TbMoon, TbSun } from "react-icons/tb";
 import { DropdownMenuIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <DropdownMenuItem className="flex gap-2">
-          {theme === "light" ? (
-            <TbSun className="h-4 w-4" />
-          ) : (
-            <TbMoon className="h-4 w-4" />
-          )}
-          <span>Tema</span>
-        </DropdownMenuItem>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+    <DropdownMenuItem className="flex gap-2" onClick={() => setTheme(
+      theme === "light" ? "dark" : "light"
+    )}>
+      {theme === "light" ? (
+        <>
+          <TbSun className="size-4" />
           Claro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        </>
+      ) : (
+        <>
+          <TbMoon className="size-4" />
           Escuro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          Automático
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </>
+      )}
+    </DropdownMenuItem>
   );
 }

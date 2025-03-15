@@ -35,7 +35,7 @@ const ProtocolRowActions = ({ protocolId }: { protocolId: string }) => {
   const deleteMutation = useMutation(deleteProtocol, {
     onSuccess: () => {
       toast.success("Protocolo excluído com sucesso!");
-      queryClient.invalidateQueries("meals");
+      queryClient.invalidateQueries("protocols");
     },
     onError: (error) => {
       console.error(error);
