@@ -403,8 +403,10 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </DropdownMenu>
           </div>
         </header>
-        <main className="h-full container flex flex-col overflow-auto gap-4 p-4">
-          {children}
+        <main className="h-full flex flex-col overflow-auto gap-4 p-4 bg-zinc-100 dark:bg-zinc-900">
+          <div className="container">
+            {children}
+          </div>
         </main>
       </div>
     </div>
