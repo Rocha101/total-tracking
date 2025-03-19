@@ -26,6 +26,9 @@ import {
   TbBellRinging,
   TbLoader2,
   TbInbox,
+  TbShape,
+  TbCamera,
+  TbDashboard,
 } from "react-icons/tb";
 import {
   DropdownMenu,
@@ -156,13 +159,29 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
       icon: TbPill,
       href: "/admin/extra-compounds",
     },
+    {
+      name: "Atualizações",
+      icon: TbCamera,
+      href: "/admin/updates",
+    },
   ];
 
   const clientLinks = [
     {
+      name: "Inicio",
+      icon: TbDashboard,
+      href: "/app",
+      key: "/app/dashboard",
+    },
+    {
       name: "Meu Protocolo",
       icon: TbChartBar,
-      href: "/app",
+      href: "/app/protocol",
+    },
+    {
+      name: "Atualizações",
+      icon: TbCamera,
+      href: "/app/updates",
     },
   ];
 
@@ -384,7 +403,7 @@ const Sidebar = ({ isAdmin, children }: SidebarProps) => {
             </DropdownMenu>
           </div>
         </header>
-        <main className="h-full flex flex-col overflow-auto gap-4 p-4 lg:border-l border-t">
+        <main className="h-full container flex flex-col overflow-auto gap-4 p-4">
           {children}
         </main>
       </div>

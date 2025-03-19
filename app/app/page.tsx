@@ -1,123 +1,47 @@
-"use client";
-
-import { useState } from "react";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/page-header";
-import api from "@/app/utils/api";
-import ProtocolCards from "@/components/protocol-cards";
-import { useAuth } from "@/context/auth";
-import { useQuery } from "react-query";
-import { Protocol } from "@/app/admin/protocols/columns";
-import ExtraCompounds from "@/app/admin/extra-compounds/extra-compounds";
-import { HormonalProtocol } from "@/app/admin/hormonal-protocols/hormonal-protocols";
-import Diet from "@/app/admin/diets/diets";
-import { Train } from "@/app/admin/trains/train";
-import { TbLoader2 } from "react-icons/tb";
-import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
-enum WeekDay {
-  MONDAY = "MONDAY",
-  TUESDAY = "TUESDAY",
-  WEDNESDAY = "WEDNESDAY",
-  THURSDAY = "THURSDAY",
-  FRIDAY = "FRIDAY",
-  SATURDAY = "SATURDAY",
-  SUNDAY = "SUNDAY",
-}
-
-const ClientProtocol = () => {
-  const { account } = useAuth();
-  const clientId = account?.account.id;
-  const [trainWeekDay, setTrainWeekDay] = useState<WeekDay>(
-    () => WeekDay.MONDAY
-  );
-
-  const { isLoading: protocolLoading, data: protocolData } = useQuery({
-    queryKey: ["protocol", { clientId }],
-    queryFn: async () => {
-      const response = await api.get<Protocol>(`/protocol/clients/${clientId}`);
-      console.log(response.data);
-      return response.data;
-    },
-    enabled: !!clientId,
-  });
-
-  const protocol = protocolData;
-  const protocolId = protocolData ? protocolData.id : null;
-
-  const { isLoading: extraCompoundLoading, data: extraCompoundData } = useQuery(
-    {
-      queryKey: ["extraCompound", { protocolId: protocolId }],
-      queryFn: async () => {
-        const response = await api.get<ExtraCompounds[]>(
-          `/extraCompound/protocol/${protocolId}`
-        );
-        return response.data;
-      },
-      enabled: !!protocolId,
-    }
-  );
-
-  const extraCompounds = extraCompoundData || [];
-
-  const { isLoading: hormoneProtocolLoading, data: hormonalProtocolData } =
-    useQuery({
-      queryKey: ["hormonalProtocol", { protocolId: protocolId }],
-      queryFn: async () => {
-        const response = await api.get<HormonalProtocol[]>(
-          `/hormoneProtocol/protocol/${protocolId}`
-        );
-        return response.data[0];
-      },
-      enabled: !!protocolId,
-    });
-
-  const hormonalProtocol = hormonalProtocolData;
-
-  const { isLoading: dietLoading, data: dietData } = useQuery({
-    queryKey: ["diet", { protocolId: protocolId }],
-    queryFn: async () => {
-      const response = await api.get<Diet[]>(`/diet/protocol/${protocolId}`);
-      return response.data[0];
-    },
-    enabled: !!protocolId,
-  });
-
-  const diet = dietData;
-
-  const { isLoading: trainLoading, data: trainData } = useQuery({
-    queryKey: ["train", { protocolId: protocolId }],
-    queryFn: async () => {
-      const response = await api.get<Train[]>(`/train/protocol/${protocolId}`);
-      return response.data;
-    },
-    enabled: !!protocolId,
-  });
-
-  const train = trainData || [];
-
-  const loading =
-    protocolLoading ||
-    extraCompoundLoading ||
-    hormoneProtocolLoading ||
-    dietLoading ||
-    trainLoading;
-
-  return (
-    <div className="h-full">
-      <PageHeader title={`Protocolo ${account?.account.name || ""}`} />
-
-      <ProtocolCards
-        protocol={protocol}
-        diet={diet}
-        train={train}
-        hormonalProtocol={hormonalProtocol}
-        extraCompounds={extraCompounds}
-        trainWeekDay={trainWeekDay}
-        setTrainWeekDay={setTrainWeekDay}
-        loading={loading}
-      />
-    </div>
-  );
+const Dashboard = () => {
+    return (
+        <div className="h-full">
+            <PageHeader title="Dashboard" description="Aqui você encontra atalhos para as principais ações do sistema." />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-lg">Próxima Atualização</CardTitle>
+                        <CardDescription>
+                            Atualize seu perfil físico para melhorar sua experiência.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                        <Link href="/app/updates/new" passHref>
+                            <Button>
+                                Atualizar Agora
+                            </Button>
+                        </Link>
+                    </CardFooter>
+                </Card>
+                <Card className="col-span-4">
+                    <CardHeader>
+                        <CardTitle>Meus Planos</CardTitle>
+                        <CardDescription>Planos atribuídos pelo seu coach</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p>Em breve você poderá visualizar seus planos aqui.</p>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
 };
 
-export default ClientProtocol;
+export default Dashboard

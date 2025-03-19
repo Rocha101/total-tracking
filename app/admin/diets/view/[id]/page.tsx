@@ -92,6 +92,8 @@ const ViewDietPage = ({
       </div>
     );
 
+  console.log(diet);
+
   return (
     <div className="flex flex-col gap-3">
       <PageHeader title="Visualizar Dieta" backlink />
