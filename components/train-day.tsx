@@ -77,15 +77,14 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
   const reps = exercise.sets.map((set) => {
     const reps = set.reps;
     return reps.map((rep) => {
-      return `${
-        {
-          [SetType.WARM_UP]: "Aquecimento",
-          [SetType.WORKING]: "Trabalho",
-          [SetType.FEEDER]: "Feeder",
-          [SetType.TOP]: "Top",
-          [SetType.BACK_OFF]: "Back off",
-        }[rep.setType] || ""
-      }${rep.setType ? " - " : ""}${rep.quantity} x ${rep.weight}Kg`;
+      return `${{
+        [SetType.WARM_UP]: "Aquecimento",
+        [SetType.WORKING]: "Trabalho",
+        [SetType.FEEDER]: "Feeder",
+        [SetType.TOP]: "Top",
+        [SetType.BACK_OFF]: "Back off",
+      }[rep.setType] || ""
+        }${rep.setType ? " - " : ""}${rep.quantity} x ${rep.weight}Kg`;
     });
   });
 
@@ -94,7 +93,7 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
       key={exercise.id}
       className="flex flex-col md:flex-row relative shadow-none border-l-4 border-l-primary"
     >
-      <CardHeader>
+      <CardHeader className="w-full">
         <CardTitle>{exercise.name}</CardTitle>
         <CardDescription>{exercise.description}</CardDescription>
       </CardHeader>
@@ -104,10 +103,8 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
           {MuscleGroupLabels[exercise.muscleGroup as MuscleGroup]}
         </span>
         <span>Equipamento: {exercise.equipment}</span>
-        {exercise.sets.map((set, index) => (
-          <span key={index}>
-            {index + 1}ª Série: {reps.join(" ")}
-          </span>
+        {reps.map((rep, index) => (
+          <span key={index}>{rep}</span>
         ))}
       </CardContent>
     </Card>

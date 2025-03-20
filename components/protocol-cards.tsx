@@ -220,7 +220,7 @@ const ProtocolCards = ({
                 {Object.keys(WeekDay).map((key) => (
                   <ToggleGroupItem
                     key={key}
-                    className="data-[state=on]:bg-primary p-1 h-5"
+                    className="data-[state=on]:bg-primary/50 p-1 h-5"
                     value={key}
                   >
                     {
@@ -277,7 +277,7 @@ const ProtocolCards = ({
             <CardHeader>
               <CardTitle>Outros Compostos</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col gap-3">
               {extraCompounds.length > 0 ? (
                 extraCompounds.map((extraCompound) => (
                   <ExtraCompoundViewCard
