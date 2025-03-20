@@ -45,7 +45,7 @@ const extraCompoundSchema = object({
     required_error: "Quantidade é obrigatória",
   }),
   concentration: number().optional(),
-  unit: enumValidator(["MG", "ML", "UI", "UNIT"]),
+  unit: enumValidator(["MG", "ML", "UI", "UNIT", "GR", "MCG"]),
   concentrationUnit: enumValidator(["MG_ML", "MG"]).optional(),
   protocolId: string().optional(),
   accountId: string().optional(),
@@ -249,6 +249,8 @@ const EditHormonePage = ({
                             <SelectItem value="ML">ML</SelectItem>
                             <SelectItem value="UI">UI</SelectItem>
                             <SelectItem value="UNIT">UNIDADE</SelectItem>
+                            <SelectItem value="GR">GR</SelectItem>
+                            <SelectItem value="MCG">MCG</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>

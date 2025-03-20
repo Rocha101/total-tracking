@@ -7,6 +7,8 @@ enum HormoneUnit {
   MG = "MG",
   ML = "ML",
   UI = "UI",
+  GR = "GR",
+  MCG = "MCG",
 }
 
 type ExtraCompounds = {

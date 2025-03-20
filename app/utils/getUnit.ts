@@ -1,4 +1,4 @@
-const getUnit = (unit: "MG" | "ML" | "UI" | "UNIT") => {
+const getUnit = (unit: "MG" | "ML" | "UI" | "UNIT" | "GR" | "MCG") => {
   switch (unit) {
     case "MG":
       return "mg";
@@ -8,6 +8,10 @@ const getUnit = (unit: "MG" | "ML" | "UI" | "UNIT") => {
       return "UI";
     case "UNIT":
       return "Unidade";
+    case "GR":
+      return "gr";
+    case "MCG":
+      return "mcg";
     default:
       return "";
   }
